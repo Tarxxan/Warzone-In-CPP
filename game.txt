@@ -1,0 +1,35 @@
+Map is defined by a user in a text file
+	- We have to read the file and transform it into graph (probably into Map object)
+
+- Map consists of continents
+	- continents consist of countries
+	- if a continent is owned by a player, player has bonus army to place on it
+		- countries are owned by one player 
+		- it has 1 or more solder (army)
+
+Game:
+	- User choses number of players
+		- Countries are randomly assigned to users
+	** Game starts **
+	- Each user is given a turn
+		- User is given army (# of territories / 3 round down)+bonus from continent *minimum 3*
+		- 3 types of actions are given:
+			- Deployment: set army on their territory (increment army on a country node)
+			- Advance order: move army from one territory to another
+				- if target territory is his then: decrease counter of source, increment the counter of destination
+				- if its someone else, attack happends:
+					- The invader chooses how much army to use and has a 60% chance of destroying one army unit
+					- The defender has 70% chance of destroying one attacking unit
+					- If defenders army completely destroyed, it is now owned by the atakcer with survivors on the territory
+					- If user succesfully conquered a territory, we should set the flag for giving special cards to True
+			- Special cards
+				- Bomb: destroys half of the army (make sure the territory is adjacent to the players territory)
+				- Blockade: triple the number of armies on one of the current player’s territories and make it a neutral territory
+				- Airlift: same as advance but doesnt have to be adjacent
+				- Negotiate: no attacks between curent player and someone else
+				- Reinforcement: 5 extra solders
+		- Once the user specified all his actions, he sets ready
+		- If the user has conquered at least 1 territory he gets a special card
+	- Once everyone is set ready - execution of orders begins
+	- If a user doesnt own a territory - he is eliminated
+	- game ends when a user owns all the territories (or i guess when noone left)
