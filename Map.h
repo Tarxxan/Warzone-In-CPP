@@ -9,7 +9,7 @@
 // one and only one continent. 
 
 // Include Guards to prevent multiple inclusion
-#pragma once;
+#pragma once
 #include <iostream>
 #include <vector>
 using namespace std;
@@ -48,18 +48,18 @@ private:
     Player *Player;
    // const string Continent;
 
-// method adjacency list
-
-// add territory, set player and soldiers 
-
-// countructor with player and number of soldiers 
 };
+
+// method adjacency list
+// add territory, set player and soldiers 
+// countructor with player and number of soldiers 
+
 
 class Map{
 public:
-// Default, Param, Copy, Assignment, Stream Insertions
+//Default, Param, Copy, Assignment, Stream Insertions
     Map();
-    Map(string text);
+    Map(string FileName);
     Map(const Map &copyMap);
     Map &operator=(const Map &AssignMap);
     friend ostream& operator << (ostream &out, const Map&);
@@ -72,9 +72,6 @@ public:
     bool validate();
 
     string getTerritoryName();
-
-
-
 
 
 private:
@@ -93,8 +90,12 @@ public:
     MapLoader &operator=(const MapLoader &AssignML);
     friend ostream& operator << (ostream &out, const MapLoader&);
     friend istream& operator >> (istream &in, MapLoader &ML);
-    
+    // These are suppos3ed to be used in operators but they never get displayed so i dont even know 
+    string FileContents;
+    string FileName;
+    // Must delete reference to pointer if file is bad to avoid a mem leak
     Map* map;
+ 
 
 };
 class Player{};
