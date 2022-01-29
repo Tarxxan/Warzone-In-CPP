@@ -34,21 +34,19 @@ public:
     friend ostream& operator << (ostream &out, const Territory&);
     friend istream& operator >> (istream &in, Territory &Territory);
 
-    void setPlayer();
-    void setSoldiers();
-    int GetTerritoryID();
-    void addTerritory();// Have to have params to push to the vector just dont know which ones yet. ( Add edge)
+    // int GetTerritoryID();
+    // void addTerritory();// Have to have params to push to the vector just dont know which ones yet. ( Add edge)
    
 
 private:
     int TerritoryID;
     string Name; 
-    vector <Territory>* AdjacentTerritories ;
     int TerritorySoldiers;
-    Player *Player;
+    vector <Territory>* AdjacentTerritories ;
+   // Player *Player;
    // const string Continent;
 
-};
+ };
 
 // method adjacency list
 // add territory, set player and soldiers 
@@ -58,25 +56,25 @@ private:
 class Map{
 public:
 //Default, Param, Copy, Assignment, Stream Insertions
-    Map();
-    Map(string FileName);
-    Map(const Map &copyMap);
-    Map &operator=(const Map &AssignMap);
-    friend ostream& operator << (ostream &out, const Map&);
-    friend istream& operator >> (istream &in, Map &Map);
+    //Map();
+    //Map(string FileName);
+    //Map(const Map &copyMap);
+   // Map &operator=(const Map &AssignMap);
+  //  friend ostream& operator << (ostream &out, const Map&);
+    //friend istream& operator >> (istream &in, Map &Map);
 // Creates territories from the text file. Passing values line by line
-    void createTerritory(string TextTerritory);
+  //  void createTerritory(string TextTerritory);
 // Returns all continents on the map
-    void getContinents(); 
+   // void getContinents(); 
 // Validate Method does 3 checks.
-    bool validate();
+  //  bool validate();
 
-    string getTerritoryName();
+    //string getTerritoryName();
 
 
 private:
 
-        vector <Continent>* Continents ;
+        //vector <Continent>* Continents ;
 
 
 };
@@ -90,25 +88,28 @@ public:
     MapLoader &operator=(const MapLoader &AssignML);
     friend ostream& operator << (ostream &out, const MapLoader&);
     friend istream& operator >> (istream &in, MapLoader &ML);
-    // These are suppos3ed to be used in operators but they never get displayed so i dont even know 
     string FileContents;
+        // These are suppos3ed to be used in operators but they never get displayed so i dont even know 
     string FileName;
     // Must delete reference to pointer if file is bad to avoid a mem leak
     Map* map;
  
 
 };
-class Player{};
 
-
-class Continent{
+class Player{
 public:
-    vector<Territory>* Countries;
-
- Continent();
-
+    Player();
+}
 
 
-};
+// class Continent{
+// public:
+//     vector<Territory>* Countries;
+
+//  Continent();
 
 
+
+// };
+;
