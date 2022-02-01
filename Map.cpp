@@ -87,32 +87,6 @@ using namespace std;
 //-----------------------------Continent Class--------------------------------------------------------
 //----------------------------------------------------------------------------------------------------
 
-class Continent{
-public:
-    Continent(); //default constructor
-    Continent(int continentId, string continentName, int continentArmyValue, vector<Territory*> territories); //param constructor
-    Continent(Const Continent& continent); //copy constructor
-    ~Continent();
-    
-
-
-    //member functions
-    void addTerritory(Territory* territory); //store a pointer to territoriy that belongs to this continent
-    string getContientName();
-    int getContinentId();
-    vector<Territory*> getTerritories(); // get all the territories belong to this continent
-    int getContinentControlValue(); // get control value
- 
-
-private:
-    int continentId;
-    string continentName; 
-    int continentControlValue; // control value
-    vector<Territory*> territories; // Territories that belong to this continent
-
-};
-
-
 
 Continent::Continent()
 {
