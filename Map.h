@@ -1,4 +1,4 @@
-// The Map class is implemented as a connected graph. The graphâ€™s nodes represents a
+// The Map class is implemented as a connected graph. The graph’s nodes represents a
 // territory (implemented as a Territory class). Edges between nodes represent adjacency
 // between territories
 // Continents are connected subgraphs. Each territory belongs to one and only one continent.
@@ -8,76 +8,112 @@
 // a connected graph, 2) continents are connected subgraphs and 3) each country belongs to
 // one and only one continent. 
 
+
+
+
 // Include Guards to prevent multiple inclusion
 #pragma once
 #include <iostream>
 #include <vector>
 using namespace std;
 
+// Territory
+
 class Territory{
 
 public:
-//Default Constructor
-    Territory();
+    Territory(); //Default Constructor
+    Territory(int territoryId, string territoryName, string continentName, vector<Territory*> adjacentTerritories); //Param constructor
+    Territory(const Territory& territory); //copy contstructor
+    ~Territory();
+    Territory& operator=(const Territory& territory);  //Assignment operator // It can be used to create an object just like the copy constructor
+    friend ostream& operator<<(ostream& output, const Territory& territory); // Stream insertion operator <<  // This is made friend to access private members of Territory
 
-//Param constructor
-    Territory(int TerritoryID, string Name,const int TerritorySoldiers);
-
-//copy contstructor
-    Territory(const Territory &copyT);
-
- //Assignment operator 
-    Territory &operator=(const Territory &AssignT);
-
-// Streamline Operator
-
-    friend ostream& operator << (ostream &out, const Territory&);
-    friend istream& operator >> (istream &in, Territory &Territory);
-
-    // int GetTerritoryID();
-    // void addTerritory();// Have to have params to push to the vector just dont know which ones yet. ( Add edge)
+    //member functions
+    int getTerritoryId();
+    string getTerritoryName(); 
+    string getContientName(); //get name of continent that this territory belong to 
+    int getNumberOfArmies();  //-----------------------------------------------------------------------------NOTE: do we need army for territory??
+    vector<Territory*> getAdjacentTerritories(); //get adjacent territories
+    Player* getOwnerOfTerritory(); 
+    void setNumberOfArmies(int num);
+    
    
 
 private:
-    int TerritoryID;
-    string Name; 
-    int TerritorySoldiers;
-    vector <Territory>* AdjacentTerritories ;
-   // Player *Player;
-   // const string Continent;
+    int territoryId;
+    string territoryName; 
+    string continentName;
+    int numberOfArmies; //-----------------------------------------------------------------------------NOTE: do we need army for territory??
+    vector<Territory*> adjacentTerritories;  //Store adjacent territory pointers in vector. 
+    Player* ownerOfTerritory; 
 
  };
 
-// method adjacency list
-// add territory, set player and soldiers 
-// countructor with player and number of soldiers 
 
+
+
+
+// Continent
+
+
+class Continent{
+public:
+    Continent(); //default constructor
+    Continent(int continentId, string continentName, int continentArmyValue, vector<Territory*> territories); //param constructor
+    Continent(Const Continent& continent); //copy constructor
+    ~Continent();
+    Continent& operator=(const Continent& continent ); // assignment operator
+    friend ostream& operator<<(ostream& output, const Continent& continent); //stream insertion operator 
+
+
+    //member functions
+    void addTerritory(Territory* territory); //store a pointer to territoriy that belongs to this continent
+    string getContientName();
+    int getContinentId();
+    vector<Territory*> getTerritories(); // get all the territories belong to this continent
+    int getContinentControlValue(); // get control value
+ 
+
+private:
+    int continentId;
+    string continentName; 
+    int continentControlValue; // control value
+    vector<Territory*> territories; // Territories that belong to this continent
+
+};
+
+
+
+// Map
 
 class Map{
 public:
-//Default, Param, Copy, Assignment, Stream Insertions
-    //Map();
-    //Map(string FileName);
-    //Map(const Map &copyMap);
-   // Map &operator=(const Map &AssignMap);
-  //  friend ostream& operator << (ostream &out, const Map&);
-    //friend istream& operator >> (istream &in, Map &Map);
-// Creates territories from the text file. Passing values line by line
-  //  void createTerritory(string TextTerritory);
-// Returns all continents on the map
-   // void getContinents(); 
-// Validate Method does 3 checks.
-  //  bool validate();
+    Map(); //default constructor
+    Map(string mapName, vector<Territory*> territories, vector<Continent*> continents); //param constructor
+    Map(const Map& map); //copy constructor
+    ~Map();
+    Map& operator=(const Map& map); //assignment operator
+    friend ostream& operator<<(ostream& output, const Map& map); // stream insertion operator
 
-    //string getTerritoryName();
-
+    //member functons
+    string getMapName();
+    vector<Territory*> getAllTerritories();
+    vector<Continent*> getAllContinents();
+    bool validate(); // check if map is valid
+    
 
 private:
-
-        //vector <Continent>* Continents ;
+    string mapName();
+    vector<Territory*> territories; // all territories in this map
+    vector<Continent*> continents; // all continents in this map
 
 
 };
+
+
+
+// Map loader
 
 class MapLoader{
 public:
