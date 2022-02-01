@@ -19,7 +19,7 @@ using namespace std;
 
 // Territory
 
-class Territory{
+class Territory {
 
 public:
     Territory(); //Default Constructor
@@ -31,24 +31,24 @@ public:
 
     //member functions
     int getTerritoryId();
-    string getTerritoryName(); 
+    string getTerritoryName();
     string getContientName(); //get name of continent that this territory belong to 
     int getNumberOfArmies();  //-----------------------------------------------------------------------------NOTE: do we need army for territory??
     vector<Territory*> getAdjacentTerritories(); //get adjacent territories
-    Player* getOwnerOfTerritory(); 
+    Player* getOwnerOfTerritory();
     void setNumberOfArmies(int num);
-    
-   
+
+
 
 private:
     int territoryId;
-    string territoryName; 
+    string territoryName;
     string continentName;
     int numberOfArmies; //-----------------------------------------------------------------------------NOTE: do we need army for territory??
     vector<Territory*> adjacentTerritories;  //Store adjacent territory pointers in vector. 
-    Player* ownerOfTerritory; 
+    Player* ownerOfTerritory;
 
- };
+};
 
 
 
@@ -57,13 +57,13 @@ private:
 // Continent
 
 
-class Continent{
+class Continent {
 public:
     Continent(); //default constructor
     Continent(int continentId, string continentName, int continentArmyValue, vector<Territory*> territories); //param constructor
-    Continent(Const Continent& continent); //copy constructor
+    Continent(const Continent& continent); //copy constructor
     ~Continent();
-    Continent& operator=(const Continent& continent ); // assignment operator
+    Continent& operator=(const Continent& continent); // assignment operator
     friend ostream& operator<<(ostream& output, const Continent& continent); //stream insertion operator 
 
 
@@ -73,11 +73,11 @@ public:
     int getContinentId();
     vector<Territory*> getTerritories(); // get all the territories belong to this continent
     int getContinentControlValue(); // get control value
- 
+
 
 private:
     int continentId;
-    string continentName; 
+    string continentName;
     int continentControlValue; // control value
     vector<Territory*> territories; // Territories that belong to this continent
 
@@ -87,7 +87,7 @@ private:
 
 // Map
 
-class Map{
+class Map {
 public:
     Map(); //default constructor
     Map(string mapName, vector<Territory*> territories, vector<Continent*> continents); //param constructor
@@ -101,7 +101,7 @@ public:
     vector<Territory*> getAllTerritories();
     vector<Continent*> getAllContinents();
     bool validate(); // check if map is valid
-    
+
 
 private:
     string mapName();
@@ -115,25 +115,25 @@ private:
 
 // Map loader
 
-class MapLoader{
+class MapLoader {
 public:
-// Default, Param, Copy, Assignment, Stream Insertions
+    // Default, Param, Copy, Assignment, Stream Insertions
     MapLoader();
     MapLoader(string FileName);
-    MapLoader(const MapLoader &copyML);
-    MapLoader &operator=(const MapLoader &AssignML);
-    friend ostream& operator << (ostream &out, const MapLoader&);
-    friend istream& operator >> (istream &in, MapLoader &ML);
+    MapLoader(const MapLoader& copyML);
+    MapLoader& operator=(const MapLoader& AssignML);
+    friend ostream& operator << (ostream& out, const MapLoader&);
+    friend istream& operator >> (istream& in, MapLoader& ML);
     string FileContents;
-        // These are suppos3ed to be used in operators but they never get displayed so i dont even know 
+    // These are suppos3ed to be used in operators but they never get displayed so i dont even know 
     string FileName;
     // Must delete reference to pointer if file is bad to avoid a mem leak
     Map* map;
- 
+
 
 };
 
-class Player{
+class Player {
 public:
     Player();
 }
