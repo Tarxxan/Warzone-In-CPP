@@ -1,33 +1,169 @@
 #include "Map.h"
-#include <fstream> // IOStream
+#include <iostream>
+#include <vector>
+#include <fstream> // file stream
 #include <string> // Needed for Getline method
 using namespace std;
 
 //----------------------------------------------------------------------------------------------------
 //-----------------------------Territory Class--------------------------------------------------------
 //----------------------------------------------------------------------------------------------------
-    Territory::Territory(int TerritoryID, std::string Name, int Territorysoldiers)
+
+    Territory::Territory()
     {
-       this-> TerritoryID=TerritoryID;
-       this->Name=Name;
-       this->TerritorySoldiers=Territorysoldiers;
-       // Do we need to init a player in here
-    };
-
-    Territory::Territory(const Territory &CopyT){
-        TerritoryID=CopyT.TerritoryID;
-        Name=CopyT.Name;
-        TerritorySoldiers=CopyT.TerritorySoldiers;
-        // Same issue with pointer idk if i even need this
-        //Player= CopyT.Player;
+        //do we need to define default constructor?
     }
 
-    Territory& Territory::operator=(const Territory &AssignT){
-    TerritoryID=AssignT.TerritoryID;
-    Name=AssignT.Name;
-    TerritorySoldiers = AssignT.TerritorySoldiers;
-    return *this;
+    Territory::Territory(int territoryId, string territoryName, string continentName, vector<Territory*> adjacentTerritories)
+    {
+        this->territoryId = territoryId;
+        this->territoryName = territoryName;
+        this->continentName = continentName;
+        this->adjacentTerritories = adjacentTerritories;
     }
+
+    Territory::Territory(const Territory& territory)
+    {
+        this->territoryId = territory.territoryId;
+        this->territoryName = territory.territoryName;
+        this->continentName = territory.continentName;
+        this->numberOfArmies = territory.numberOfArmies;
+        this->adjacentTerritories = territory.adjacentTerritories;
+    }
+
+    Territory& Territory::operator=(const Territory& territory)
+    {
+        this->territoryId = territory.territoryId;
+        this->territoryName = territory.territoryName;
+        this->continentName = territory.continentName;
+        this->numberOfArmies = territory.numberOfArmies;
+        this->adjacentTerritories = territory.adjacentTerritories;
+    }
+
+    ostream& operator<<(ostream& output, const Territory& territory)
+    {
+        output << "--Territory ID: " << territory.territoryId << endl;
+        output << "--Territory Name: " << territory.territoryName << endl;
+        output << "--Continent Name: " << territory.continentName << endl;
+        output << "--Number of armies: " << territory.numberOfArmies << endl;
+        output << "--adjacent territories: " << endls;
+        //I want to iterate through the vector adjacentTerritories and print out naems. //----------------------------TODO
+
+    }
+
+
+    int Territory::getTerritoryId()
+    {
+        return territoryId;
+    }
+
+    string Territory::getTerritoryName()
+    {
+        return territoryName;
+    }
+
+    string Territory::getContientName()
+    {
+        return continentName;
+    }
+
+    vector<Territory*> Territory::getAdjacentTerritories()
+    {
+        return adjacentTerritories; //this returns the vector
+    }
+    void Territory::setNumberOfArmies(int num)
+    {
+        numberOfArmies = num;
+    }
+    Player* Territory::getOwnerOfTerritory()
+    {
+        return ownerOfTerritory; // return the pointer to player object
+    }
+
+
+
+
+//----------------------------------------------------------------------------------------------------
+//-----------------------------Continent Class--------------------------------------------------------
+//----------------------------------------------------------------------------------------------------
+
+class Continent{
+public:
+    Continent(); //default constructor
+    Continent(int continentId, string continentName, int continentArmyValue, vector<Territory*> territories); //param constructor
+    Continent(Const Continent& continent); //copy constructor
+    ~Continent();
+    
+
+
+    //member functions
+    void addTerritory(Territory* territory); //store a pointer to territoriy that belongs to this continent
+    string getContientName();
+    int getContinentId();
+    vector<Territory*> getTerritories(); // get all the territories belong to this continent
+    int getContinentControlValue(); // get control value
+ 
+
+private:
+    int continentId;
+    string continentName; 
+    int continentControlValue; // control value
+    vector<Territory*> territories; // Territories that belong to this continent
+
+};
+
+
+
+Continent::Continent()
+{
+    //default constructor
+}
+
+//param constructor
+Continent::Continent(int continentId, string continentName, int continentArmyValue, vector<Territory*> territories)
+{
+    this->continentId = continentId;
+    this->continentName = continentName;
+    this->continentControlValue = continentControlValue;
+    this->territories = territories;
+}
+
+//copy constructor
+Continent::Continent(Const Continent& continent)
+{
+    this->continentId = Continent.continentId;
+    this->continentName = Continent.continentName;
+    this->continentControlValue = continent.continentArmyValue;
+    this->territories = continent.territories;
+}
+
+//destructor
+Continent::~Continent()
+{
+    //cout<< "-Continent destructor is called" <<endl;
+}
+
+
+//assignment operator
+Continent& Continent::operator=(const Continent& continent)
+{
+    this->continentId = Continent.continentId;
+    this->continentName = Continent.continentName;
+    this->continentControlValue = continent.continentArmyValue;
+    this->territories = continent.territories;
+}
+
+
+ //stream insertion operator 
+ostream& operator<<(ostream& output, const Continent& continent)
+{
+    output << "--Continet ID: " << continent.continentId << endl;
+    output << "--Continent Name: " << continent.continentName << endl;
+    output << "--Continent control value: " << continent.continentControlValue << endl;
+    output << "--Territories: " << endl;
+    // -------------------------------------------NOTE : want to print out all the territories belong to this continent
+}
+
 
 
 //----------------------------------------------------------------------------------------------------
