@@ -35,7 +35,7 @@ public:
     string getContientName(); //get name of continent that this territory belong to 
     int getNumberOfArmies();  //-----------------------------------------------------------------------------NOTE: do we need army for territory??
     vector<Territory*> getAdjacentTerritories(); //get adjacent territories
-    Player* getOwnerOfTerritory();
+    //Player* getOwnerOfTerritory();
     void setNumberOfArmies(int num);
 
 
@@ -46,7 +46,7 @@ private:
     string continentName;
     int numberOfArmies; //-----------------------------------------------------------------------------NOTE: do we need army for territory??
     vector<Territory*> adjacentTerritories;  //Store adjacent territory pointers in vector. 
-    Player* ownerOfTerritory;
+    //Player* ownerOfTerritory=nullptr;
 
 };
 
@@ -55,7 +55,6 @@ private:
 
 
 // Continent
-
 
 class Continent {
 public:
@@ -104,7 +103,7 @@ public:
 
 
 private:
-    string mapName();
+    string mapName;
     vector<Territory*> territories; // all territories in this map
     vector<Continent*> continents; // all continents in this map
 
@@ -133,19 +132,13 @@ public:
 
 };
 
-class Player {
-public:
-    Player();
-}
 
-
-// class Continent{
-// public:
-//     vector<Territory>* Countries;
-
-//  Continent();
+////temporary
+//class Player {
+//public:
+//    Player();
+//}
 
 
 
-// };
-;
+
