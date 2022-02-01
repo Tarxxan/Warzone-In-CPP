@@ -11,7 +11,7 @@ using namespace std;
 
 Territory::Territory()
 {
-    //do we need to define default constructor?
+    //do we need to define default constructor? 
 }
 
 Territory::Territory(int territoryId, string territoryName, string continentName, vector<Territory*> adjacentTerritories)
@@ -22,32 +22,42 @@ Territory::Territory(int territoryId, string territoryName, string continentName
     this->adjacentTerritories = adjacentTerritories;
 }
 
-Territory::Territory(const Territory& territory)
+Territory::Territory(const Territory& t)
 {
-    this->territoryId = territory.territoryId;
-    this->territoryName = territory.territoryName;
-    this->continentName = territory.continentName;
-    this->numberOfArmies = territory.numberOfArmies;
-    this->adjacentTerritories = territory.adjacentTerritories;
+    this->territoryId = t.territoryId;
+    this->territoryName = t.territoryName;
+    this->continentName = t.continentName;
+    this->numberOfArmies = t.numberOfArmies;
+    this->adjacentTerritories = t.adjacentTerritories;
 }
 
-Territory& Territory::operator=(const Territory& territory)
+Territory::~Territory()
 {
-    this->territoryId = territory.territoryId;
-    this->territoryName = territory.territoryName;
-    this->continentName = territory.continentName;
-    this->numberOfArmies = territory.numberOfArmies;
-    this->adjacentTerritories = territory.adjacentTerritories;
+    cout<< "~Territory destructor is called" <<endl;
+
 }
 
-ostream& operator<<(ostream& output, const Territory& territory)
+Territory& Territory::operator=(const Territory& t)
 {
-    output << "--Territory ID: " << territory.territoryId << endl;
-    output << "--Territory Name: " << territory.territoryName << endl;
-    output << "--Continent Name: " << territory.continentName << endl;
-    output << "--Number of armies: " << territory.numberOfArmies << endl;
+    this->territoryId = t.territoryId;
+    this->territoryName = t.territoryName;
+    this->continentName = t.continentName;
+    this->numberOfArmies = t.numberOfArmies;
+    this->adjacentTerritories = t.adjacentTerritories;
+
+    return *this;
+}
+
+ostream& operator<<(ostream& output, const Territory& t)
+{
+    output << "--Territory ID: " << t.territoryId << endl;
+    output << "--Territory Name: " << t.territoryName << endl;
+    output << "--Continent Name: " << t.continentName << endl;
+    output << "--Number of armies: " << t.numberOfArmies << endl;
     output << "--adjacent territories: " << endl;
     //I want to iterate through the vector adjacentTerritories and print out naems. //----------------------------TODO
+
+    return output;
 
 }
 
@@ -67,10 +77,16 @@ string Territory::getContientName()
     return continentName;
 }
 
+int Territory::getNumberOfArmies()
+{
+    return numberOfArmies;
+}
+
 vector<Territory*> Territory::getAdjacentTerritories()
 {
     return adjacentTerritories; //this returns the vector
 }
+
 void Territory::setNumberOfArmies(int num)
 {
     numberOfArmies = num;
@@ -105,39 +121,68 @@ Continent::Continent(int continentId, string continentName, int continentArmyVal
 }
 
 //copy constructor
-Continent::Continent(const Continent& continent)
+Continent::Continent(const Continent& c)
 {
-    this->continentId = continent.continentId;
-    this->continentName = continent.continentName;
-    this->continentControlValue = continent.continentControlValue;
-    this->territories = continent.territories;
+    this->continentId = c.continentId;
+    this->continentName = c.continentName;
+    this->continentControlValue = c.continentControlValue;
+    this->territories = c.territories;
 }
 
 //destructor
 Continent::~Continent()
 {
-    //cout<< "-Continent destructor is called" <<endl;
+    cout<< "~Continent destructor is called" <<endl;
 }
 
 
 //assignment operator
-Continent& Continent::operator=(const Continent& continent)
+Continent& Continent::operator=(const Continent& c)
 {
-    this->continentId = continent.continentId;
-    this->continentName = continent.continentName;
-    this->continentControlValue = continent.continentControlValue;
-    this->territories = continent.territories;
+    this->continentId = c.continentId;
+    this->continentName = c.continentName;
+    this->continentControlValue = c.continentControlValue;
+    this->territories = c.territories;
+
+    return *this;
+}
+
+void Continent::addTerritory(Territory* t)
+{
+    this->territories.push_back(t);
+}
+
+string Continent::getContientName()
+{
+    return continentName;
+}
+
+int Continent::getContinentId()
+{
+    return continentId;
+}
+
+vector<Territory*> Continent::getTerritories()
+{
+    return territories;
+}
+
+int Continent::getContinentControlValue()
+{
+    return continentControlValue;
 }
 
 
 //stream insertion operator 
-ostream& operator<<(ostream& output, const Continent& continent)
+ostream& operator<<(ostream& output, const Continent& c)
 {
-    output << "--Continet ID: " << continent.continentId << endl;
-    output << "--Continent Name: " << continent.continentName << endl;
-    output << "--Continent control value: " << continent.continentControlValue << endl;
+    output << "--Continet ID: " << c.continentId << endl;
+    output << "--Continent Name: " << c.continentName << endl;
+    output << "--Continent control value: " << c.continentControlValue << endl;
     output << "--Territories: " << endl;
     // -------------------------------------------NOTE : want to print out all the territories belong to this continent
+
+    return output;
 }
 
 
@@ -149,6 +194,55 @@ ostream& operator<<(ostream& output, const Continent& continent)
 //-----------------------------Map Class--------------------------------------------------------------
 //----------------------------------------------------------------------------------------------------
 
+
+//default constructor
+Map::Map()
+{}
+
+Map::Map(string mapName, vector<Territory*> territories, vector<Continent*> continents)
+{
+    this->mapName = mapName;
+    this->territories = territories;
+    this->continents = continents;
+}
+
+//copy constructor
+Map::Map(const Map& map)
+{
+    this->mapName = mapName;
+    this->territories = territories;
+    this->continents = continents;
+}
+
+//destructor
+Map::~Map()
+{
+    cout<< "~Map destructor is called" <<endl;
+
+}
+
+Map& Map::operator=(const Map& m)
+{
+    // TODO: insert return statement here
+    this->mapName = m.mapName;
+    this->continents = m.continents;
+    this->territories = m.territories;
+
+    return *this;
+}
+
+ostream& operator<<(ostream& output, const Map& m)
+{
+    output << "--Map Name: " << m.mapName << endl;
+    output << "--Territories: " << endl;
+    //TODO 
+    return output;
+}
+
+string Map::getMapName()
+{
+    return mapName;
+}
 
 
 
@@ -185,10 +279,11 @@ MapLoader& MapLoader::operator=(const MapLoader& AssignML) {
 //  MapLoader will actually be reading the file
 
 MapLoader::MapLoader(string FileName) {
-
+    vector<Continent*> Continents;
     ifstream in(FileName);
     string TempText = "";
 
+    int continentCount{ 0 };
     if (in.fail())
     {
         cout << " An Error has occured when reading from the file. Unexpected value or file error." << endl;
@@ -199,17 +294,67 @@ MapLoader::MapLoader(string FileName) {
 
     while (getline(in, TempText)) {
 
-        FileContents += TempText + "\n";
+        //General idea i dont think this exact thing works because once it finds the line with contients im not 
+        //sure if the file can continue getline inside.
+        if (TempText.find("[continents]"))
+        {
+            string TempContinents = "";
+            while (getline(in, TempContinents, ' ') && TempContinents.compare("\n") == 0) {
+                vector<Territory*> territories;
+                vector <string> tokens;
+                tokens.push_back(TempContinents);
+                Continent* c = new Continent(continentCount += 1, tokens[0], stoi(tokens[1]), territories);
+                // Push into continent vector from Map class or MapLoader class
+                Continents.push_back(c);
+            }
+        }
 
+        if (TempText.find("[borders]"))
+        {
+            string tempTerritory = "";
+            while (getline(in, tempTerritory, ' ') && tempTerritory.compare("\n") == 0) {
+                vector<Territory*> borders;
+                vector <string> tokens;
+                tokens.push_back(tempTerritory);
+
+                Territory* t = new Territory(stoi(tokens[0]), tokens[1], Continents.at(stoi(tokens.at(2)))->getContientName(), borders);
+                // Push into continent vector from Map class or MapLoader class
+                // access token[2]-1 vector of the continent class and then push into there  
+                //Continents.at(stoi(tokens.at(2))-1).territories.push_back(t);
+
+            }
+        }
+
+        if (TempText.find("[borderrs]"))
+        {
+            string tempBorders = "";
+            while (getline(in, tempBorders, ' ') && tempBorders.compare("\n") == 0) {
+                vector <string> tokens;
+                tokens.push_back(tempBorders);
+
+                for (int i = 1; i < tokens.size(); i++) {
+                    // i dont think its possible to find the correct territory from here we would need multiple loops to iterate over it until we found the proper territory id
+                    //we might need to assign these borders into a temp vector and then assign them afterwards when iterating over the territories or something
+                    // Continents.at(Territory.at(tokens.at(0)))                     )
+
+                    // }
+
+
+                }
+            }
+
+        }
+
+        in.close();
+        // Testing that we can display the file contents
+        this->FileContents = FileContents;
     }
 
-    in.close();
-    // Testing that we can display the file contents
-    this->FileContents = FileContents;
 }
-
 // IO Stream Operators for MapLoader
 //Figured out what they do just unsure what we will put in them.
+
+
 
 istream& operator >> (istream& in, MapLoader& ML)
 {
@@ -218,9 +363,24 @@ istream& operator >> (istream& in, MapLoader& ML)
     return in;
 }
 
-ostream& operator << (ostream& out, const MapLoader& ML)
-{
-    out << ML.FileContents << endl;
-    return out;
-}
+
+
+
+
+
+
+
+
+
+
+
+//temporary
+//int main()
+//{
+//    return 0;
+//}
+//
+
+
+
 
