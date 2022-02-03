@@ -6,12 +6,15 @@
 using namespace std;
 
 int main() {
-    std::cout << "Hello World!";
+    std::cout << "Hello World! \n" ;
     Order newOrder = Order("Bomb");
-    Order* ptOrder = &newOrder;
-
-    OrderList newList;
-    cout << newList;
+    cout << newOrder << endl;
+    newOrder.setEffect("Kills everybody");
+    cout << newOrder << endl;
+    newOrder.setDescription("Everyone is dead");
+    cout << newOrder << endl;
+    // OrderList newList;
+    // cout << newList;
     system("pause");
 }
 
