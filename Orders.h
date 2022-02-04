@@ -9,6 +9,7 @@ using namespace std;
 
 class Order{
     public:
+        Order();
         Order(string name);
         Order(const Order& order); //copy contstructor
         ~Order();
@@ -17,7 +18,9 @@ class Order{
         string getEffect();
         bool setDescription(string desc);
         bool setEffect(string effect); // once order is executed we will have to change the effect (so basically what happened)
-    private:
+        bool validate();
+        bool execute();
+    protected:
         string name;
         string effect;
         string description;
@@ -31,12 +34,64 @@ class Order{
 // Every order subclass must implement the execute() method that first validates the order,
 // and executes its action if it is valid, according to the order’s meaning and the player’s state.
 
-// class DeployOrder : Order{};
-// class AdvanceOrder : Order{};
-// class BombOrder : Order{};
-// class BlockadeOrder : Order{};
-// class AirliftOrder : Order{};
-// class NegotiateOrder : Order{};
+class DeployOrder : public Order{
+
+    public:
+        DeployOrder(int numOfArmies); // also take in territory/player info??
+        DeployOrder(const DeployOrder& deployOrder);
+        ~DeployOrder();
+        int armies;
+        virtual bool validate();
+        virtual bool execute();
+
+};
+class AdvanceOrder : public Order{
+
+    public:
+        AdvanceOrder();
+        ~AdvanceOrder();
+        virtual bool validate();
+        virtual bool execute();
+
+
+};
+class BombOrder : public Order{
+    public:
+        BombOrder();
+        ~BombOrder();
+        virtual bool validate();
+        virtual bool execute();
+       
+
+};
+class BlockadeOrder : public Order{
+
+    public:
+        BlockadeOrder();
+        ~BlockadeOrder();
+        virtual bool validate();
+        virtual bool execute();
+        
+
+};
+class AirliftOrder : public Order{
+    
+    public:
+        AirliftOrder();
+        ~AirliftOrder();
+        virtual bool validate();
+        virtual bool execute();
+      
+};
+class NegotiateOrder : public Order{
+
+    public:
+        NegotiateOrder();
+        ~NegotiateOrder();
+        virtual bool validate();
+        virtual bool execute();
+       
+};
 
 // class OrderList{
 //     public:

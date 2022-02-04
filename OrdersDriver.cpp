@@ -7,12 +7,13 @@ using namespace std;
 
 int main() {
     std::cout << "Hello World! \n" ;
-    Order newOrder = Order("Bomb");
+    DeployOrder newOrder = DeployOrder(5);
+    AdvanceOrder advance = AdvanceOrder();
     cout << newOrder << endl;
-    newOrder.setEffect("Kills everybody");
+    newOrder.validate();
+    newOrder.setDescription("Armies were deployed");
     cout << newOrder << endl;
-    newOrder.setDescription("Everyone is dead");
-    cout << newOrder << endl;
+    advance.validate();
     // OrderList newList;
     // cout << newList;
     system("pause");
