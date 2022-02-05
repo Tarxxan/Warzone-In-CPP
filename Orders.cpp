@@ -1,5 +1,6 @@
 #include "Orders.h"
-
+#include <iostream>
+#include <string>
 using namespace std;
 
 Order::Order(){};
@@ -33,15 +34,15 @@ bool Order::setDescription(string desc){
     this->description = desc;
     return true;
 }
-
-
+bool Order::validate(){return true;};
+bool Order::execute(){return false;}
 // order classes don't have a parametized constructor for now, but will need to add 
 // the params we need to complete that order (map information/armies?)
 
 DeployOrder::DeployOrder(int numOfArmies){
     this->armies = numOfArmies;
     this->effect = "Armies Deployed";
-    cout << "Deploy Order " << name << " created \n";
+    cout << "Deploy Order for " << numOfArmies<< " armies created \n";
 }
 DeployOrder::DeployOrder(const DeployOrder& DeployOrder){
    
@@ -54,11 +55,14 @@ bool DeployOrder::validate(){
     return true;
 }
 bool DeployOrder::execute(){
-    return false;
+    cout << "Deployment of " << this->armies << " armies executed\n";
+    return true;
 }
 
 
-AdvanceOrder::AdvanceOrder(){};
+AdvanceOrder::AdvanceOrder(){
+cout << "Advance Order Created\n";
+};
 AdvanceOrder::~AdvanceOrder(){
 }
 bool AdvanceOrder::validate(){
@@ -66,6 +70,7 @@ bool AdvanceOrder::validate(){
     return true;
 }
 bool AdvanceOrder::execute(){
+    cout << "Advance Order executed\n";
     return false;
 }
 
@@ -113,22 +118,36 @@ bool NegotiateOrder::execute(){
 // order. If the order has been executed, it should also output the effect of the order, stored as a
 // string.
 //ostream& operator<<(ostream& output, const Territory& t)
-std::ostream& operator<<(std::ostream &strm, const Order &o){
-    return strm << "Order: " << o.name <<"\n Effect: " << o.effect << "\nDescription: " << o.description << endl;
+std::ostream& operator<<(ostream& strm,Order& o){
+    return strm << "Order: " << o.getName() <<"\n Effect: " << o.getEffect() << endl;
 };
-// OrderList::OrderList(){};
-// std::ostream& operator<<(std::ostream &strm, const OrderList &ol) {
-//     // for (int i = 0; i < ol.orderList->size(); i++){
-// 	//        cout << "The values of the vector are: " << ol.orderList[i] << endl;
-// 	// }
+OrderList::OrderList(){cout << "Empty Order List\n";};
+// std::ostream& operator << (std::ostream& strm,const OrderList& ol) {
+//     for (int i = 0; i < ol.orderList->size(); i++){
+//             string temp = ol.orderList[i];
+// 	       cout << ol << endl;
+// 	}
+  
 //     return strm << "A(";
 // };
+void OrderList::push(Order* order){
+    // AdvanceOrder* temp = new AdvanceOrder();
+    // Order* temp2 = new Order();
+    orderList.push_back((AdvanceOrder*)order);
 
-// class OrderList{
-//     OrderList(){
-//         cout << "empty constructor";
-//     }
-//     void push(Order* order){
-//         cout << "push";
-//     }
-// };
+}
+void OrderList::getHead(){
+    
+    orderList.back()->validate();
+    orderList.front()->validate();
+    orderList.back()->execute();
+    orderList.front()->execute();
+}
+// // class OrderList{
+// //     OrderList(){
+// //         cout << "empty constructor";
+// //     }
+// //     void push(Order* order){
+// //         cout << "push";
+// //     }
+// // };

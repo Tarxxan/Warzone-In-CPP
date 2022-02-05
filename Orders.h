@@ -5,6 +5,7 @@
 #pragma once
 #include <vector>
 #include <iostream>
+#include <string>
 using namespace std;
 
 class Order{
@@ -18,13 +19,13 @@ class Order{
         string getEffect();
         bool setDescription(string desc);
         bool setEffect(string effect); // once order is executed we will have to change the effect (so basically what happened)
-        bool validate();
-        bool execute();
+        virtual bool validate();
+        virtual bool execute();
     protected:
         string name;
         string effect;
         string description;
-        friend ostream& operator << (ostream &out, const Order&);
+        friend ostream& operator << (ostream &out, const Order& );
         // do we need this?
         // friend istream& operator >> (istream &in, Order &o);
 };
@@ -41,8 +42,8 @@ class DeployOrder : public Order{
         DeployOrder(const DeployOrder& deployOrder);
         ~DeployOrder();
         int armies;
-        virtual bool validate();
-        virtual bool execute();
+        bool validate();
+        bool execute();
 
 };
 class AdvanceOrder : public Order{
@@ -50,8 +51,8 @@ class AdvanceOrder : public Order{
     public:
         AdvanceOrder();
         ~AdvanceOrder();
-        virtual bool validate();
-        virtual bool execute();
+        bool validate();
+        bool execute();
 
 
 };
@@ -59,8 +60,8 @@ class BombOrder : public Order{
     public:
         BombOrder();
         ~BombOrder();
-        virtual bool validate();
-        virtual bool execute();
+        bool validate();
+        bool execute();
        
 
 };
@@ -69,8 +70,8 @@ class BlockadeOrder : public Order{
     public:
         BlockadeOrder();
         ~BlockadeOrder();
-        virtual bool validate();
-        virtual bool execute();
+        bool validate();
+        bool execute();
         
 
 };
@@ -79,8 +80,8 @@ class AirliftOrder : public Order{
     public:
         AirliftOrder();
         ~AirliftOrder();
-        virtual bool validate();
-        virtual bool execute();
+        bool validate();
+        bool execute();
       
 };
 class NegotiateOrder : public Order{
@@ -88,40 +89,36 @@ class NegotiateOrder : public Order{
     public:
         NegotiateOrder();
         ~NegotiateOrder();
-        virtual bool validate();
-        virtual bool execute();
+        bool validate();
+        bool execute();
        
 };
 
-// class OrderList{
-//     public:
-//         // Empty Constructor
-//         OrderList();
-// //         // Copy contructor
-// //         OrderList(const OrderList &copyOL);
-// //         //Assignment operator 
-// //         OrderList &operator=(const OrderList &assignOL);
+class OrderList{
+    public:
+        // Empty Constructor
+        OrderList();
+        // Copy contructor
+        OrderList(const OrderList &copyOL);
+        //Assignment operator 
+        OrderList &operator=(const OrderList &assignOL);
         
         
-// //         // comparing pointers of order
-// //         bool remove(Order *order);
-// //         // So if True it will move up if false it will move down
-// //         bool move(Order *order, bool moveUp);
-
-// //         // This is a more use friendly methods for move which will call move
-// //         bool moveUp(Order *order);
-// //         bool moveDown(Order *order);
-// //         // Inserts an order at the end (as they supposed to)
-//         // void push(Order *order);
-
-
-
-//     private:
-//         // Streamline Operator
-//         friend ostream& operator << (ostream &out, const OrderList&);
-//         friend istream& operator >> (istream &in, OrderList &ol);
-//         vector <Order>* orderList;
-// };
+        // comparing pointers of order
+        bool remove(Order *order);
+        // So if True it will move up if false it will move down
+        bool move(Order *order, bool moveUp);
+        void getHead();
+        // This is a more use friendly methods for move which will call move
+        bool moveUp(Order *order);
+        bool moveDown(Order *order);
+        // Inserts an order at the end (as they supposed to)
+        void push(Order *order);
+        // Streamline Operator
+        friend std::ostream& operator << (ostream& out,const OrderList& ol);
+        friend std::istream& operator >> (istream& in, OrderList& ol);
+        vector <Order*> orderList;
+};
 
 
 
