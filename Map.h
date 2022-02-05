@@ -1,4 +1,4 @@
-// The Map class is implemented as a connected graph. The graph’s nodes represents a
+// The Map class is implemented as a connected graph. The graphï¿½s nodes represents a
 // territory (implemented as a Territory class). Edges between nodes represent adjacency
 // between territories
 // Continents are connected subgraphs. Each territory belongs to one and only one continent.
@@ -35,8 +35,10 @@ public:
     string getContientName(); //get name of continent that this territory belong to 
     int getNumberOfArmies();  //-----------------------------------------------------------------------------NOTE: do we need army for territory??
     vector<Territory*> getAdjacentTerritories(); //get adjacent territories
+    vector<Territory*> addAdjacentTerritories(Territory *t);
     //Player* getOwnerOfTerritory();
     void setNumberOfArmies(int num);
+
 
 
 
@@ -104,7 +106,7 @@ public:
 
 private:
     string mapName;
-    vector<Territory*> territories; // all territories in this map
+   // vector<Territory*> territories; // all territories in this map
     vector<Continent*> continents; // all continents in this map
 
 

@@ -87,6 +87,12 @@ vector<Territory*> Territory::getAdjacentTerritories()
     return adjacentTerritories; //this returns the vector
 }
 
+vector<Territory*> Territory::addAdjacentTerritories(Territory* t)
+
+{
+     this->adjacentTerritories.push_back(t);
+}
+
 void Territory::setNumberOfArmies(int num)
 {
     numberOfArmies = num;
@@ -112,7 +118,7 @@ Continent::Continent()
 }
 
 //param constructor
-Continent::Continent(int continentId, string continentName, int continentArmyValue, vector<Territory*> territories)
+Continent::Continent(int continentId, string continentName, int continentControlValue, vector<Territory*> territories)
 {
     this->continentId = continentId;
     this->continentName = continentName;
@@ -202,7 +208,7 @@ Map::Map()
 Map::Map(string mapName, vector<Territory*> territories, vector<Continent*> continents)
 {
     this->mapName = mapName;
-    this->territories = territories;
+  //  this->territories = territories;
     this->continents = continents;
 }
 
@@ -210,7 +216,7 @@ Map::Map(string mapName, vector<Territory*> territories, vector<Continent*> cont
 Map::Map(const Map& map)
 {
     this->mapName = mapName;
-    this->territories = territories;
+    //this->territories = territories;
     this->continents = continents;
 }
 
@@ -226,7 +232,7 @@ Map& Map::operator=(const Map& m)
     // TODO: insert return statement here
     this->mapName = m.mapName;
     this->continents = m.continents;
-    this->territories = m.territories;
+   // this->territories = m.territories;
 
     return *this;
 }
@@ -279,9 +285,11 @@ MapLoader& MapLoader::operator=(const MapLoader& AssignML) {
 //  MapLoader will actually be reading the file
 
 MapLoader::MapLoader(string FileName) {
+   
     vector<Continent*> Continents;
     ifstream in(FileName);
     string TempText = "";
+  
 
     int continentCount{ 0 };
     if (in.fail())
@@ -293,26 +301,32 @@ MapLoader::MapLoader(string FileName) {
     }
 
     while (getline(in, TempText)) {
-
+        cout << TempText <<endl;
+        FileContents += TempText+"\n";}
+        cout << FileContents << endl;
         //General idea i dont think this exact thing works because once it finds the line with contients im not 
         //sure if the file can continue getline inside.
-        if (TempText.find("[continents]"))
+        if (FileContents.find("[continents]"))
         {
+cout<< "IN conttt" << endl;
             string TempContinents = "";
-            while (getline(in, TempContinents, ' ') && TempContinents.compare("\n") == 0) {
+            // while (getline(, TempContinents, ' ')) {
                 vector<Territory*> territories;
                 vector <string> tokens;
                 tokens.push_back(TempContinents);
+                Continent* c2 = new Continent(continentCount += 1, "work", 1, territories);
                 Continent* c = new Continent(continentCount += 1, tokens[0], stoi(tokens[1]), territories);
                 // Push into continent vector from Map class or MapLoader class
-                Continents.push_back(c);
-            }
+                //Continents.push_back(c);
+                cout <<"print c"<< endl;
+          //  }
         }
 
-        if (TempText.find("[borders]"))
+        if (TempText.find("[countries]"))
         {
+            cout<< "IN Countries" << endl;
             string tempTerritory = "";
-            while (getline(in, tempTerritory, ' ') && tempTerritory.compare("\n") == 0) {
+            while (getline(in, tempTerritory, ' ') && tempTerritory.compare("\n") != 0) {
                 vector<Territory*> borders;
                 vector <string> tokens;
                 tokens.push_back(tempTerritory);
@@ -320,19 +334,28 @@ MapLoader::MapLoader(string FileName) {
                 Territory* t = new Territory(stoi(tokens[0]), tokens[1], Continents.at(stoi(tokens.at(2)))->getContientName(), borders);
                 // Push into continent vector from Map class or MapLoader class
                 // access token[2]-1 vector of the continent class and then push into there  
-                //Continents.at(stoi(tokens.at(2))-1).territories.push_back(t);
+                //*Continents.at(stoi(tokens.at(2))-1).territories.push_back(t);
+               Continents.at(stoi(tokens.at(2))-1)->addTerritory(t);
 
             }
         }
 
-        if (TempText.find("[borderrs]"))
+        if (TempText.find("[borders]"))
         {
             string tempBorders = "";
             while (getline(in, tempBorders, ' ') && tempBorders.compare("\n") == 0) {
                 vector <string> tokens;
                 tokens.push_back(tempBorders);
 
-                for (int i = 1; i < tokens.size(); i++) {
+      
+                for (int i = 0; i < Continents.size(); i++) {
+                            cout<< *Continents.at(i) << endl;
+                // for (int j=0; j< Continents.at(i).getTerritories().size(); j++){
+                //     if(temp.getTerritories().at(j)->getTerritoryId()==tempBorders[0]){
+                //         temp.getTerritories().at(j)->getAdjacentTerritories()push_back()
+                //     }
+                    
+                //     }
                     // i dont think its possible to find the correct territory from here we would need multiple loops to iterate over it until we found the proper territory id
                     //we might need to assign these borders into a temp vector and then assign them afterwards when iterating over the territories or something
                     // Continents.at(Territory.at(tokens.at(0)))                     )
@@ -350,11 +373,9 @@ MapLoader::MapLoader(string FileName) {
         this->FileContents = FileContents;
     }
 
-}
+
 // IO Stream Operators for MapLoader
 //Figured out what they do just unsure what we will put in them.
-
-
 
 istream& operator >> (istream& in, MapLoader& ML)
 {
@@ -363,23 +384,30 @@ istream& operator >> (istream& in, MapLoader& ML)
     return in;
 }
 
-
-
-
-
-
-
-
-
-
-
-
 //temporary
-//int main()
-//{
-//    return 0;
-//}
-//
+int main()
+{
+    vector<Continent*> Continents;
+    vector<Territory*> territories;
+    vector<Territory*> borders;
+    Continent* c2 = new Continent(1, "work", 1, territories);
+    Continents.push_back(c2);
+    Territory* t2= new Territory(1,"canada", c2->getContientName(), borders);
+    Territory* t3= new Territory(2,"USA", c2->getContientName(), borders);
+    Continents.at(0)->addTerritory(t2);
+    
+    // Works to print Continents
+    cout <<* Continents.at(0)->getTerritories().at(0)<< endl;
+    Continents.at(0)->getTerritories().at(0)->addAdjacentTerritories(t3);    
+    cout <<* Continents.at(0)->getTerritories().at(0)->getAdjacentTerritories().at(0)<< endl;
+   // cout << *Continents.at(0)<< endl;
+    
+ //   cout <<*c2->getTerritories().at(0)<< endl;
+
+    //MapLoader ml("bigeurope.map");
+    return 0;
+}
+
 
 
 
