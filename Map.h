@@ -35,7 +35,7 @@ public:
     string getContientName(); //get name of continent that this territory belong to 
     int getNumberOfArmies();  //-----------------------------------------------------------------------------NOTE: do we need army for territory??
     vector<Territory*> getAdjacentTerritories(); //get adjacent territories
-    vector<Territory*> addAdjacentTerritories(Territory *t);
+    void addAdjacentTerritories(Territory *t);
     //Player* getOwnerOfTerritory();
     void setNumberOfArmies(int num);
 
@@ -131,6 +131,7 @@ public:
     // Must delete reference to pointer if file is bad to avoid a mem leak
     Map* map;
 
+    void SplitString(string s, vector<string> &v);
 
 };
 
