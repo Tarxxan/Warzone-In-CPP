@@ -131,7 +131,6 @@ std::ostream& operator << (std::ostream& strm,const OrderList& ol) {
 void OrderList::push(Order* order){
     orderList.push_back(order);
 }
-
 int OrderList::remove(Order *actual){
     int index = 0;
     for(Order* order : this->orderList){
