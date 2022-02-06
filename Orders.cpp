@@ -36,12 +36,19 @@ bool Order::setDescription(string desc){
 }
 bool Order::validate(){return true;};
 bool Order::execute(){return false;}
+//ostream& operator<<(ostream& output, const Territory& t)
+std::ostream& operator<<(ostream& strm,Order& o){
+    // return strm << "Order: " << o.getName() <<"\n Effect: " << o.getEffect() << endl;
+    return strm << "Order: " << o.getEffect() << endl;
+};
 // order classes don't have a parametized constructor for now, but will need to add 
 // the params we need to complete that order (map information/armies?)
 
 DeployOrder::DeployOrder(int numOfArmies){
+    this->name = "Deploy";
+    this->description = "Armies are being deployed";
+    this->effect = to_string(numOfArmies) + " solders are being deploeyd to territory_name by player_name"; // TODO : Add in the territory name
     this->armies = numOfArmies;
-    this->effect = "Armies Deployed";
     cout << "Deploy Order for " << numOfArmies<< " armies created \n";
 }
 DeployOrder::DeployOrder(const DeployOrder& DeployOrder){
@@ -61,6 +68,7 @@ bool DeployOrder::execute(){
 
 
 AdvanceOrder::AdvanceOrder(){
+    this->name = "Advance";
 cout << "Advance Order Created\n";
 };
 AdvanceOrder::~AdvanceOrder(){
@@ -112,42 +120,59 @@ bool NegotiateOrder::validate(){
 bool NegotiateOrder::execute(){
     return false;
 }
-
-// once order is executed we will have to change the effect (so basically what happened)
-// The Order class implements a stream insertion operator that outputs a string describing the
-// order. If the order has been executed, it should also output the effect of the order, stored as a
-// string.
-//ostream& operator<<(ostream& output, const Territory& t)
-std::ostream& operator<<(ostream& strm,Order& o){
-    return strm << "Order: " << o.getName() <<"\n Effect: " << o.getEffect() << endl;
-};
-OrderList::OrderList(){cout << "Empty Order List\n";};
-// std::ostream& operator << (std::ostream& strm,const OrderList& ol) {
-//     for (int i = 0; i < ol.orderList->size(); i++){
-//             string temp = ol.orderList[i];
-// 	       cout << ol << endl;
-// 	}
+OrderList::OrderList(){cout << "Created an empty order list\n";};
+std::ostream& operator << (std::ostream& strm,const OrderList& ol) {
+    for(Order* order : ol.orderList){
+        cout << *order << endl;
+    }
   
-//     return strm << "A(";
-// };
+    return strm << "";
+};
 void OrderList::push(Order* order){
-    // AdvanceOrder* temp = new AdvanceOrder();
-    // Order* temp2 = new Order();
     orderList.push_back(order);
-
 }
-void OrderList::getHead(){
-    
-    orderList.back()->validate();
-    orderList.front()->validate();
-    orderList.back()->execute();
-    orderList.front()->execute();
+int OrderList::remove(Order *actual){
+    int index = 0;
+    for(Order* order : this->orderList){
+        if(order == actual){
+            auto posIt = this->orderList.begin()+index;
+            this->orderList.erase(posIt); // will delete the thing we are looking for
+            return index;
+        }
+        index++;
+    }
+    return -1;
 }
-// // class OrderList{
-// //     OrderList(){
-// //         cout << "empty constructor";
-// //     }
-// //     void push(Order* order){
-// //         cout << "push";
-// //     }
-// // };
+// So if True it will move up if false it will move down
+bool OrderList::move(Order *order, bool moveUp){
+    int index = remove(order);
+    if (index == -1){
+        cout << "Could not find the element in the list" <<endl;
+        return false;
+    }
+    // If we try to move the first up
+    if (index == 0 && (moveUp || this->orderList.size() == 0)){
+        this->orderList.insert(this->orderList.begin(), order);
+        return true;
+    }
+    //if we try to move the last one down
+    if (index == this->orderList.size() && !moveUp){
+        push(order);
+        return true;
+    }
+    if (moveUp){
+        this->orderList.insert(this->orderList.begin()+index-1, order);
+    }
+    else{
+        this->orderList.insert(this->orderList.begin()+index+1, order);
+    }
+    return true;
+}
+// TODO: ask TA if we can do this
+// This is a more use friendly methods for move which will call move
+bool OrderList::moveUp(Order *order){
+    return move(order, true);
+}
+bool OrderList::moveDown(Order *order){
+    return move(order, false);
+}
