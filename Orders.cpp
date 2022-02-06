@@ -133,7 +133,7 @@ OrderList::OrderList(){cout << "Empty Order List\n";};
 void OrderList::push(Order* order){
     // AdvanceOrder* temp = new AdvanceOrder();
     // Order* temp2 = new Order();
-    orderList.push_back((AdvanceOrder*)order);
+    orderList.push_back(order);
 
 }
 void OrderList::getHead(){
