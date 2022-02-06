@@ -8,82 +8,88 @@ using namespace std;
 class Order{
     public:
         Order();
-        Order(string name);
-        Order(const Order& order); //copy contstructor
+        Order(const Order& order);
         ~Order();
-        Order& operator=(const Order& order);  //Assignment operator // It can be used to create an object just like the copy constructor
-        string getName();
-        string getEffect();
-        bool setDescription(string desc);
-        bool setEffect(string effect); // once order is executed we will have to change the effect (so basically what happened)
+        Order& operator=(const Order& order);
+        string getName();           // For friends methods
+        string getDescription();    // For friends methods
+        string getEffect();         // For friends methods
         virtual bool validate(); // For suborders
-        virtual bool execute();
+        virtual bool execute(); // For suborders
     protected:
+        // Player* player;
         string name;
         string effect;
         string description;
         friend ostream& operator << (ostream &out, const Order& );
-        // do we need this?
-        // friend istream& operator >> (istream &in, Order &o);
 };
 
 class DeployOrder : public Order{
-
     public:
-        DeployOrder(int numOfArmies); // also take in territory/player info?? Yes
+        DeployOrder(int numOfArmies); // also take in territory/player info
         DeployOrder(const DeployOrder& deployOrder);
         ~DeployOrder();
-        int armies;
         bool validate();
         bool execute(); // execute will call validate method before executing
-
+    private:
+        int armies;
+        // Territory* destination;
 };
 class AdvanceOrder : public Order{
-
     public:
-        AdvanceOrder();
+        AdvanceOrder(int armies); // also should take source and destination
+        AdvanceOrder(const AdvanceOrder& advanceOrder);
         ~AdvanceOrder();
         bool validate();
         bool execute();
-
-
+    private:
+        int armies;
+        // Territory* source;
+        // Territory* destination;
 };
 class BombOrder : public Order{
     public:
-        BombOrder();
+        BombOrder(); // TODO should receive destination and player
+        BombOrder(const BombOrder& bombOrder);
         ~BombOrder();
         bool validate();
         bool execute();
-       
-
+    // private:
+    //     Territory * destination;
 };
 class BlockadeOrder : public Order{
-
     public:
-        BlockadeOrder();
+        BlockadeOrder(); // TODO will actually receive player and territory
+        BlockadeOrder(const BlockadeOrder& blockadeOrder);
         ~BlockadeOrder();
         bool validate();
         bool execute();
-        
-
+    // private:
+    //     Territory* destination;
 };
 class AirliftOrder : public Order{
-    
     public:
-        AirliftOrder();
+        AirliftOrder(int army); // TODO will actually receive player, source and destination
+        AirliftOrder(const AirliftOrder& AirliftOrder);
         ~AirliftOrder();
         bool validate();
         bool execute();
-      
+    private:
+        int armies;
+        // Territory* source;
+        // Territory* destination;
 };
 class NegotiateOrder : public Order{
 
     public:
-        NegotiateOrder();
+        NegotiateOrder(); // TODO should receive two players
+        NegotiateOrder(const NegotiateOrder& NegotiateOrder);
         ~NegotiateOrder();
         bool validate();
         bool execute();
-       
+    // private:
+    //     Player* source;
+    //     Player* destination;  
 };
 
 class OrderList{
