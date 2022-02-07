@@ -23,7 +23,7 @@ class Territory {
 
 public:
     Territory(); //Default Constructor
-    Territory(int territoryId, string territoryName, string continentName, vector<Territory*> adjacentTerritories); //Param constructor
+    Territory(int territoryId, string territoryName, string continentName,int numberOfArmies ,vector<Territory*> adjacentTerritories); //Param constructor
     Territory(const Territory& territory); //copy contstructor
     ~Territory();
     Territory& operator=(const Territory& territory);  //Assignment operator // It can be used to create an object just like the copy constructor
@@ -101,7 +101,9 @@ public:
     bool validate(); // check if map is valid
     Territory* findTerritory(int id);
     bool oneContinent();
-
+    bool connectedSubgraphs();
+    bool connectedGraph();
+    bool checkBothWays(Territory *t, int tID);
 private:
     string mapName;
    // vector<Territory*> territories; // all territories in this map

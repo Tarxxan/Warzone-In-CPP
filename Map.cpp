@@ -15,11 +15,12 @@ Territory::Territory()
     //do we need to define default constructor? 
 }
 
-Territory::Territory(int territoryId, string territoryName, string continentName, vector<Territory*> adjacentTerritories)
+Territory::Territory(int territoryId, string territoryName, string continentName,int numberOfArmies, vector<Territory*> adjacentTerritories)
 {
     this->territoryId = territoryId;
     this->territoryName = territoryName;
     this->continentName = continentName;
+    this->numberOfArmies=numberOfArmies;
     this->adjacentTerritories = adjacentTerritories;
 }
 
@@ -272,14 +273,87 @@ Territory* Map::findTerritory(int id){
  bool Map::validate(){
      int value=oneContinent();
      if(value!=1){
-     cerr <<" This map has a Territory belonging to more than one continent."<<endl;
-     return false;
+        cerr <<" This map has a Territory belonging to more than one continent."<<endl;
+        return false;
+     }
+    value=connectedSubgraphs();
+    if(value!=1){
+        cerr <<" This map has unconnected territories within a continent"<<endl;
+        return false;
      }
 
-     cout<<"Next check";
+     value=connectedGraph();
+     if(value!=1){
+        cerr <<" This maps Continents aren't connected"<<endl;
+        return false;
+     }
+    
+     cout << "This is a valid map! Let's get to the game!";
      return true;
  }
 
+bool Map::checkBothWays(Territory *t, int tID ){
+    for(Territory *adj: t->getAdjacentTerritory()){
+        // cout<<adj->getTerritoryId() <<endl;
+        // cout <<"tID: "<< tID <<endl;
+        if(adj->getTerritoryId()==tID){
+            return true;
+        }
+    }
+return false;
+
+}
+
+bool Map::connectedSubgraphs(){
+std::map<int,int> continentTerritories;
+
+for(Continent *c: this->continents){ 
+    int mapsize=c->getTerritories().size();
+    for(Territory *t: c->getTerritories()){
+        //cout <<"Territory "<< t->getTerritoryId() <<endl;
+        for(Territory *adj: t->getAdjacentTerritory()){
+            //cout <<"adjacent "<< adj->getTerritoryId() <<endl;
+            if(adj->getContinentName().compare(c->getContinentName())==0)
+            {   
+                if(checkBothWays(adj,t->getTerritoryId())){
+                    continentTerritories.insert({adj->getTerritoryId(),1});
+                }
+                else
+                    return false;
+            }
+        }
+    }
+
+    if(continentTerritories.size()!=mapsize){
+        return false;
+    }
+    continentTerritories.clear();
+}
+
+return true;
+}
+
+bool Map::connectedGraph(){
+
+std::map<string,int> mapContinents;
+int mapsize=this->continents.size();
+for(Continent *c: this->continents){ 
+    for(Territory *t: c->getTerritories()){
+        for(Territory *adj: t->getAdjacentTerritory()){
+            if(adj->getContinentName().compare(c->getContinentName())!=0){
+                mapContinents.insert({adj->getContinentName(),1});
+            }
+        }
+    }
+}
+    if(mapContinents.size()!=mapsize){
+        return false;
+    }
+    mapContinents.clear();
+
+
+return true;
+}
 
 bool Map::oneContinent(){
 
@@ -290,10 +364,10 @@ bool Map::oneContinent(){
         } 
     }
     //Uncomment to see if a country belongs to more than one continent.
-   //oneContinent[1].push_back(155);
+  // oneContinent[1].push_back(155);
    for(int i=0; i< oneContinent.size();i++){
         for(int j=0; j< oneContinent[i].size();j++){
-           //cout<< oneContinent[i].size() << endl;
+         //  cout<< oneContinent[i].size() << endl;
             if(oneContinent[i].size()>1){
                 return false;
             }
@@ -303,6 +377,7 @@ bool Map::oneContinent(){
    return true; 
     
 }
+
 
 
 //----------------------------------------------------------------------------------------------------
@@ -404,7 +479,7 @@ MapLoader::MapLoader(string FileName) {
     for(int i=0;i<territoryTokens.size();i++){
         SplitString(territoryTokens[i],results);
         vector<Territory*> adjacentTerritories;
-        Territory* t= new Territory(stoi(results[0]),results[1],continents.at(stoi(results[2])-1)->getContinentName(), adjacentTerritories);   
+        Territory* t= new Territory(stoi(results[0]),results[1],continents.at(stoi(results[2])-1)->getContinentName(),0,adjacentTerritories);   
         continents.at(stoi(results[2])-1)->addTerritory(t);
         results.clear();
     }
@@ -436,11 +511,13 @@ istream& operator >> (istream& in, MapLoader& ML)
 //temporary
 int main()
 {
-    MapLoader ml("bigeurope.map");
+    MapLoader ml("bigeuropeBADContinents.map");
     
-   // cout <<*ml.map->getAllContinents().at(1)->getTerritories().at(4);
-   // cout<< ml.map->oneContinent();
-    cout << ml.map->validate();
+    // cout <<*ml.map->getAllContinents().at(1)->getTerritories().at(1);
+    //cout<< ml.map->oneContinent();
+    //cout<< ml.map->connectedSubgraphs();
+    // ml.map->connectedGraph();
+    ml.map->validate();
     return 0;
 }
 
