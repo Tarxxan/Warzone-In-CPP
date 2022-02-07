@@ -7,15 +7,10 @@
 using namespace std;
 
 int main() {
-    // AdvanceOrder* adv = new AdvanceOrder();
-    DeployOrder* dep = new DeployOrder(1);
-    DeployOrder* dep1 = new DeployOrder(2);
-    DeployOrder* dep2 = new DeployOrder(3);
-    // cout << newOrder << endl;
-    // newOrder.validate();
-    // newOrder.setDescription("Armies were deployed");
-    // cout << newOrder << endl;
-    // advance.validate();
+    // TODO: Add each of the order type and I guess some validations
+    AirliftOrder* dep = new AirliftOrder(1);
+    AirliftOrder* dep1 = new AirliftOrder(2);
+    AirliftOrder* dep2 = new AirliftOrder(3);
     OrderList newList;
     cout << "initial list" << endl;
     newList.push(dep);
