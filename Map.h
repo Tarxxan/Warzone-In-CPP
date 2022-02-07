@@ -32,14 +32,12 @@ public:
     //member functions
     int getTerritoryId();
     string getTerritoryName();
-    string getContientName(); //get name of continent that this territory belong to 
+    string getContinentName(); //get name of continent that this territory belong to 
     int getNumberOfArmies();  //-----------------------------------------------------------------------------NOTE: do we need army for territory??
-    vector<Territory*> getAdjacentTerritories(); //get adjacent territories
-    void addAdjacentTerritories(Territory *t);
+    vector<Territory*> getAdjacentTerritory(); //get adjacent territories
+    void addAdjacentTerritory(Territory *t);
     //Player* getOwnerOfTerritory();
     void setNumberOfArmies(int num);
-
-
 
 
 private:
@@ -70,11 +68,10 @@ public:
 
     //member functions
     void addTerritory(Territory* territory); //store a pointer to territoriy that belongs to this continent
-    string getContientName();
+    string getContinentName();
     int getContinentId();
     vector<Territory*> getTerritories(); // get all the territories belong to this continent
     int getContinentControlValue(); // get control value
-
 
 private:
     int continentId;
@@ -102,7 +99,8 @@ public:
     vector<Territory*> getAllTerritories();
     vector<Continent*> getAllContinents();
     bool validate(); // check if map is valid
-
+    Territory* findTerritory(int id);
+    bool oneContinent();
 
 private:
     string mapName;
@@ -130,9 +128,7 @@ public:
     string FileName;
     // Must delete reference to pointer if file is bad to avoid a mem leak
     Map* map;
-
     void SplitString(string s, vector<string> &v);
-
 };
 
 
