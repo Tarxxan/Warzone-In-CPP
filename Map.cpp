@@ -56,7 +56,7 @@ ostream& operator<<(ostream& output, const Territory& t)
     output << "--Territory Name: " << t.territoryName << endl;
     output << "--Continent Name: " << t.continentName << endl;
     output << "--Number of armies: " << t.numberOfArmies << endl;
-    output << "--adjacent territories: ";
+    output << "--Adjacent territories: ";
 
     for (Territory* t : t.adjacentTerritories) 
     {     
