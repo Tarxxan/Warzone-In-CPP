@@ -23,7 +23,7 @@ class Territory {
 
 public:
     Territory(); //Default Constructor
-    Territory(int territoryId, string territoryName, string continentName,int numberOfArmies ,vector<Territory*> adjacentTerritories); //Param constructor
+    Territory(int territoryId, string territoryName, string continentName, int numberOfArmies, vector<Territory*> adjacentTerritories); //Param constructor
     Territory(const Territory& territory); //copy contstructor
     ~Territory();
     Territory& operator=(const Territory& territory);  //Assignment operator // It can be used to create an object just like the copy constructor
@@ -33,9 +33,9 @@ public:
     int getTerritoryId();
     string getTerritoryName();
     string getContinentName(); //get name of continent that this territory belong to 
-    int getNumberOfArmies();  //-----------------------------------------------------------------------------NOTE: do we need army for territory??
+    int getNumberOfArmies();  //total number of arimes currently on that territory
     vector<Territory*> getAdjacentTerritory(); //get adjacent territories
-    void addAdjacentTerritory(Territory *t);
+    void addAdjacentTerritory(Territory* t);
     //Player* getOwnerOfTerritory();
     void setNumberOfArmies(int num);
 
@@ -44,7 +44,7 @@ private:
     int territoryId;
     string territoryName;
     string continentName;
-    int numberOfArmies; //-----------------------------------------------------------------------------NOTE: do we need army for territory??
+    int numberOfArmies;
     vector<Territory*> adjacentTerritories;  //Store adjacent territory pointers in vector. 
     //Player* ownerOfTerritory=nullptr;
 
@@ -76,7 +76,7 @@ public:
 private:
     int continentId;
     string continentName;
-    int continentControlValue; // control value
+    int continentControlValue; // control value // Player that con
     vector<Territory*> territories; // Territories that belong to this continent
 
 };
@@ -96,17 +96,17 @@ public:
 
     //member functons
     string getMapName();
-    vector<Territory*> getAllTerritories();
+    //vector<Territory*> getAllTerritories();
     vector<Continent*> getAllContinents();
     bool validate(); // check if map is valid
     Territory* findTerritory(int id);
     bool oneContinent();
     bool connectedSubgraphs();
     bool connectedGraph();
-    bool checkBothWays(Territory *t, int tID);
+    bool checkBothWays(Territory* t, int tID);
 private:
     string mapName;
-   // vector<Territory*> territories; // all territories in this map
+    // vector<Territory*> territories; // all territories in this map
     vector<Continent*> continents; // all continents in this map
 
 
@@ -130,7 +130,7 @@ public:
     string FileName;
     // Must delete reference to pointer if file is bad to avoid a mem leak
     Map* map;
-    void SplitString(string s, vector<string> &v);
+    void SplitString(string s, vector<string>& v);
 };
 
 
