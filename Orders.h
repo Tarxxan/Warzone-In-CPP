@@ -1,10 +1,11 @@
 #pragma once
+#include "Map.h"
+#include "Player.h"
+#include "Map.h"
 #include <vector>
 #include <iostream>
 #include <string>
 using namespace std;
-
-// TODO: Will have to add player reference as they all will need Player info to validate and do the actions
 class Order{
     public:
         Order();
@@ -14,10 +15,11 @@ class Order{
         string getName();           // For friends methods
         string getDescription();    // For friends methods
         string getEffect();         // For friends methods
+        Player* getPlayer();         // For friends methods
         virtual bool validate(); // For suborders
         virtual bool execute(); // For suborders
     protected:
-        // Player* player;
+        Player* player;
         string name;
         string effect;
         string description;
@@ -26,70 +28,68 @@ class Order{
 
 class DeployOrder : public Order{
     public:
-        DeployOrder(int numOfArmies); // also take in territory/player info
+        DeployOrder(Player* player, int numOfArmies, Territory* destination);
         DeployOrder(const DeployOrder& deployOrder);
         ~DeployOrder();
         bool validate();
         bool execute(); // execute will call validate method before executing
     private:
         int armies;
-        // Territory* destination;
+        Territory* destination;
 };
 class AdvanceOrder : public Order{
     public:
-        AdvanceOrder(int armies); // also should take source and destination
-        AdvanceOrder(const AdvanceOrder& advanceOrder);
+        AdvanceOrder(Player* player, int armies, Territory* source, Territory* destination);
         ~AdvanceOrder();
         bool validate();
         bool execute();
     private:
         int armies;
-        // Territory* source;
-        // Territory* destination;
+        Territory* source;
+        Territory* destination;
 };
 class BombOrder : public Order{
     public:
-        BombOrder(); // TODO should receive destination and player
+        BombOrder(Player* player, Territory* destination);
         BombOrder(const BombOrder& bombOrder);
         ~BombOrder();
         bool validate();
         bool execute();
-    // private:
-    //     Territory * destination;
+    private:
+        Territory * destination;
 };
 class BlockadeOrder : public Order{
     public:
-        BlockadeOrder(); // TODO will actually receive player and territory
+        BlockadeOrder(Player* player, Territory* destination);
         BlockadeOrder(const BlockadeOrder& blockadeOrder);
         ~BlockadeOrder();
         bool validate();
         bool execute();
-    // private:
-    //     Territory* destination;
+    private:
+        Territory* destination;
 };
 class AirliftOrder : public Order{
     public:
-        AirliftOrder(int army); // TODO will actually receive player, source and destination
+        AirliftOrder(Player* player, int army, Territory* source, Territory* destination); 
         AirliftOrder(const AirliftOrder& AirliftOrder);
         ~AirliftOrder();
         bool validate();
         bool execute();
     private:
         int armies;
-        // Territory* source;
-        // Territory* destination;
+        Territory* source;
+        Territory* destination;
 };
 class NegotiateOrder : public Order{
 
     public:
-        NegotiateOrder(); // TODO should receive two players
+        NegotiateOrder(Player* player, Player* player2);
         NegotiateOrder(const NegotiateOrder& NegotiateOrder);
         ~NegotiateOrder();
         bool validate();
         bool execute();
-    // private:
-    //     Player* source;
-    //     Player* destination;  
+    private:
+        Player* second;  
 };
 
 class OrderList{

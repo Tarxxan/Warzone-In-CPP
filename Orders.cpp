@@ -1,19 +1,22 @@
 #include "Orders.h"
+#include "Player.h"
 #include <iostream>
 #include <string>
 using namespace std;
-
+// TODO: ALl the validate methods & description & effect once player is setup
 Order::Order(){};
 Order::Order(const Order& order){
     this->name = order.name;
     this->description = order.description;
     this->effect = order.effect;
+    this->player = order.player;
 }
 Order::~Order(){}
 Order& Order::operator=(const Order& o){
     this->name = o.name;
     this->description = o.description;
     this->effect = o.effect;
+    this->player = o.player;
     return *this;
 }
 //Assignment operator // It can be used to create an object just like the copy constructor
@@ -26,24 +29,29 @@ string Order::getDescription(){
 string Order::getEffect(){
     return this->effect;
 }
+Player* Order::getPlayer(){
+    return this->player;
+}
 bool Order::validate(){return true;}
-bool Order::execute(){return false;}
-//ostream& operator<<(ostream& output, const Territory& t)
+bool Order::execute(){return true;}
 std::ostream& operator<<(ostream& strm,Order& o){
     return strm << "Order: " << o.getDescription() << o.getEffect();
 }
 
-// TODO: Add player & territory
-DeployOrder::DeployOrder(int numOfArmies){
+DeployOrder::DeployOrder(Player* player, int numOfArmies, Territory* destination){
     this->name = "Deploy";
-    this->description = "Deploy " + to_string(numOfArmies) + " solders to territoty_name";
+    this->description = "Deploy " + to_string(numOfArmies) + " solders to " + destination->getTerritoryName();
     this->armies = numOfArmies;
+    this->player = player;
+    this->destination = destination;
 }
 DeployOrder::DeployOrder(const DeployOrder& deployOrder){
     this->name = deployOrder.name;
     this->description = deployOrder.description;
     this->effect = deployOrder.effect;
     this->armies = deployOrder.armies;
+    this->player = deployOrder.player;
+    this->destination = deployOrder.destination;
 }
 DeployOrder::~DeployOrder(){}
 // The assignment operator doesnt work for some reason TOASK:
@@ -52,6 +60,8 @@ DeployOrder::~DeployOrder(){}
 //     this->description = dOrder.description;
 //     this->effect = dOrder.effect;
 //     this->armies = dOrder.armies;
+//     this->player = dOrder.player;
+//     this->destination = dOrder.destination;
 //     return *this;
 // }
 bool DeployOrder::validate(){
@@ -61,22 +71,30 @@ bool DeployOrder::validate(){
 }
 bool DeployOrder::execute(){
     if (validate()){
-        this->effect = "\nEffect: "+to_string(this->armies)+" solders are being deployed on territory_name";
+        this->effect = "\nEffect: "+to_string(this->armies)+" solders are being deployed on " 
+                        + this->destination->getTerritoryName();
         return true;
     }
     return false;
 }
 
-AdvanceOrder::AdvanceOrder(int armies){
+AdvanceOrder::AdvanceOrder(Player* player, int armies, Territory* source, Territory* destination){
     this->name = "Advance";
-    this->description = "Advancing " + to_string(armies) + " solders from source to destination";
+    this->description = "Advancing " + to_string(armies) + " solders from " + source->getTerritoryName()
+                        + " to " destination->getTerritoryName();
     this->armies = armies;
+    this->player = player;
+    this->source = source;
+    this->destination = destination;
 }
 AdvanceOrder::AdvanceOrder(const AdvanceOrder& advanceOrder){
     this->name = advanceOrder.name;
     this->description = advanceOrder.description;
     this->effect = advanceOrder.effect;
     this->armies = advanceOrder.armies;
+    this->player = advanceOrder.player;
+    this->source = advanceOrder.source;
+    this->destination = advanceOrder.destination;
 }
 AdvanceOrder::~AdvanceOrder(){}
 // The assignment operator doesnt work for some reason TOASK:
@@ -85,6 +103,9 @@ AdvanceOrder::~AdvanceOrder(){}
 //     this->description = aOrder.description;
 //     this->effect = aOrder.effect;
 //     this->armies = aOrder.armies;
+//     this->player = aOrder.player;
+//     this->source = aOrder.source;
+//     this->destination = aOrder.destination;
 //     return *this;
 // }
 bool AdvanceOrder::validate(){
@@ -96,20 +117,25 @@ bool AdvanceOrder::validate(){
 bool AdvanceOrder::execute(){
     if (validate()){
         // if both territories belong to one user then move if not attack TODO:
-        this->effect = "\nEffect: "+to_string(this->armies)+" solders are being advanced from source to destination";
+        this->effect = "\nEffect: "+to_string(this->armies)+" solders are being advanced from "
+                        + this->source->getTerritoryName() + " to " + this->destination->getTerritoryName();
         return true;
     }
     return false;
 }
 
-BombOrder::BombOrder(){
+BombOrder::BombOrder(Player* player, Territory* destination){
     this->name = "Bomb";
-    this->description = "Bombs half of the army on territoty_name";
+    this->description = "Bombs half of the army on " + destination->getTerritoryName();
+    this->player = player;
+    this->destination = destination;
 }
 BombOrder::BombOrder(const BombOrder& bombOrder){
     this->name = bombOrder.name;
     this->description = bombOrder.description;
     this->effect = bombOrder.effect;
+    this->player = bombOrder.player;
+    this->destination = bombOrder.destination;
 }
 BombOrder::~BombOrder(){}
 // The assignment operator doesnt work for some reason TOASK:
@@ -118,6 +144,8 @@ BombOrder::~BombOrder(){}
 //     this->description = bOrder.description;
 //     this->effect = bOrder.effect;
 //     this->armies = bOrder.armies;
+//     this->player = bOrder.player;
+//     this->destination = bOrder.destination;
 //     return *this;
 // }
 bool BombOrder::validate(){
@@ -126,20 +154,24 @@ bool BombOrder::validate(){
 }
 bool BombOrder::execute(){
     if (validate()){
-        this->effect = "\nEffect: half of the army is destroyed on territory_name";
+        this->effect = "\nEffect: half of the army is destroyed on " + this->destination->getTerritoryName();
         return true;
     }
     return false;
 }
 
-BlockadeOrder::BlockadeOrder(){
+BlockadeOrder::BlockadeOrder(Player* player, Territory* destination){
     this->name = "Blockade";
-    this->description = "Tripples the army on territoty_name";
+    this->description = "Tripples the army on " + destination->getTerritoryName();
+    this->player = player;
+    this->destination = destination;
 }
 BlockadeOrder::BlockadeOrder(const BlockadeOrder& blOrder){
     this->name = blOrder.name;
     this->description = blOrder.description;
     this->effect = blOrder.effect;
+    this->player = blOrder.player;
+    this->destination = blOrder.destination;
 }
 BlockadeOrder::~BlockadeOrder(){}
 // The assignment operator doesnt work for some reason TOASK:
@@ -147,6 +179,8 @@ BlockadeOrder::~BlockadeOrder(){}
 //     this->name = blOrder.name;
 //     this->description = blOrder.description;
 //     this->effect = blOrder.effect;
+//     this->player = blOrder.player;
+//     this->destination = blOrder.destination;
 //     return *this;
 // }
 bool BlockadeOrder::validate(){
@@ -155,20 +189,29 @@ bool BlockadeOrder::validate(){
 }
 bool BlockadeOrder::execute(){
     if (validate()){
-        this->effect = "\nEffect: the army is trippled on territory_name";
+        this->effect = "\nEffect: the army is trippled on " + this->destination->getTerritoryName();
         return true;
     }
     return false;
 }
 
-AirliftOrder::AirliftOrder(int army){
+AirliftOrder::AirliftOrder(Player* player, int army, Territory* source, Territory* destination){
     this->name = "Airlift";
-    this->description = "Advances " + to_string(army) + " solders from source to destination even if they are not adjacent";
+    this->description = "Advances " + to_string(army) + " solders from " + source->getTerritoryName() +
+                        " to " + destination->getTerritoryName() + " even if they are not adjacent";
+    this->player = player;
+    this->armies = army;
+    this->source = source;
+    this->destination = destination;
 }
 AirliftOrder::AirliftOrder(const AirliftOrder& aiOrder){
     this->name = aiOrder.name;
     this->description = aiOrder.description;
     this->effect = aiOrder.effect;
+    this->armies = aiOrder.armies;
+    this->player = aiOrder.player;
+    this->source = aiOrder.source;
+    this->destination = aiOrder.destination;
 }
 AirliftOrder::~AirliftOrder(){}
 // The assignment operator doesnt work for some reason TOASK:
@@ -177,6 +220,9 @@ AirliftOrder::~AirliftOrder(){}
 //     this->description = aiOrder.description;
 //     this->effect = aiOrder.effect;
 //     this->armies = aiOrder.armies;
+//     this->player = aiOrder.player;
+//     this->destination = aiOrder.destination;
+//     this->source = aiOrder.source;
 //     return *this;
 // }
 bool AirliftOrder::validate(){
@@ -185,21 +231,26 @@ bool AirliftOrder::validate(){
 }
 bool AirliftOrder::execute(){
     if (validate()){
-        this->effect = "\nEffect: "+to_string(this->armies)+" solders are moved from source to destination";
+        this->effect = "\nEffect: "+to_string(this->armies)+" solders are moved from " + 
+                        this->source->getTerritoryName() + " to " + this->destination->getTerritoryName();
         return true;
     }
     return false;
 }
 
 
-NegotiateOrder::NegotiateOrder(){
+NegotiateOrder::NegotiateOrder(Player* player, Player* player2){
     this->name = "Negotiate";
     this->description = "Prevent attacks between user1 and user2";
+    this->player = player;
+    this->second = player2;
 }
 NegotiateOrder::NegotiateOrder(const NegotiateOrder& nOrder){
     this->name = nOrder.name;
     this->description = nOrder.description;
     this->effect = nOrder.effect;
+    this->player = nOrder.player;
+    this->second = nOrder.second;
 }
 NegotiateOrder::~NegotiateOrder(){}
 // The assignment operator doesnt work for some reason TOASK:
@@ -207,6 +258,8 @@ NegotiateOrder::~NegotiateOrder(){}
 //     this->name = nOrder.name;
 //     this->description = nOrder.description;
 //     this->effect = nOrder.effect;
+//     this->player = nOrder.player;
+//     this->second = nOrder.second;
 //     return *this;
 // }
 bool NegotiateOrder::validate(){
@@ -270,7 +323,7 @@ bool OrderList::move(Order *order, bool moveUp){
     }
     return true;
 }
-// TODO: ask TA if we can do this
+// TOASK: ask TA if we can do this
 // This is a more use friendly methods for move which will call move
 bool OrderList::moveUp(Order *order){
     return move(order, true);
