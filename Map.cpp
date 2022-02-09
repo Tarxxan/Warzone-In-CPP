@@ -32,12 +32,12 @@ Territory::Territory()
     //do we need to define default constructor? 
 }
 
-Territory::Territory(int territoryId, string territoryName, string continentName,int numberOfArmies, vector<Territory*> adjacentTerritories)
-{   
+Territory::Territory(int territoryId, string territoryName, string continentName, int numberOfArmies, vector<Territory*> adjacentTerritories)
+{
     this->territoryId = territoryId;
     this->territoryName = territoryName;
     this->continentName = continentName;
-    this->numberOfArmies=numberOfArmies;
+    this->numberOfArmies = numberOfArmies;
     this->adjacentTerritories = adjacentTerritories;
 }
 
@@ -52,7 +52,7 @@ Territory::Territory(const Territory& t)
 
 Territory::~Territory()
 {
-    cout<< "~Territory destructor is called" <<endl;
+    cout << "~Territory destructor is called" << endl;
 
 }
 
@@ -73,7 +73,8 @@ ostream& operator<<(ostream& output, const Territory& t)
     output << "--Territory Name: " << t.territoryName << endl;
     output << "--Continent Name: " << t.continentName << endl;
     output << "--Number of armies: " << t.numberOfArmies << endl;
-    output << "--adjacent territories: " << endl;
+    output << "--Adjacent territories: ";
+
     for (Territory* t : t.adjacentTerritories) 
     {     
         output << t->territoryName << " | ";
@@ -111,7 +112,7 @@ vector<Territory*> Territory::getAdjacentTerritory()
 void Territory::addAdjacentTerritory(Territory* t)
 
 {
-     this->adjacentTerritories.push_back(t);
+    this->adjacentTerritories.push_back(t);
 }
 
 void Territory::setNumberOfArmies(int num)
@@ -161,7 +162,7 @@ Continent::Continent(const Continent& c)
 //destructor
 Continent::~Continent()
 {
-    cout<< "~Continent destructor is called" <<endl;
+    cout << "~Continent destructor is called" << endl;
 }
 
 
@@ -208,7 +209,8 @@ ostream& operator<<(ostream& output, const Continent& c)
     output << "--Continent ID: " << c.continentId << endl;
     output << "--Continent Name: " << c.continentName << endl;
     output << "--Continent control value: " << c.continentControlValue << endl;
-   for (Territory* t : c.territories) 
+    output << "--Territories: ";
+    for (Territory* t : c.territories) 
     {
         output << t->getTerritoryName() << " | ";
     }
@@ -234,7 +236,7 @@ Map::Map()
 Map::Map(string mapName, vector<Territory*> territories, vector<Continent*> continents)
 {
     this->mapName = mapName;
-  //  this->territories = territories;
+    //  this->territories = territories;
     this->continents = continents;
 }
 
@@ -249,7 +251,7 @@ Map::Map(const Map& map)
 //destructor
 Map::~Map()
 {
-    cout<< "~Map destructor is called" <<endl;
+    cout << "~Map destructor is called" << endl;
 
 }
 
@@ -258,7 +260,7 @@ Map& Map::operator=(const Map& m)
     // TODO: insert return statement here
     this->mapName = m.mapName;
     this->continents = m.continents;
-   // this->territories = m.territories;
+    // this->territories = m.territories;
 
     return *this;
 }
@@ -294,132 +296,132 @@ string Map::getMapName()
 }
 
 
-vector<Continent*> Map::getAllContinents(){
-       return continents;
-    }
+vector<Continent*> Map::getAllContinents() {
+    return continents;
+}
 
-Territory* Map::findTerritory(int id){
-    
-    for(Continent *c: this->continents){
-           
-        for(Territory *t: c->getTerritories() ){
-          
-            if(t->getTerritoryId()==id){
+Territory* Map::findTerritory(int id) {
+
+    for (Continent* c : this->continents) {
+
+        for (Territory* t : c->getTerritories()) {
+
+            if (t->getTerritoryId() == id) {
                 return t;
-                 
+
             }
         }
-    } 
-     Territory *t= new Territory();
+    }
+    Territory* t = new Territory();
     return t;
 }
 
- bool Map::validate(){
-     int value=oneContinent();
-     if(value!=1){
-        cerr <<" This map has a Territory belonging to more than one continent."<<endl;
+bool Map::validate() {
+    int value = oneContinent();
+    if (value != 1) {
+        cerr << " This map has a Territory belonging to more than one continent." << endl;
         return false;
-     }
-    value=connectedSubgraphs();
-    if(value!=1){
-        cerr <<" This map has unconnected territories within a continent"<<endl;
+    }
+    value = connectedSubgraphs();
+    if (value != 1) {
+        cerr << " This map has unconnected territories within a continent" << endl;
         return false;
-     }
+    }
 
-     value=connectedGraph();
-     if(value!=1){
-        cerr <<" This maps Continents aren't connected"<<endl;
+    value = connectedGraph();
+    if (value != 1) {
+        cerr << " This maps Continents aren't connected" << endl;
         return false;
-     }
-    
-     cout << "This is a valid map! Let's get to the game!";
-     return true;
- }
+    }
 
-bool Map::checkBothWays(Territory *t, int tID ){
-    for(Territory *adj: t->getAdjacentTerritory()){
+    cout << "This is a valid map! Let's get to the game!";
+    return true;
+}
+
+bool Map::checkBothWays(Territory* t, int tID) {
+    for (Territory* adj : t->getAdjacentTerritory()) {
         // cout<<adj->getTerritoryId() <<endl;
         // cout <<"tID: "<< tID <<endl;
-        if(adj->getTerritoryId()==tID){
+        if (adj->getTerritoryId() == tID) {
             return true;
         }
     }
-return false;
+    return false;
 
 }
 
-bool Map::connectedSubgraphs(){
-std::map<int,int> continentTerritories;
+bool Map::connectedSubgraphs() {
+    std::map<int, int> continentTerritories;
 
-for(Continent *c: this->continents){ 
-    int mapsize=c->getTerritories().size();
-    for(Territory *t: c->getTerritories()){
-        //cout <<"Territory "<< t->getTerritoryId() <<endl;
-        for(Territory *adj: t->getAdjacentTerritory()){
-            //cout <<"adjacent "<< adj->getTerritoryId() <<endl;
-            if(adj->getContinentName().compare(c->getContinentName())==0)
-            {   
-                if(checkBothWays(adj,t->getTerritoryId())){
-                    continentTerritories.insert({adj->getTerritoryId(),1});
+    for (Continent* c : this->continents) {
+        int mapsize = c->getTerritories().size();
+        for (Territory* t : c->getTerritories()) {
+            //cout <<"Territory "<< t->getTerritoryId() <<endl;
+            for (Territory* adj : t->getAdjacentTerritory()) {
+                //cout <<"adjacent "<< adj->getTerritoryId() <<endl;
+                if (adj->getContinentName().compare(c->getContinentName()) == 0)
+                {
+                    if (checkBothWays(adj, t->getTerritoryId())) {
+                        continentTerritories.insert({ adj->getTerritoryId(),1 });
+                    }
+                    else
+                        return false;
                 }
-                else
-                    return false;
+            }
+        }
+
+        if (continentTerritories.size() != mapsize) {
+            return false;
+        }
+        continentTerritories.clear();
+    }
+
+    return true;
+}
+
+bool Map::connectedGraph() {
+
+    std::map<string, int> mapContinents;
+    int mapsize = this->continents.size();
+    for (Continent* c : this->continents) {
+        for (Territory* t : c->getTerritories()) {
+            for (Territory* adj : t->getAdjacentTerritory()) {
+                if (adj->getContinentName().compare(c->getContinentName()) != 0) {
+                    mapContinents.insert({ adj->getContinentName(),1 });
+                }
             }
         }
     }
-
-    if(continentTerritories.size()!=mapsize){
-        return false;
-    }
-    continentTerritories.clear();
-}
-
-return true;
-}
-
-bool Map::connectedGraph(){
-
-std::map<string,int> mapContinents;
-int mapsize=this->continents.size();
-for(Continent *c: this->continents){ 
-    for(Territory *t: c->getTerritories()){
-        for(Territory *adj: t->getAdjacentTerritory()){
-            if(adj->getContinentName().compare(c->getContinentName())!=0){
-                mapContinents.insert({adj->getContinentName(),1});
-            }
-        }
-    }
-}
-    if(mapContinents.size()!=mapsize){
+    if (mapContinents.size() != mapsize) {
         return false;
     }
     mapContinents.clear();
 
 
-return true;
+    return true;
 }
 
-bool Map::oneContinent(){
+bool Map::oneContinent() {
 
     std::map<int, vector<int>> oneContinent;
-    for(Continent *c: this->continents){
-        for(Territory *t: c->getTerritories()){
+    for (Continent* c : this->continents) {
+        for (Territory* t : c->getTerritories()) {
             oneContinent[t->getTerritoryId()].push_back(c->getContinentId());
-        } 
+        }
     }
     //Uncomment to see if a country belongs to more than one continent.
   // oneContinent[1].push_back(155);
-   for(int i=0; i< oneContinent.size();i++){
-        for(int j=0; j< oneContinent[i].size();j++){
-         //  cout<< oneContinent[i].size() << endl;
-            if(oneContinent[i].size()>1){
+    for (int i = 0; i < oneContinent.size(); i++) {
+        for (int j = 0; j < oneContinent[i].size(); j++) {
+            //  cout<< oneContinent[i].size() << endl;
+            if (oneContinent[i].size() > 1) {
                 return false;
             }
         }
     }
 
-   return true; 
-    
+    return true;
+
 }
 
 void Map::deletePointers(){
@@ -466,22 +468,22 @@ MapLoader& MapLoader::operator=(const MapLoader& AssignML) {
     return *this;
 
 }
-void MapLoader::SplitString(string s, vector<string> &v){
-	
-	string temp = "";
-	for(int i=0;i<s.length();++i){
-		
-		if(s[i]==' '){
-			v.push_back(temp);
-			temp = "";
-		}
-		else{
-			temp.push_back(s[i]);
-		}
-		
-	}
-	v.push_back(temp);
-	
+void MapLoader::SplitString(string s, vector<string>& v) {
+
+    string temp = "";
+    for (int i = 0; i < s.length(); ++i) {
+
+        if (s[i] == ' ') {
+            v.push_back(temp);
+            temp = "";
+        }
+        else {
+            temp.push_back(s[i]);
+        }
+
+    }
+    v.push_back(temp);
+
 }
 	
 MapLoader::~MapLoader()
@@ -508,20 +510,21 @@ MapLoader::MapLoader(string FileName) {
         return;
     }
 
-    int i{0};
+    int i{ 0 };
     while (getline(in, TempText)) {
-        if(TempText.compare("[continents]")==0){
-            while (getline(in, TempText) && TempText.compare("")!=0){
+
+        if (TempText.compare("[continents]") == 0) {
+            while (getline(in, TempText) && TempText.compare("") != 0) {
                 continentTokens.push_back(TempText);
             }
-       }
-        if(TempText.compare("[countries]")==0){
-            while (getline(in, TempText) && TempText.compare("")!=0){
-                territoryTokens.push_back(TempText);
-            } 
         }
-        if(TempText.compare("[borders]")==0){
-            while (getline(in, TempText) && TempText.compare("")!=0){
+        if (TempText.compare("[countries]") == 0) {
+            while (getline(in, TempText) && TempText.compare("") != 0) {
+                territoryTokens.push_back(TempText);
+            }
+        }
+        if (TempText.compare("[borders]") == 0) {
+            while (getline(in, TempText) && TempText.compare("") != 0) {
                 adjacentTokens.push_back(TempText);
             }
         }
@@ -543,7 +546,7 @@ try{
     
         SplitString(continentTokens[i],results);
         vector<Territory*> territories;
-        Continent* c = new Continent(++continentCount,results[0],stoi(results[1]),territories);
+        Continent* c = new Continent(++continentCount, results[0], stoi(results[1]), territories);
         continents.push_back(c);
         results.clear();
         }
@@ -557,12 +560,20 @@ try{
         
     }
 
-    this->map= new Map(FileName,Territories,continents);
+    for (int i = 0; i < territoryTokens.size(); i++) {
+        SplitString(territoryTokens[i], results);
+        vector<Territory*> adjacentTerritories;
+        Territory* t = new Territory(stoi(results[0]), results[1], continents.at(stoi(results[2]) - 1)->getContinentName(), 0, adjacentTerritories);
+        continents.at(stoi(results[2]) - 1)->addTerritory(t);
+        results.clear();
+    }
 
-    for(int i=0;i<adjacentTokens.size();i++){
-        SplitString(adjacentTokens[i],results);
-        Territory *t= this->map->findTerritory(stoi(results[0]));
-        for(int i=1; i< results.size();i++){
+    this->map = new Map(FileName, Territories, continents);
+
+    for (int i = 0; i < adjacentTokens.size(); i++) {
+        SplitString(adjacentTokens[i], results);
+        Territory* t = this->map->findTerritory(stoi(results[0]));
+        for (int i = 1; i < results.size(); i++) {
             t->addAdjacentTerritory(this->map->findTerritory(stoi(results[i])));
         }
         results.clear();
@@ -576,8 +587,8 @@ catch(const exception& e)
             delete map;
         }
 
-    in.close();  
-   }
+    in.close();
+}
 // IO Stream Operators for MapLoader
 //Figured out what they do just unsure what we will put in them.
 
