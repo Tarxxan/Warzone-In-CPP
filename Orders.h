@@ -1,11 +1,4 @@
-#pragma once
-#include "Map.h"
-#include "Player.h"
-#include "Map.h"
-#include <vector>
-#include <iostream>
-#include <string>
-using namespace std;
+#include "GameEngine.h"
 class Order{
     public:
         Order();

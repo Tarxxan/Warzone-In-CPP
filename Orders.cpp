@@ -1,8 +1,4 @@
-#include "Orders.h"
-#include "Player.h"
-#include <iostream>
-#include <string>
-using namespace std;
+#include "GameEngine.h"
 // TODO: ALl the validate methods & description & effect once player is setup
 Order::Order(){};
 Order::Order(const Order& order){
@@ -81,7 +77,7 @@ bool DeployOrder::execute(){
 AdvanceOrder::AdvanceOrder(Player* player, int armies, Territory* source, Territory* destination){
     this->name = "Advance";
     this->description = "Advancing " + to_string(armies) + " solders from " + source->getTerritoryName()
-                        + " to " destination->getTerritoryName();
+                        + " to " + destination->getTerritoryName();
     this->armies = armies;
     this->player = player;
     this->source = source;
@@ -276,6 +272,9 @@ bool NegotiateOrder::execute(){
 
 // ***************************** ORDER LIST ***********************************
 OrderList::OrderList(){cout << "Created an empty order list\n";};
+OrderList::OrderList(const OrderList &copyOL){
+    this->orderList = copyOL.orderList;
+}
 std::ostream& operator << (std::ostream& strm,const OrderList& ol) {
     for(Order* order : ol.orderList){
         cout << *order << endl;
