@@ -1,0 +1,10 @@
+Can we make our objects on stack so we dont need to call delete?
+
+In vector container pointer type. It is diff or the same pointers.
+
+Should adjacent continents be directed or undirected( we are leaning towards undirected) 
+If map file doesnt have both ways then will it be invalid.
+
+What kind of proof do you want if its deleted from memory. we call destructors but have no idea if its actually destroyed
+
+What do you mean by read text file. Map or text ? do we read content do we just throw the error sayings its invalid

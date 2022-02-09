@@ -17,6 +17,16 @@
 #include <vector>
 using namespace std;
 
+
+
+class Player {
+public:
+   string name;
+   Player();
+   Player(string name);
+};
+
+
 // Territory
 
 class Territory {
@@ -36,7 +46,8 @@ public:
     int getNumberOfArmies();  //-----------------------------------------------------------------------------NOTE: do we need army for territory??
     vector<Territory*> getAdjacentTerritory(); //get adjacent territories
     void addAdjacentTerritory(Territory *t);
-    //Player* getOwnerOfTerritory();
+    Player* getOwnerOfTerritory();
+    void setOwnerOfTerritory(Player *p);
     void setNumberOfArmies(int num);
 
 
@@ -46,10 +57,9 @@ private:
     string continentName;
     int numberOfArmies; //-----------------------------------------------------------------------------NOTE: do we need army for territory??
     vector<Territory*> adjacentTerritories;  //Store adjacent territory pointers in vector. 
-    //Player* ownerOfTerritory=nullptr;
+    Player* ownerOfTerritory;
 
 };
-
 
 
 
@@ -100,6 +110,7 @@ public:
     vector<Continent*> getAllContinents();
     bool validate(); // check if map is valid
     Territory* findTerritory(int id);
+    void deletePointers();
     bool oneContinent();
     bool connectedSubgraphs();
     bool connectedGraph();
@@ -125,6 +136,7 @@ public:
     MapLoader& operator=(const MapLoader& AssignML);
     friend ostream& operator << (ostream& out, const MapLoader&);
     friend istream& operator >> (istream& in, MapLoader& ML);
+    ~MapLoader();
     string FileContents;
     // These are suppos3ed to be used in operators but they never get displayed so i dont even know 
     string FileName;
@@ -132,13 +144,6 @@ public:
     Map* map;
     void SplitString(string s, vector<string> &v);
 };
-
-
-////temporary
-//class Player {
-//public:
-//    Player();
-//}
 
 
 

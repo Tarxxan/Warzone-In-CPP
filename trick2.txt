@@ -1,0 +1,11 @@
+[continents]
+Irina 1
+Mark 2
+
+[countries]
+Irina 1
+Mark 1
+
+[borders]
+Irina 
+Mark
