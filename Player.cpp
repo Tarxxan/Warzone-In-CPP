@@ -7,6 +7,7 @@
 // orders. 
 #include "Player.h"
 #include "Map.h"
+#include "cards.h"
 #include <iostream>
 #include <list>
 #include <fstream> // file stream
@@ -16,17 +17,21 @@ using namespace std;
 Player::Player() {
 } //Default Constructor
 
+/*
+std::list<Order> playerOrders;
+std::list<Territory> playerTerritories;
+std::list<Card> playerCards;
+*/
+Player::Player(int id, string player_name){
+    this->playerID = id;
+    this->playerName = player_name;
+}
 
-std::list<Order> orders;
-std::list<Territory> territories;
-std::list<Card> cards;
-
-Player::Player(std::list<Order> orders, std::list<Territory> territories, vector<Card> cards)
+Player::Player(std::list<Order> orders, std::list<Territory> territories, std::list<Card> cards)
 {
-    this->orders = orders;
-    this->territories = territories;
-    this->cards = cards;
-
+    this->playerOrders = orders;
+    this->playerTerritories = territories;
+    this->playerCards = cards;
 }
 
 Player::~Player()
@@ -47,19 +52,6 @@ ostream& operator<<(ostream& output, Player& p)
 }
 
 //member functions
-list<Order> Player:: getOrders() {
-    return orders;
-}
-
-vector<Card*> Player::getCards() {
-    return cards;
-}
-void Player::setCard(Card* newCard){
-
-    this->cards.push_back(newCard);
-
-}
-
 list<Territory> Player::toDefend() {// return a list of territories that are to be defended
     list<Territory> territories_to_defend;
     cout << "calling toDefend()" << endl;
@@ -71,12 +63,39 @@ list<Territory> Player::toAttack() { //  returns a list of territories that are 
     cout << "calling toAttack()" << endl;
     return territories_to_attack;
 }
+
                             // establish an arbitrary list of territories to be defended, and an
                             // arbitrary list of territories that are to be attacked.
-void Player:: issueOrder(string new_order) {   //creates an Order object and puts it in the player�s list of orders.
-    Order *newOrder = new Order(new_order);
+void Player:: issueOrder() {   //creates an Order object and puts it in the player�s list of orders.
+    Order *newOrder = new Order();
     cout << "calling issueOrder()" << endl;
-    orders.push_back(*newOrder);
+    playerOrders.push_back(*newOrder);
 }
+
+
+// getters
+list<Order> Player:: getPlayerOrders() {
+    return playerOrders;
+}
+
+list<Card> Player::getPlayerCards() {
+    return playerCards;
+}
+
+ string Player::getPlayerName(){
+     return playerName;
+ }
+
+ int Player::getPlayerID(){
+     return playerID;
+ }
+
+bool Player::addPlayerTerritories(Territory territory){ // return true if territory is successfully added
+    return true;
+}
+   
+    
+
+
 
 
