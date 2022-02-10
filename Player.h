@@ -22,17 +22,17 @@ public:
     list<Order> getOrders();
     list<Territory> getTerritories();
     list<Card> getCards();
+    void setCard(Card* newCard);
     list<Territory> toDefend(); // return a list of territories that are to be defended
     list<Territory> toAttack(); //  returns a list of territories that are to be attacked
                                 // establish an arbitrary list of territories to be defended, and an
                                 // arbitrary list of territories that are to be attacked.
-    void issueOrder(string new_order);   //creates an Order object and puts it in the player’s list of orders.
+    void issueOrder(string new_order);   //creates an Order object and puts it in the playerï¿½s list of orders.
     
-
 
 private:
     std::list<Order> orders;
     std::list<Territory> territories;
-    std::list<Card> cards;
+    std::vector<Card*> cards;
 
 };

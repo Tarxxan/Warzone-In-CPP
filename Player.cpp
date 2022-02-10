@@ -21,7 +21,7 @@ std::list<Order> orders;
 std::list<Territory> territories;
 std::list<Card> cards;
 
-Player::Player(std::list<Order> orders, std::list<Territory> territories, std::list<Card> cards)
+Player::Player(std::list<Order> orders, std::list<Territory> territories, vector<Card> cards)
 {
     this->orders = orders;
     this->territories = territories;
@@ -51,10 +51,14 @@ list<Order> Player:: getOrders() {
     return orders;
 }
 
-list<Card> Player::getCards() {
+vector<Card*> Player::getCards() {
     return cards;
 }
+void Player::setCard(Card* newCard){
 
+    this->cards.push_back(newCard);
+
+}
 
 list<Territory> Player::toDefend() {// return a list of territories that are to be defended
     list<Territory> territories_to_defend;
@@ -69,7 +73,7 @@ list<Territory> Player::toAttack() { //  returns a list of territories that are 
 }
                             // establish an arbitrary list of territories to be defended, and an
                             // arbitrary list of territories that are to be attacked.
-void Player:: issueOrder(string new_order) {   //creates an Order object and puts it in the player’s list of orders.
+void Player:: issueOrder(string new_order) {   //creates an Order object and puts it in the playerï¿½s list of orders.
     Order *newOrder = new Order(new_order);
     cout << "calling issueOrder()" << endl;
     orders.push_back(*newOrder);
