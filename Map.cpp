@@ -241,7 +241,8 @@ Map::Map(const Map &map)
 // destructor
 Map::~Map()
 {
-    cout << "~Map destructor is called" << endl;
+    deletePointers();
+    cout << "Map destructor called" << endl;
 }
 
 Map &Map::operator=(const Map &m)
@@ -441,13 +442,12 @@ bool Map::oneContinent()
 
 void Map::deletePointers()
 {
-    for (Continent *c : this->continents)
+    for (Continent *c : continents)
     {
         for (Territory *t : c->getTerritories())
         {
             for (Territory *adj : t->getAdjacentTerritory())
             {
-                delete adj;
                 adj = nullptr;
             }
             delete t;
@@ -506,6 +506,8 @@ void MapLoader::SplitString(string s, vector<string> &v)
 
 MapLoader::~MapLoader()
 {
+    delete this->map;
+    this->map = nullptr;
     cout << "~MapLoader destructor is called" << endl;
 }
 

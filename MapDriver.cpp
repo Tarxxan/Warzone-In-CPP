@@ -35,7 +35,7 @@ int main()
         }
     }
 
-    cout << "The following operations are done on the Big Europe Map(valid)" << endl;
+    cout << "\n\n The following operations are done on the Big Europe Map(valid)" << endl;
 
     MapLoader ml("bigeurope.map");
     // testing territory insertion operator.
