@@ -1,4 +1,5 @@
 #include "GameEngine.h"
+#include <stdlib.h>
 
 ////////////////////////////////////////// CARD //////////////////////////////////////////////////////
 Card::Card(string type){
@@ -43,8 +44,13 @@ void Deck::push(Card* card){
     this->deck.push_back(card);
 }
 void Deck::draw(Player* player){
-    cout << "hi" << endl;
-    // gets a random card, removes it from the list and assigns it to the players hand
+    int index = rand() % this->deck.size();
+    auto posIt = this->deck.begin()+index;
+
+    Card* temp = this->deck.at(index);
+    this->deck.erase(posIt);
+    player->setCard(temp);
+    // gets a random card, rem  oves it from the list and assigns it to the players hand
 }
 void Deck::remove(Card* actual){
     int index = 0;
