@@ -3,6 +3,7 @@
 // Some actions or commands may eventually trigger a transition to another state, which is what controls the flow of the game. 
 #pragma once
 #include <iostream>
+#include <string>
 #include <vector>
 #include <list>
 #include "Orders.h"

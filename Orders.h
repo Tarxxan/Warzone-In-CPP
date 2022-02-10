@@ -89,11 +89,13 @@ class OrderList{
     public:
         // Empty Constructor
         OrderList();
+        ~OrderList();
         // Copy contructor
         OrderList(const OrderList &copyOL);
         //Assignment operator 
         OrderList &operator=(const OrderList &assignOL);
         // Inserts an order at the end (as they supposed to)
+        vector <Order*> getOrders();
         void push(Order *order);
         // comparing pointers of order
         int remove(Order *order);

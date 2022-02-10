@@ -27,6 +27,7 @@ class Deck{
     public:
         Deck();
         Deck(const Deck& deck);
+        Deck& operator=(const Deck& deckO);
         vector <Card*> getDeck();
         void push(Card* card);
         void draw(Player* player);

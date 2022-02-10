@@ -8,9 +8,15 @@ using namespace std;
 
 int main() {
     // TODO: Add each of the order type and I guess some validations
-    AirliftOrder* dep = new AirliftOrder(1);
-    AirliftOrder* dep1 = new AirliftOrder(2);
-    AirliftOrder* dep2 = new AirliftOrder(3);
+    Player* p1 = new Player();
+    Player* p2 = new Player();
+    Territory* t1 = new Territory();
+    Territory* t2 = new Territory();
+
+
+    AirliftOrder* dep = new AirliftOrder(p1, 1, t1, t2);
+    AirliftOrder* dep1 = new AirliftOrder(p2, 2, t2, t1);
+    AirliftOrder* dep2 = new AirliftOrder(p1, 3, t1, t2);
     OrderList newList;
     cout << "initial list" << endl;
     newList.push(dep);
