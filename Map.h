@@ -20,6 +20,7 @@ public:
     string name;
     Player();
     Player(string name);
+    void setPlayerName(string s);
 };
 
 // Territory
@@ -107,7 +108,6 @@ public:
 
 private:
     string mapName;
-    // vector<Territory*> territories; // all territories in this map
     vector<Continent *> continents; // all continents in this map
 };
 

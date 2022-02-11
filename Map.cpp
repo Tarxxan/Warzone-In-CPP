@@ -7,6 +7,7 @@
 
 using namespace std;
 
+// Dummy Player class
 Player::Player()
 {
     name = "";
@@ -15,6 +16,16 @@ Player::Player()
 Player::Player(string name)
 {
     this->name = name;
+}
+
+void Player::setPlayerName(string s)
+{
+    this->name = s;
+}
+
+Player::~Player()
+{
+    cout << "Player was destroyed" << endl;
 }
 
 ostream &operator<<(ostream &output, const Player &p)
@@ -28,7 +39,6 @@ ostream &operator<<(ostream &output, const Player &p)
 
 Territory::Territory()
 {
-    // do we need to define default constructor?
 }
 
 Territory::Territory(int territoryId, string territoryName, string continentName, int numberOfArmies, vector<Territory *> adjacentTerritories)
@@ -38,6 +48,8 @@ Territory::Territory(int territoryId, string territoryName, string continentName
     this->continentName = continentName;
     this->numberOfArmies = numberOfArmies;
     this->adjacentTerritories = adjacentTerritories;
+    Player *p = new Player("John");
+    this->ownerOfTerritory = p;
 }
 
 Territory::Territory(const Territory &t)
@@ -47,10 +59,13 @@ Territory::Territory(const Territory &t)
     this->continentName = t.continentName;
     this->numberOfArmies = t.numberOfArmies;
     this->adjacentTerritories = t.adjacentTerritories;
+    this->ownerOfTerritory = t.ownerOfTerritory;
 }
 
 Territory::~Territory()
 {
+    delete ownerOfTerritory;
+    ownerOfTerritory = nullptr;
     cout << "~Territory destructor is called" << endl;
 }
 
@@ -61,7 +76,7 @@ Territory &Territory::operator=(const Territory &t)
     this->continentName = t.continentName;
     this->numberOfArmies = t.numberOfArmies;
     this->adjacentTerritories = t.adjacentTerritories;
-
+    this->ownerOfTerritory = t.ownerOfTerritory;
     return *this;
 }
 
@@ -70,6 +85,7 @@ ostream &operator<<(ostream &output, const Territory &t)
     output << "--Territory ID: " << t.territoryId << endl;
     output << "--Territory Name: " << t.territoryName << endl;
     output << "--Continent Name: " << t.continentName << endl;
+    output << "--Player Name: " << t.ownerOfTerritory->name << endl;
     output << "--Number of armies: " << t.numberOfArmies << endl;
     output << "--Adjacent territories: ";
 
@@ -314,24 +330,27 @@ bool Map::validate()
     int value = oneContinent();
     if (value != 1)
     {
-        cerr << " This map has a Territory belonging to more than one continent." << endl;
+        cerr << " This map has a Territory belonging to more than one continent.\n"
+             << endl;
         return false;
     }
     value = connectedSubgraphs();
     if (value != 1)
     {
-        cerr << " This map has unconnected territories within the continent" << endl;
+        cerr << " This map has unconnected territories within the continent\n"
+             << endl;
         return false;
     }
 
     value = connectedGraph();
     if (value != 1)
     {
-        cerr << " This maps Continents aren't connected" << endl;
+        cerr << " This maps Continents aren't connected\n"
+             << endl;
         return false;
     }
 
-    cout << "This is a valid map! Let's get to the game!";
+    cout << "This is a valid map! Let's get to the game!" << endl;
     return true;
 }
 
@@ -451,6 +470,7 @@ void Map::deletePointers()
                 adj = nullptr;
             }
             delete t;
+
             t = nullptr;
         }
         delete c;
@@ -472,7 +492,6 @@ MapLoader::MapLoader(const MapLoader &copyML)
 {
     FileContents = copyML.FileContents;
     FileName = copyML.FileName;
-    // not sure if this should be different because its a pointer but ill look into it
     map = copyML.map;
 }
 

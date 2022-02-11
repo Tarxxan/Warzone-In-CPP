@@ -19,13 +19,33 @@ int main()
     bool playAgain = true;
     while (playAgain)
     {
+        // Bigeurope.map Valid
+        // sudamerica.map Valid
+        // artic.map Invalid Territory are not connected last line of code
+        // Bigeurope2Continents.map 1 country 2 continents line 32
+        // bigeuropebadborders.map Same as artic
+        // bigeuropebadcontinents.map Continents arent connected. Continent 1 is disconnected
+
         cout << "Type the Name of a map. We will attempt to validate it." << endl;
         string s = {};
         cin >> s;
 
         MapLoader ml2(s);
+
+        // Checks whether the map is valid, throught the 3 helper functions
         ml2.map->validate();
 
+        // Prints Territory before Change of player and army test
+        cout << *ml2.map->getAllContinents().at(0)->getTerritories().at(0) << endl;
+        Player *k = new Player("Kim");
+        ml2.map->getAllContinents().at(0)->getTerritories().at(0)->setNumberOfArmies(345);
+        ml2.map->getAllContinents().at(0)->getTerritories().at(0)->setOwnerOfTerritory(k);
+
+        cout << "Assigning a territory a player \" Kim \" and Setting its army to 345" << endl
+             << endl;
+        cout << *ml2.map->getAllContinents().at(0)->getTerritories().at(0) << endl;
+
+        //
         cout << "\nWould you like to check another Map (Y/N)" << endl;
         string retry = {};
         cin >> retry;
