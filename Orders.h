@@ -1,4 +1,29 @@
-#include "GameEngine.h"
+#pragma once
+#include <iostream>
+#include <string>
+#include <vector>
+using namespace std;
+
+// Dummy Player (to link after demo properly)
+class Player
+{
+    public:
+        string name;
+        Player();
+        Player(string name);
+        Player& operator=(const Player& player);
+        friend ostream& operator << (ostream &out, const Player &p );
+};
+// Dummy territory
+class Territory
+{
+    public:
+        string name;
+        Territory();
+        Territory(string name);
+        Territory& operator=(const Territory& territory);
+        friend ostream& operator << (ostream &out, const Territory &p );
+};
 class Order{
     public:
         Order();
@@ -11,18 +36,19 @@ class Order{
         Player* getPlayer();         // For friends methods
         virtual bool validate(); // For suborders
         virtual bool execute(); // For suborders
+        friend ostream& operator << (ostream &out, const Order &o);
     protected:
         Player* player;
         string name;
         string effect;
         string description;
-        friend ostream& operator << (ostream &out, const Order& );
 };
 
 class DeployOrder : public Order{
     public:
         DeployOrder(Player* player, int numOfArmies, Territory* destination);
         DeployOrder(const DeployOrder& deployOrder);
+        DeployOrder& operator=(const DeployOrder& dOrder);
         ~DeployOrder();
         bool validate();
         bool execute(); // execute will call validate method before executing
@@ -34,6 +60,8 @@ class AdvanceOrder : public Order{
     public:
         AdvanceOrder(Player* player, int armies, Territory* source, Territory* destination);
         ~AdvanceOrder();
+        AdvanceOrder(const AdvanceOrder& advanceOrder);
+        AdvanceOrder& operator=(const AdvanceOrder& aOrder);
         bool validate();
         bool execute();
     private:
@@ -45,6 +73,7 @@ class BombOrder : public Order{
     public:
         BombOrder(Player* player, Territory* destination);
         BombOrder(const BombOrder& bombOrder);
+        BombOrder& operator=(const BombOrder& bOrder);
         ~BombOrder();
         bool validate();
         bool execute();
@@ -56,6 +85,7 @@ class BlockadeOrder : public Order{
         BlockadeOrder(Player* player, Territory* destination);
         BlockadeOrder(const BlockadeOrder& blockadeOrder);
         ~BlockadeOrder();
+        BlockadeOrder& operator=(const BlockadeOrder& blOrder);
         bool validate();
         bool execute();
     private:
@@ -66,6 +96,7 @@ class AirliftOrder : public Order{
         AirliftOrder(Player* player, int army, Territory* source, Territory* destination); 
         AirliftOrder(const AirliftOrder& AirliftOrder);
         ~AirliftOrder();
+        AirliftOrder& operator=(const AirliftOrder& aiOrder);
         bool validate();
         bool execute();
     private:
@@ -79,6 +110,7 @@ class NegotiateOrder : public Order{
         NegotiateOrder(Player* player, Player* player2);
         NegotiateOrder(const NegotiateOrder& NegotiateOrder);
         ~NegotiateOrder();
+        NegotiateOrder& operator=(const NegotiateOrder& nOrder);
         bool validate();
         bool execute();
     private:
