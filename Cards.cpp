@@ -1,5 +1,4 @@
-#include "GameEngine.h"
-#include <stdlib.h>
+#include "Cards.h"
 
 ////////////////////////////////////////// CARD //////////////////////////////////////////////////////
 Card::Card(string type){
@@ -8,18 +7,18 @@ Card::Card(string type){
 Card::~Card(){};
 Card::Card(const Card& card){
     this->type = card.type;
-    this->player = card.player;
+    // this->player = card.player;
 }
 Card& Card::operator=(const Card& card){
-    this->player = card.player;
+    // this->player = card.player;
     this->type = card.type;
     return *this;
 }
-void Card::setPlayer(Player* player){
-    this->player = player;
-}
+// void Card::setPlayer(Player* player){
+//     this->player = player;
+// }
 void Card::play(){
-    // will set this->player->setFlag() based on the type 
+    
 }
 string Card::getType(){
     return this->type;
@@ -37,20 +36,56 @@ Deck::Deck(){};
 vector <Card*> Deck::getDeck(){
     return this->deck;
 }
-Deck::Deck(const Deck& deckO){
-    this->deck = deckO.getDeck();
+// Deck::Deck(const Deck& deckO){
+//     this->deck = deckO.getDeck();
+// }
+void Deck::initalizeDeck(){
+    for(int i = 0; i< 6;i++){
+        Card* tempCard = new Card("bomb");
+        this->deck.push_back(tempCard);
+    }
+    for(int i = 0; i< 6;i++){
+        Card* tempCard = new Card("reinforcement");
+        this->deck.push_back(tempCard);
+    }
+    for(int i = 0; i< 6;i++){
+        Card* tempCard = new Card("blockade");
+        this->deck.push_back(tempCard);
+    }
+    for(int i = 0; i< 6;i++){
+        Card* tempCard = new Card("blockade");
+        this->deck.push_back(tempCard);
+    }
+    for(int i = 0; i< 6;i++){
+        Card* tempCard = new Card("airlift");
+        this->deck.push_back(tempCard);
+    }
+    for(int i = 0; i< 6;i++){
+        Card* tempCard = new Card("diplomacy");
+        this->deck.push_back(tempCard);
+    }
+
 }
 void Deck::push(Card* card){
     this->deck.push_back(card);
 }
-void Deck::draw(Player* player){
+// void Deck::draw(Player* player){
+//     int index = rand() % this->deck.size();
+//     auto posIt = this->deck.begin()+index;
+
+//     Card* temp = this->deck.at(index);
+//     this->deck.erase(posIt);
+//     player->addCard(temp);
+//     // gets a random card, rem  oves it from the list and assigns it to the players hand
+// }
+Card* Deck::dummyDraw(){
+    srand(time(NULL));
     int index = rand() % this->deck.size();
     auto posIt = this->deck.begin()+index;
-
+    cout << index << endl;
     Card* temp = this->deck.at(index);
     this->deck.erase(posIt);
-    player->setCard(temp);
-    // gets a random card, rem  oves it from the list and assigns it to the players hand
+    return temp;
 }
 void Deck::remove(Card* actual){
     int index = 0;
@@ -63,7 +98,6 @@ void Deck::remove(Card* actual){
         index ++;
     }
 }
-
 std::ostream& operator << (ostream& strm,const Deck& dO){
     for(Card* card : dO.deck){
         cout << *card << endl;
@@ -93,7 +127,11 @@ void Hand::remove(Card* actual){
         index ++;
     }
 }
-
+void Hand::fill(Deck* deck){
+    for(int i = 0;i<5;i++){
+        this->hand.push_back(deck->dummyDraw());
+    }
+}
 std::ostream& operator << (ostream& strm,const Hand& hO){
     for(Card* card : hO.hand){
         cout << *card << endl;

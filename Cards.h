@@ -5,8 +5,13 @@
 
 // Once a card has been played, it is removed from the hand and put back into
 // the deck. 
+#pragma once
+#include <iostream>
+#include <string>
+#include <vector>
+#include <list>
+using namespace std;
 
-#include "GameEngine.h"
 class Card{
     public:
         Card(string type);
@@ -14,23 +19,25 @@ class Card{
         ~Card();
         Card& operator=(const Card& card);
         void play(); // once played we should somehow get the reference to deck and add it back (and remove from hand)
-        void setPlayer(Player* player); // sets the flag for certain action of player to true
+        // void setPlayer(Player* player); // sets the flag for certain action of player to true
         string getType();
         string getPlayerName();
-        friend ostream& operator << (ostream &out, const Order& );
+        // friend ostream& operator << (ostream &out, const Order& );
     private:
         string type;
-        Player* player;
+        // Player* player;
 };
 
 class Deck{
     public:
         Deck();
-        Deck(const Deck& deck);
+        Deck(const Deck& deck); 
+        void initalizeDeck();
         Deck& operator=(const Deck& deckO);
         vector <Card*> getDeck();
         void push(Card* card);
-        void draw(Player* player);
+        // void draw(Player* player);
+        Card* dummyDraw();
         void remove(Card* card);
         friend std::ostream& operator << (ostream& out,const Deck& ol);
     private:
@@ -44,6 +51,7 @@ class Hand{
         vector <Card*> getHand();
         void push(Card* card);
         void remove(Card* card);
+        void fill(Deck* deck);
         friend std::ostream& operator << (ostream& out,const Hand& h);
     private:
         vector <Card*> hand;
