@@ -50,7 +50,7 @@ std::ostream& operator<<(ostream& strm,Order& o){
 
 // DUMMY ORDER LIST
 
-OrderList::OrderList(){cout << "Created an empty order list\n";};
+OrderList::OrderList(){};
 OrderList::~OrderList(){};
 OrderList& OrderList::operator=(const OrderList& oList){
     this->orderList = oList.orderList;
