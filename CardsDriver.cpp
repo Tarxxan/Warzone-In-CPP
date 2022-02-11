@@ -4,12 +4,43 @@
 #include "Cards.h"
 int main() {
     
+    Player* player1 = new Player("Mark");
     Deck* deck = new Deck();
+    Hand* newHand = new Hand();
+    string cardInput;
     deck->initalizeDeck();
-    Hand* hand = new Hand();
-    hand->fill(deck);
-    cout << *hand;
-    cout << deck->getDeck().size();
-
+    cout << "DECK SIZE: " << deck->getDeck().size() << endl;
+    player1->setHand(newHand);
+    player1->fillHand(deck);
+    cout << *player1->hand;
+    cout << "DECK SIZE: " << deck->getDeck().size() << endl;
+    cout << "HAND SIZE: " << player1->hand->getHand().size() << endl;
+    cout << "CHOOSE CARD: ";
+    cin >> cardInput;
+    player1->chooseCard(cardInput, deck);
+    cout << "DECK SIZE: " << deck->getDeck().size() << endl;
+    cout << "HAND SIZE: " << player1->hand->getHand().size() << endl;
+    cout << "CHOOSE CARD: ";
+    cin >> cardInput;
+    player1->chooseCard(cardInput, deck);
+    cout << "DECK SIZE: " << deck->getDeck().size() << endl;
+    cout << "HAND SIZE: " << player1->hand->getHand().size() << endl;
+    cout << "CHOOSE CARD: ";
+    cin >> cardInput;
+    player1->chooseCard(cardInput, deck);
+    cout << "DECK SIZE: " << deck->getDeck().size() << endl;
+    cout << "HAND SIZE: " << player1->hand->getHand().size() << endl;
+    cout << "CHOOSE CARD: ";
+    cin >> cardInput;
+    player1->chooseCard(cardInput, deck);
+    cout << "DECK SIZE: " << deck->getDeck().size() << endl;
+    cout << "HAND SIZE: " << player1->hand->getHand().size() << endl;
+    cout << "CHOOSE CARD: ";
+    cin >> cardInput;
+    player1->chooseCard(cardInput, deck);
+    cout << "DECK SIZE: " << deck->getDeck().size() << endl;
+    cout << "HAND SIZE: " << player1->hand->getHand().size() << endl;
+    cout << "------------------------\n";
+    cout << *player1->orders;
 
 }
