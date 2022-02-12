@@ -6,6 +6,7 @@
 #include <map>
 
 using namespace std;
+//class Player;
 
 // Dummy Player class
 /*
