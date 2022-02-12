@@ -1,41 +1,4 @@
 #include "Orders.h"
-// Dummy Player & Territory
-Player::Player()
-{
-    name = "";
-}
-Player::Player(string name)
-{
-    this->name = name;
-}
-ostream &operator<<(ostream &output, const Player &p)
-{
-    output << "--Player Name: " << p.name << endl;
-    return output;
-}
-Player& Player::operator=(const Player& player){
-    this->name = player.name;
-    return *this;
-}
-
-Territory::Territory()
-{
-    name = "";
-}
-Territory::Territory(string name)
-{
-    this->name = name;
-}
-ostream &operator<<(ostream &output, const Territory &p)
-{
-    output << "--Player Name: " << p.name << endl;
-    return output;
-}
-Territory& Territory::operator=(const Territory& territory){
-    this->name = territory.name;
-    return *this;
-}
-
 
 Order::Order(){};
 Order::Order(const Order& order){
@@ -73,8 +36,8 @@ std::ostream& operator<<(ostream& out, const Order &o){
 
 DeployOrder::DeployOrder(Player* player, int numOfArmies, Territory* destination){
     this->name = "Deploy";
-    this->description = "Deploy " + to_string(numOfArmies) + " solders to " + destination->name
-                        + " by " + player->name;
+    this->description = "Deploy " + to_string(numOfArmies) + " solders to " + destination->getTerritoryName()
+                        + " by " + player->getName();
     this->armies = numOfArmies;
     this->player = player;
     this->destination = destination;
@@ -105,7 +68,7 @@ bool DeployOrder::validate(){
 bool DeployOrder::execute(){
     if (validate()){
         this->effect = "\nEffect: "+to_string(this->armies)+" solders are being deployed on " 
-                        + this->destination->name + " by " + this->player->name;
+                        + this->destination->getTerritoryName() + " by " + this->player->getName();
         return true;
     }
     return false;
@@ -113,8 +76,8 @@ bool DeployOrder::execute(){
 
 AdvanceOrder::AdvanceOrder(Player* player, int armies, Territory* source, Territory* destination){
     this->name = "Advance";
-    this->description = "Advancing " + to_string(armies) + " solders from " + source->name
-                        + " to " + destination->name + " by " + player->name;
+    this->description = "Advancing " + to_string(armies) + " solders from " + source->getTerritoryName()
+                        + " to " + destination->getTerritoryName() + " by " + player->getName();
     this->armies = armies;
     this->player = player;
     this->source = source;
@@ -150,8 +113,8 @@ bool AdvanceOrder::execute(){
     if (validate()){
         // if both territories belong to one user then move if not attack TODO:
         this->effect = "\nEffect: "+to_string(this->armies)+" solders are being advanced from "
-                        + this->source->name + " to " + this->destination->name
-                        + " by " + this->player->name;
+                        + this->source->getTerritoryName() + " to " + this->destination->getTerritoryName()
+                        + " by " + this->player->getName();
         return true;
     }
     return false;
@@ -159,7 +122,7 @@ bool AdvanceOrder::execute(){
 
 BombOrder::BombOrder(Player* player, Territory* destination){
     this->name = "Bomb";
-    this->description = "Bombs half of the army on " + destination->name + " by " + player->name;
+    this->description = "Bombs half of the army on " + destination->getTerritoryName() + " by " + player->getName();
     this->player = player;
     this->destination = destination;
 }
@@ -186,8 +149,8 @@ bool BombOrder::validate(){
 }
 bool BombOrder::execute(){
     if (validate()){
-        this->effect = "\nEffect: half of the army is destroyed on " + this->destination->name
-                        + " by " + this->player->name;
+        this->effect = "\nEffect: half of the army is destroyed on " + this->destination->getTerritoryName()
+                        + " by " + this->player->getName();
         return true;
     }
     return false;
@@ -195,7 +158,7 @@ bool BombOrder::execute(){
 
 BlockadeOrder::BlockadeOrder(Player* player, Territory* destination){
     this->name = "Blockade";
-    this->description = "Tripples the army on " + destination->name + " by " + player->name;
+    this->description = "Tripples the army on " + destination->getTerritoryName() + " by " + player->getName();
     this->player = player;
     this->destination = destination;
 }
@@ -222,8 +185,8 @@ bool BlockadeOrder::validate(){
 }
 bool BlockadeOrder::execute(){
     if (validate()){
-        this->effect = "\nEffect: the army is trippled on " + this->destination->name
-                        + " by " + this->player->name;
+        this->effect = "\nEffect: the army is trippled on " + this->destination->getTerritoryName()
+                        + " by " + this->player->getName();
         return true;
     }
     return false;
@@ -231,8 +194,8 @@ bool BlockadeOrder::execute(){
 
 AirliftOrder::AirliftOrder(Player* player, int army, Territory* source, Territory* destination){
     this->name = "Airlift";
-    this->description = "Advances " + to_string(army) + " solders from " + source->name +
-                        " to " + destination->name + " even if they are not adjacent";
+    this->description = "Advances " + to_string(army) + " solders from " + source->getTerritoryName() +
+                        " to " + destination->getTerritoryName() + " even if they are not adjacent";
     this->player = player;
     this->armies = army;
     this->source = source;
@@ -266,8 +229,8 @@ bool AirliftOrder::validate(){
 bool AirliftOrder::execute(){
     if (validate()){
         this->effect = "\nEffect: "+to_string(this->armies)+" solders are moved from " + 
-                        this->source->name + " to " + this->destination->name
-                        + " by " + this->player->name;
+                        this->source->getTerritoryName() + " to " + this->destination->getTerritoryName()
+                        + " by " + this->player->getName();
         return true;
     }
     return false;
@@ -276,7 +239,7 @@ bool AirliftOrder::execute(){
 
 NegotiateOrder::NegotiateOrder(Player* player, Player* player2){
     this->name = "Negotiate";
-    this->description = "Prevent attacks between " + player->name + " and " + player2->name;
+    this->description = "Prevent attacks between " + player->getName() + " and " + player2->getName();
     this->player = player;
     this->second = player2;
 }
@@ -303,8 +266,8 @@ bool NegotiateOrder::validate(){
 }
 bool NegotiateOrder::execute(){
     if (validate()){
-        this->effect = "\nEffect: no attacks can be done between " + this->player->name
-                        + " and " + this->second->name + "until the end of the round";
+        this->effect = "\nEffect: no attacks can be done between " + this->player->getName()
+                        + " and " + this->second->getName() + "until the end of the round";
         return true;
     }
     return false;

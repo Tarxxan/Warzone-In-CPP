@@ -1,29 +1,14 @@
 #pragma once
-#include <iostream>
-#include <string>
 #include <vector>
+#include <string>
 using namespace std;
+#include "Player.h"
+#include "Map.h"
 
-// Dummy Player (to link after demo properly)
-class Player
-{
-    public:
-        string name;
-        Player();
-        Player(string name);
-        Player& operator=(const Player& player);
-        friend ostream& operator << (ostream &out, const Player &p );
-};
-// Dummy territory
-class Territory
-{
-    public:
-        string name;
-        Territory();
-        Territory(string name);
-        Territory& operator=(const Territory& territory);
-        friend ostream& operator << (ostream &out, const Territory &p );
-};
+class Player;
+class Territory;
+class Map;
+
 class Order{
     public:
         Order();
@@ -73,7 +58,7 @@ class BombOrder : public Order{
     public:
         BombOrder(Player* player, Territory* destination);
         BombOrder(const BombOrder& bombOrder);
-        BombOrder& operator=(const BombOrder& bOrder);
+        BombOrder& operator=(const BombOrder& bombOrder);
         ~BombOrder();
         bool validate();
         bool execute();
@@ -84,6 +69,7 @@ class BlockadeOrder : public Order{
     public:
         BlockadeOrder(Player* player, Territory* destination);
         BlockadeOrder(const BlockadeOrder& blockadeOrder);
+        BlockadeOrder& operator=(const BlockadeOrder& blockadeOrder);
         ~BlockadeOrder();
         BlockadeOrder& operator=(const BlockadeOrder& blOrder);
         bool validate();
@@ -95,6 +81,7 @@ class AirliftOrder : public Order{
     public:
         AirliftOrder(Player* player, int army, Territory* source, Territory* destination); 
         AirliftOrder(const AirliftOrder& AirliftOrder);
+        AirliftOrder& operator=(const AirliftOrder& AirliftOrder);
         ~AirliftOrder();
         AirliftOrder& operator=(const AirliftOrder& aiOrder);
         bool validate();
@@ -109,6 +96,7 @@ class NegotiateOrder : public Order{
     public:
         NegotiateOrder(Player* player, Player* player2);
         NegotiateOrder(const NegotiateOrder& NegotiateOrder);
+        NegotiateOrder& operator=(const NegotiateOrder& nOrder);
         ~NegotiateOrder();
         NegotiateOrder& operator=(const NegotiateOrder& nOrder);
         bool validate();

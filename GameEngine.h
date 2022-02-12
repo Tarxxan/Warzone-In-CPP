@@ -1,15 +1,39 @@
-// Engine that controls the flow of the game by using the notion of state, transition, and command. 
-// The state represents a certain phase of the game and dictates what are the valid actions or user commands that take place in this phase. 
-// Some actions or commands may eventually trigger a transition to another state, which is what controls the flow of the game. 
 #pragma once
 #include <iostream>
-#include <string>
-#include <vector>
-#include <list>
-#include "Orders.h"
-#include "Map.h"
-#include "Cards.h"
+#include "GameEngine.h"
 #include "Player.h"
-
+#include <string>
+#include <math.h>
+#include <fstream>
 using namespace std;
-using std::list;
+
+class GameEngine
+{
+
+private:
+     string GameState;
+     string transition;
+     int players;
+
+public:
+    GameEngine(); //default constructor
+    GameEngine(const GameEngine& GameEng); //copy constructor
+    GameEngine& operator = (const GameEngine& GameEng); //assignment operator
+    friend ostream& operator<<(ostream& os, const GameEngine& GameEng); //stream insertion operator
+
+     void start();
+     void loadmap(); //loads the map
+     void validatemap();
+     void addPlayers(); //adds players to game
+     void assignCountries(); //assigns players to a country
+     void assignReinforcement(); //reinforces the players territories with troops
+     void issueOrders(); //issues the players orders
+     void endIssueOrders();
+     void executeOrders(); //executes the players orders
+     void setState(string s); //sets the state of the game
+     string getState(); //gets the state of the game
+     int getPlayers();
+     void setPlayers(int p);
+     void setTrans(string s);
+     string getTrans();
+};
