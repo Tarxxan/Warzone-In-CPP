@@ -157,19 +157,21 @@ int main()
 
                 else if (command.compare("win")== 0)
                 {
+
                     if (GM.getPlayers() == 1)
                     {
                         GM.setState("win");
                     }
                     else
                         cout << "You didnt win yet. Keep playing" << endl;
+                        GM.setPlayers(1);
                 }
                 else
                     cout << "Going back to re-execute orders." << endl;
             }
 
             while (GM.getState().compare("win") == 0)
-            {
+            {   cout << "CONGRATS" << endl;
                 cout << " Would you like to play again?Type \"play\" for yes and \"end\" to exit" << endl;
                 cin >> command;
                 if (command.compare("play") == 0)
@@ -187,6 +189,7 @@ int main()
                     cout <<"Invalid response... JUST CHOOSE ONE"<< endl;
             }
         }
-        return 0;
+    
     }
+    return 0;
 }
