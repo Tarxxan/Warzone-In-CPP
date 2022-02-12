@@ -2,8 +2,6 @@
 // filled by drawing cards from the deck, then calls the play method of all cards in the hand.
 #include <iostream>
 #include "Cards.h"
-#include "Player.h"
-/*
 int main() {
     
     Player* player1 = new Player("Mark");
@@ -46,4 +44,4 @@ int main() {
     cout << "------------------------\n";
     cout << player1->name << "'s OrderList: \n" << *player1->orders;
 
-}*/
+}

@@ -3,46 +3,57 @@
 // toAttack() that returns a list of territories that are to be attacked
 // Player contains a issueOrder() method that creates an order object and adds it to the list of
 // orders.
-
+ 
 #include "Player.h"
+
 #include <iostream>
 Player::Player() {}; //Default
-
-Player::Player(string player_name) {
+ 
+Player::Player(int id, string player_name) {
+    this->id = id;
     this->name = player_name;
-    orders = new OrderList();
 }
-
-
+ 
+Player::Player(int id, string name, OrderList* orders, vector <Card*> hand, vector <Territory*> territories){
+    this->id = id;
+    this->name = name;
+    this->hand = hand;
+    this->territories = territories;
+    this->orders = new OrderList();
+ 
+}
+ 
 Player::~Player()
 {
     cout << "~Player destructed" << endl;
     delete orders;
-      //delete hand;
-      //delete territories;
+    //delete hand;
+    //delete territories;
 };
-
-Player& Player::operator=(const Player& p) {
+ 
+Player& Player::operator=(const Player& p){
     this->name = p.name;
+    this->id = p.id;
     this->hand = p.hand;
     this->orders = p.orders;
     this->territories = p.territories;
     return *this;
 }
-
-Player::Player(const Player& p) {
+ 
+Player::Player(const Player& p){
     this->name = p.name;
+    this->id = p.id;
     this->hand = p.hand;
     this->orders = p.orders;
     this->territories = p.territories;
 }
-
-
+ 
+ 
 ostream& operator<<(ostream& out, const Player& p)
 {
     out << "Player " << p.name << " details:" << endl;
     //out << "Hand: " << p.hand << endl;
-    //out << "List of orders: " << *p.orders << endl;
+    out << "List of orders: " << *p.orders << endl;
     out << "List of territories: ";
     for (auto territory : p.territories) {
         out << *territory << endl;
@@ -51,38 +62,33 @@ ostream& operator<<(ostream& out, const Player& p)
     return out;
 }
 // getters
-
 vector <Card*> Player::getHand(){
     return this->hand;
 }
-
-OrderList* Player::getOrders() {
+OrderList* Player::getOrders(){
     return this->orders;
 }
-
-
-vector <Territory*> Player::getTerritories() {
+vector <Territory*> Player::getTerritories(){
     return this->territories;
 }
-string Player::getName() {
+string Player::getName(){
     return this->name;
 }
-
-
+int Player::getId(){
+    return this->id;
+}
+ 
 // adders
-
-void Player::addTerritory(Territory* territory) {
+ 
+void Player::addTerritory(Territory* territory){
     territories.push_back(territory);
 }
-
-// same as issueOrder... will be deleted later
-void Player::addOrder(Order* order) {
-    orders->push(order);
+void Player::addOrder(Order* order){
+   orders->push(order);
 }
 void Player::issueOrder(Order* order) {
     orders->push(order);
 }
-
 void Player::addCard(Card* card) {
     hand.push_back(card);
 }
@@ -90,18 +96,16 @@ void Player::addCard(Card* card) {
 vector<Territory*> Player::toDefend() {
     return territories;
 }
-
+ 
 vector<Territory*> Player::toAttack() {
     vector <Territory*> adjacentTerritoriesNonDup;
-
+   
     for (auto territory : territories) {
-        cout << "Territory have the following adjacents: " << endl;
         vector <Territory*> adjacentTerritories = territory->getAdjacentTerritory();
         for (auto t : adjacentTerritories)
-            if (find(adjacentTerritoriesNonDup.begin(), adjacentTerritoriesNonDup.end(), t) != adjacentTerritoriesNonDup.end())
-            {
-                adjacentTerritoriesNonDup.push_back(t);
-            }
+        if (find(adjacentTerritoriesNonDup.begin(), adjacentTerritoriesNonDup.end(), t) != adjacentTerritoriesNonDup.end())
+        {
+            adjacentTerritoriesNonDup.push_back(t);
+        }
     }
-    return adjacentTerritoriesNonDup;
 }

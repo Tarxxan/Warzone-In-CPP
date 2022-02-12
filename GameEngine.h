@@ -1,10 +1,6 @@
 #pragma once
-#include <iostream>
-#include "GameEngine.h"
-#include "Player.h"
 #include <string>
-#include <math.h>
-#include <fstream>
+#include <iostream>
 using namespace std;
 
 class GameEngine

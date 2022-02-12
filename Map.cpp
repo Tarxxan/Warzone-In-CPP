@@ -9,7 +9,6 @@ using namespace std;
 //class Player;
 
 // Dummy Player class
-/*
 Player::Player()
 {
     name = "";
@@ -36,7 +35,6 @@ ostream &operator<<(ostream &output, const Player &p)
     output << "--Player Name: " << p.name << endl;
     return output;
 }
-*/
 //----------------------------------------------------------------------------------------------------
 //-----------------------------Territory Class--------------------------------------------------------
 //----------------------------------------------------------------------------------------------------
@@ -54,8 +52,8 @@ Territory::Territory(int territoryId, string territoryName, string continentName
     this->continentName = continentName;
     this->numberOfArmies = numberOfArmies;
     this->adjacentTerritories = adjacentTerritories;
-    //Player *p = new Player("John");
-    //this->ownerOfTerritory = p;       // will need to be fixed later
+    Player *p = new Player("John");
+    this->ownerOfTerritory = p;
 }
 
 // Copy Construct
@@ -94,7 +92,7 @@ ostream &operator<<(ostream &output, const Territory &t)
     output << "--Territory ID: " << t.territoryId << endl;
     output << "--Territory Name: " << t.territoryName << endl;
     output << "--Continent Name: " << t.continentName << endl;
-    output << "--Player Name: " << t.ownerOfTerritory->getName()<< endl;  // changed -> name to getName()
+    output << "--Player Name: " << t.ownerOfTerritory->name << endl;
     output << "--Number of armies: " << t.numberOfArmies << endl;
     output << "--Adjacent territories: ";
 

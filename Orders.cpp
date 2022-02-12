@@ -1,3 +1,4 @@
+#include "GameEngine.h"
 #include "Orders.h"
 
 Order::Order(){};
@@ -30,8 +31,8 @@ Player* Order::getPlayer(){
 }
 bool Order::validate(){return true;}
 bool Order::execute(){return true;}
-std::ostream& operator<<(ostream& out, const Order &o){
-    return out << "Order: " << o.description << o.effect;
+std::ostream& operator<<(ostream& strm,Order& o){
+    return strm << "Order: " << o.getDescription() << o.getEffect();
 }
 
 DeployOrder::DeployOrder(Player* player, int numOfArmies, Territory* destination){

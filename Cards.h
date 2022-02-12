@@ -10,14 +10,13 @@
 #include <string>
 #include <vector>
 #include <list>
-#include "Orders.h"
-#include "Player.h"
 using namespace std;
 
-class Order;
+
+
 class Player;
 class Deck;
-/*
+
 class Order{
     public:
         Order();
@@ -66,7 +65,6 @@ class OrderList{
     private:
         vector <Order*> orderList;
 };
-*/
 
 class Card{
     public:
@@ -97,25 +95,10 @@ class Hand{
         vector <Card*> hand;
 };
 
-class Deck {
-public:
-    Deck();
-    Deck(const Deck& deck);
-    void initalizeDeck();
-    Deck& operator=(const Deck& deckO);
-    vector <Card*> getDeck();
-    void push(Card* card);
-    void draw(Player* player);
-    Card* dummyDraw();
-    void remove(Card* card);
-    friend std::ostream& operator << (ostream& out, const Deck& ol);
-private:
-    vector <Card*> deck;
-};
 
 
 
-/*
+
 class Player
 {
 public:
@@ -131,6 +114,21 @@ public:
     void fillHand(Deck* deck);
     void chooseCard(string orderType,Deck* deck);
 };
-*/
 
+
+class Deck{
+    public:
+        Deck();
+        Deck(const Deck& deck); 
+        void initalizeDeck();
+        Deck& operator=(const Deck& deckO);
+        vector <Card*> getDeck();
+        void push(Card* card);
+        void draw(Player* player);
+        Card* dummyDraw();
+        void remove(Card* card);
+        friend std::ostream& operator << (ostream& out,const Deck& ol);
+    private:
+        vector <Card*> deck;
+};
 

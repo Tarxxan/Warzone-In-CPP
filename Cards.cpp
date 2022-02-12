@@ -1,5 +1,10 @@
 #include "Cards.h"
-/*
+
+
+
+
+
+
 Order::Order(){};
 Order::Order(string type){
     this->name = type;
@@ -115,7 +120,17 @@ bool OrderList::moveDown(Order *order){
 
 
 
-*/
+
+
+
+
+
+
+
+
+
+
+
 
 
 ////////////////////////////////////////// CARD //////////////////////////////////////////////////////
@@ -136,14 +151,11 @@ void Card::setPlayer(Player* player){
     this->player = player;
 }
 void Card::play(Deck* deck){
-    /*
     this->player->hand->remove(this);
     cout << this->type << " Card played!\n";
     Order* newOrder = new Order(this->type);
     this->player->orders->push(newOrder);
     deck->push(this);
-    */
-    // needs to be fix
 
 }
 string Card::getType(){
@@ -198,7 +210,6 @@ std::ostream& operator << (ostream& strm,const Hand& hO){
 
 
 // Dummy Player class
-/*
 Player::Player()
 {
     name = "";
@@ -244,7 +255,7 @@ void Player::chooseCard(string orderType, Deck* deck){
     cout << "ORDER TYPE NOT FOUND\n";
 }
 
-*/
+
 /////////////////////////////////////// DECK //////////////////////////////////////////////////////
 Deck::Deck(){};
 vector <Card*> Deck::getDeck(){
