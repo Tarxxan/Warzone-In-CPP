@@ -58,7 +58,7 @@ class BombOrder : public Order{
     public:
         BombOrder(Player* player, Territory* destination);
         BombOrder(const BombOrder& bombOrder);
-        BombOrder& operator=(const BombOrder& bombOrder);
+        BombOrder& operator=(const BombOrder& bOrder);
         ~BombOrder();
         bool validate();
         bool execute();
@@ -69,9 +69,8 @@ class BlockadeOrder : public Order{
     public:
         BlockadeOrder(Player* player, Territory* destination);
         BlockadeOrder(const BlockadeOrder& blockadeOrder);
-        BlockadeOrder& operator=(const BlockadeOrder& blockadeOrder);
-        ~BlockadeOrder();
         BlockadeOrder& operator=(const BlockadeOrder& blOrder);
+        ~BlockadeOrder();
         bool validate();
         bool execute();
     private:
@@ -81,7 +80,6 @@ class AirliftOrder : public Order{
     public:
         AirliftOrder(Player* player, int army, Territory* source, Territory* destination); 
         AirliftOrder(const AirliftOrder& AirliftOrder);
-        AirliftOrder& operator=(const AirliftOrder& AirliftOrder);
         ~AirliftOrder();
         AirliftOrder& operator=(const AirliftOrder& aiOrder);
         bool validate();
@@ -98,7 +96,6 @@ class NegotiateOrder : public Order{
         NegotiateOrder(const NegotiateOrder& NegotiateOrder);
         NegotiateOrder& operator=(const NegotiateOrder& nOrder);
         ~NegotiateOrder();
-        NegotiateOrder& operator=(const NegotiateOrder& nOrder);
         bool validate();
         bool execute();
     private:

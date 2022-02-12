@@ -4,14 +4,16 @@
 #include <iostream>
 #include "Orders.h"
 #include <memory>
+#include <vector>
 using namespace std;
 
 int main() {
     // TODO: Linkage to actual Player & Territory
     Player* p1 = new Player("Tom");
     Player* p2 = new Player("John");
-    Territory* t1 = new Territory("Australia");
-    Territory* t2 = new Territory("Canada");
+    vector <Territory*> terList;
+    Territory* t1 = new Territory(1, "Australia", "Oceanie", 5, terList);
+    Territory* t2 = new Territory(2, "Canada", "America", 4, terList);
 
     // Creating objects for each subOrder type
     DeployOrder* deploy = new DeployOrder(p1, 5, t1);
