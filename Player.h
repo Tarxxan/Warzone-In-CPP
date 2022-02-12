@@ -1,38 +1,52 @@
 #pragma once
-#include <iostream>
-#include <vector>
-#include <list>
-#include "Orders.h"
+using namespace std;
+#include <string>
 #include "Map.h"
+#include "Orders.h"
 #include "Cards.h"
 
-using namespace std;
-using std::list;
+#include <vector>
+
+class Card;
+class OrderList;
+class Hand;
+class Territory;
+class Order;
 
 class Player {
-   
-
 public:
     Player(); //Default Constructor
+    Player(string player_name);
     ~Player();
-    Player(std::list<Order> orders, std::list<Territory> territories, std::list<Card> cards);
-    friend ostream& operator<<(ostream& output, const Player& Player); // Stream insertion operator <<  // This is made friend to access private members of Territory
-    
-    //member functions
-    list<Order> getOrders();
-    list<Territory> getTerritories();
-    list<Card> getCards();
-    list<Territory> toDefend(); // return a list of territories that are to be defended
-    list<Territory> toAttack(); //  returns a list of territories that are to be attacked
-                                // establish an arbitrary list of territories to be defended, and an
-                                // arbitrary list of territories that are to be attacked.
-    void issueOrder(string new_order);   //creates an Order object and puts it in the player’s list of orders.
-    
+    Player(const Player& p);
+    Player& operator=(const Player& order);
 
+    //getters
+  //  vector <Card*> getHand();
+    OrderList* getOrders();
+    vector <Territory*> getTerritories();
+    string getName();
+    vector <Card*> getHand();
+    int getAvailableArmies();
+
+    friend ostream& operator<<(ostream& out, const Player& player);
+    
+    void addCard(Card* card);
+    void addTerritory(Territory* territory);
+    void addOrder(Order* order);
+    // //member functions
+    void computeAvailableArmies();
+    vector <Territory*> toDefend(); // return a list of territories that are to be defended
+    vector <Territory*> toAttack(); //  returns a list of territories that are to be attacked
+    //                             // establish an arbitrary list of territories to be defended, and an
+    //                             // arbitrary list of territories that are to be attacked.
+    void issueOrder(Order* order);   //creates an Order object and puts it in the playerï¿½s list of orders.
+    void advance(Territory* from, Territory* to);
 
 private:
-    std::list<Order> orders;
-    std::list<Territory> territories;
-    std::list<Card> cards;
-
+    OrderList* orders;
+    vector <Territory*> territories;
+    vector <Card*> hand;
+    string name;
+    int availableArmies;
 };

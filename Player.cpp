@@ -1,78 +1,162 @@
-// A player owns a collection of territories (from the map)
-// A player owns a hand of Cards
 // A player has their own list of orders to be created and executed in the current turn
 // The player should contain a method named toDefend() that return a list of territories that are to be defended, as well as a method named
 // toAttack() that returns a list of territories that are to be attacked
 // Player contains a issueOrder() method that creates an order object and adds it to the list of
-// orders. 
+// orders.
+
 #include "Player.h"
-#include "Map.h"
 #include <iostream>
-#include <list>
-#include <fstream> // file stream
-#include <string> // Needed for Getline method
-using namespace std;
+Player::Player() {}; //Default
 
-Player::Player() {
-} //Default Constructor
-
-
-std::list<Order> orders;
-std::list<Territory> territories;
-std::list<Card> cards;
-
-Player::Player(std::list<Order> orders, std::list<Territory> territories, std::list<Card> cards)
-{
-    this->orders = orders;
-    this->territories = territories;
-    this->cards = cards;
+Player::Player(string player_name) {
+    this->name = player_name;
+    this->hand = vector <Card*>();
+    this->orders = new OrderList();
+    this->territories = vector<Territory*>();
 
 }
 
-Player::~Player()
-{
+Player::~Player()   //Destructor
+{   //  To avoid memory leak, delete all pointer objects and assign them to nullptr
+    delete orders;
+    orders = nullptr;
+    for (int i = 0; i < hand.size(); i++) {
+        delete hand[i];
+        hand[i] = nullptr;
+    }
+    for (int i = 0; i < territories.size(); i++) {
+        delete territories[i];
+        territories[i] = nullptr;
+    }
     cout << "~Player destructed" << endl;
+};
 
+//Copy constructor
+Player& Player::operator=(const Player& p) {
+    if (this != &p) { 
+        this->name = p.name;
+        this->hand = p.hand;
+        this->orders = p.orders;
+        this->territories = p.territories;
+    }
+    return *this;
 }
 
+Player::Player(const Player& p) {
+    this->name = p.name;
+    this->hand = p.hand;
+    this->orders = p.orders;
+    this->territories = p.territories;
+}
 
-ostream& operator<<(ostream& output, Player& p)
+ostream& operator<<(ostream& out, const Player& p)
 {
+    out << "Player " << p.name << " details:" << endl;
+    out << p.name << " has the following cards " << endl;
+    out << p.name << " has " << p.hand.size() << " cards" << endl;
+    out << p.name << " has "<< p.territories.size() << " territories" << endl;
+    out << p.name << " has " << p.orders->getOrders().size() << " orders" << endl;
     /*
-    output << "Player has cards: " << p.getCards() << endl;
-    output << "Player has cards: " << p.getOrders() << endl;
-    output << "--Territory ID: " << p.getTerritories() << endl;
+    for (int i = 0; i < p.hand.size(); i++) {
+        out << p.hand[i] << endl;
+    }
+    for (int i = 0; i < p.territories.size(); i++) {
+        out << p.territories[i] << endl;
+    }
+    
+    
+    out << "List of orders: " << *p.orders << endl;
+    out << "List of territories: ";
+    
+    for (auto territory : p.territories) {
+        out << *territory << endl;
+    }
     */
-    return output;
-}
-
-//member functions
-list<Order> Player:: getOrders() {
-    return orders;
-}
-
-list<Card> Player::getCards() {
-    return cards;
+ 
+    out << endl;
+    
+    return out;
 }
 
 
-list<Territory> Player::toDefend() {// return a list of territories that are to be defended
-    list<Territory> territories_to_defend;
-    cout << "calling toDefend()" << endl;
-    return territories_to_defend;
+// getters
+vector <Card*> Player::getHand(){
+    return this->hand;
 }
 
-list<Territory> Player::toAttack() { //  returns a list of territories that are to be attacked
-    list<Territory> territories_to_attack;
-    cout << "calling toAttack()" << endl;
-    return territories_to_attack;
+OrderList* Player::getOrders() {
+    return this->orders;
 }
-                            // establish an arbitrary list of territories to be defended, and an
-                            // arbitrary list of territories that are to be attacked.
-void Player:: issueOrder(string new_order) {   //creates an Order object and puts it in the player’s list of orders.
-    Order *newOrder = new Order(new_order);
-    cout << "calling issueOrder()" << endl;
-    orders.push_back(*newOrder);
+
+vector <Territory*> Player::getTerritories() {
+    return this->territories;
+}
+string Player::getName() {
+    return this->name;
+}
+int Player::getAvailableArmies() {
+    return availableArmies;
 }
 
 
+// adders
+void Player::addTerritory(Territory* territory) {
+    territories.push_back(territory);
+}
+
+void Player::addOrder(Order* order) {
+    orders->push(order);
+}
+void Player::issueOrder(Order* order) {
+    orders->push(order);
+}
+
+void Player::addCard(Card* card) {
+    hand.push_back(card);
+}
+
+void Player::computeAvailableArmies() {
+    // assign the number of armies
+    availableArmies = int(floor(territories.size()/3));
+    // In any case, the minimal number of reinforcement armies for any player is 3
+    if (availableArmies < 3) {
+        availableArmies = 3;
+    }
+}
+
+void Player::advance(Territory *from, Territory *to) {
+    // confirm that this *from territory belongs to the player
+    if(std::find(territories.begin(), territories.end(), from) != territories.end()) {
+        if (std::find(territories.begin(), territories.end(), to) != territories.end()) {
+            // will reinforce
+            return;
+        }
+        else {
+            //will attack
+            return;
+        }
+    }
+}
+
+vector<Territory*> Player::toDefend() {
+    cout << "The following territories are owned by the player and to be defended..." << endl;
+    return territories;
+}
+ 
+vector<Territory*> Player::toAttack() {
+    cout << "The following territories are available to attack..." << endl;
+    vector <Territory*> adjacentTerritoriesNonDup;
+    // looping through all player's owned territories and get all their adjacent territories
+    for (auto territory : territories) {
+        vector <Territory*> adjacentTerritories = territory->getAdjacentTerritory();
+        for (auto t : adjacentTerritories)
+        // looping through each adjacent territory, if it hasn't been added to the adjacentTerritories vector
+        // then add it, this way it prevents duplicates.
+        if (find(adjacentTerritoriesNonDup.begin(), adjacentTerritoriesNonDup.end(), t) != adjacentTerritoriesNonDup.end() == 0)
+        {
+            adjacentTerritoriesNonDup.push_back(t);
+        }
+
+    }
+    return adjacentTerritoriesNonDup;
+}
