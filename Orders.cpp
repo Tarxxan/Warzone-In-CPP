@@ -1,5 +1,21 @@
 #include "GameEngine.h"
 #include "Orders.h"
+Player::Player(){};
+Player::Player(string name){
+    this->name = name;
+}
+Player::~Player(){}
+string Player::getName(){
+    return this->name;
+}
+Territory::Territory(){};
+Territory::Territory(string name){
+    this->name = name;
+}
+Territory::~Territory(){}
+string Territory::getTerritoryName(){
+    return this->name;
+}
 
 Order::Order(){};
 Order::Order(const Order& order){
@@ -31,8 +47,8 @@ Player* Order::getPlayer(){
 }
 bool Order::validate(){return true;}
 bool Order::execute(){return true;}
-std::ostream& operator<<(ostream& strm,Order& o){
-    return strm << "Order: " << o.getDescription() << o.getEffect();
+std::ostream& operator<<(ostream& out, const Order& o){
+    return out << "Order: " << o.description << o.effect;
 }
 
 DeployOrder::DeployOrder(Player* player, int numOfArmies, Territory* destination){
