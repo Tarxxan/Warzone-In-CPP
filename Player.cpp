@@ -3,109 +3,160 @@
 // toAttack() that returns a list of territories that are to be attacked
 // Player contains a issueOrder() method that creates an order object and adds it to the list of
 // orders.
- 
-#include "Player.h"
 
+#include "Player.h"
 #include <iostream>
 Player::Player() {}; //Default
- 
-Player::Player(int id, string player_name) {
-    this->id = id;
+
+Player::Player(string player_name) {
     this->name = player_name;
-}
- 
-Player::Player(int id, string name, OrderList* orders, vector <Card*> hand, vector <Territory*> territories){
-    this->id = id;
-    this->name = name;
-    this->hand = hand;
-    this->territories = territories;
+    this->hand = vector <Card*>();
     this->orders = new OrderList();
- 
+    this->territories = vector<Territory*>();
+
 }
- 
-Player::~Player()
-{
-    cout << "~Player destructed" << endl;
+
+Player::~Player()   //Destructor
+{   //  To avoid memory leak, delete all pointer objects and assign them to nullptr
     delete orders;
-    //delete hand;
-    //delete territories;
+    orders = nullptr;
+    for (int i = 0; i < hand.size(); i++) {
+        delete hand[i];
+        hand[i] = nullptr;
+    }
+    for (int i = 0; i < territories.size(); i++) {
+        delete territories[i];
+        territories[i] = nullptr;
+    }
+    cout << "~Player destructed" << endl;
 };
- 
-Player& Player::operator=(const Player& p){
-    this->name = p.name;
-    this->id = p.id;
-    this->hand = p.hand;
-    this->orders = p.orders;
-    this->territories = p.territories;
+
+//Copy constructor
+Player& Player::operator=(const Player& p) {
+    if (this != &p) { 
+        this->name = p.name;
+        this->hand = p.hand;
+        this->orders = p.orders;
+        this->territories = p.territories;
+    }
     return *this;
 }
- 
-Player::Player(const Player& p){
+
+Player::Player(const Player& p) {
     this->name = p.name;
-    this->id = p.id;
     this->hand = p.hand;
     this->orders = p.orders;
     this->territories = p.territories;
 }
- 
- 
+
 ostream& operator<<(ostream& out, const Player& p)
 {
     out << "Player " << p.name << " details:" << endl;
-    //out << "Hand: " << p.hand << endl;
+    out << p.name << " has the following cards " << endl;
+    out << p.name << " has " << p.hand.size() << " cards" << endl;
+    out << p.name << " has "<< p.territories.size() << " territories" << endl;
+    out << p.name << " has " << p.orders->getOrders().size() << " orders" << endl;
+    /*
+    for (int i = 0; i < p.hand.size(); i++) {
+        out << p.hand[i] << endl;
+    }
+    for (int i = 0; i < p.territories.size(); i++) {
+        out << p.territories[i] << endl;
+    }
+    
+    
     out << "List of orders: " << *p.orders << endl;
     out << "List of territories: ";
+    
     for (auto territory : p.territories) {
         out << *territory << endl;
     }
+    */
+ 
     out << endl;
+    
     return out;
 }
+
+
 // getters
 vector <Card*> Player::getHand(){
     return this->hand;
 }
-OrderList* Player::getOrders(){
+
+OrderList* Player::getOrders() {
     return this->orders;
 }
-vector <Territory*> Player::getTerritories(){
+
+vector <Territory*> Player::getTerritories() {
     return this->territories;
 }
-string Player::getName(){
+string Player::getName() {
     return this->name;
 }
-int Player::getId(){
-    return this->id;
+int Player::getAvailableArmies() {
+    return availableArmies;
 }
- 
+
+
 // adders
- 
-void Player::addTerritory(Territory* territory){
+void Player::addTerritory(Territory* territory) {
     territories.push_back(territory);
 }
-void Player::addOrder(Order* order){
-   orders->push(order);
+
+void Player::addOrder(Order* order) {
+    orders->push(order);
 }
 void Player::issueOrder(Order* order) {
     orders->push(order);
 }
+
 void Player::addCard(Card* card) {
     hand.push_back(card);
 }
- 
+
+void Player::computeAvailableArmies() {
+    // assign the number of armies
+    availableArmies = int(floor(territories.size()/3));
+    // In any case, the minimal number of reinforcement armies for any player is 3
+    if (availableArmies < 3) {
+        availableArmies = 3;
+    }
+}
+
+void Player::advance(Territory *from, Territory *to) {
+    // confirm that this *from territory belongs to the player
+    if(std::find(territories.begin(), territories.end(), from) != territories.end()) {
+        if (std::find(territories.begin(), territories.end(), to) != territories.end()) {
+            // will reinforce
+            return;
+        }
+        else {
+            //will attack
+            return;
+        }
+    }
+}
+
 vector<Territory*> Player::toDefend() {
+    cout << "The following territories are owned by the player and to be defended..." << endl;
     return territories;
 }
  
 vector<Territory*> Player::toAttack() {
+    cout << "The following territories are available to attack..." << endl;
     vector <Territory*> adjacentTerritoriesNonDup;
-   
+    // looping through all player's owned territories and get all their adjacent territories
     for (auto territory : territories) {
         vector <Territory*> adjacentTerritories = territory->getAdjacentTerritory();
         for (auto t : adjacentTerritories)
-        if (find(adjacentTerritoriesNonDup.begin(), adjacentTerritoriesNonDup.end(), t) != adjacentTerritoriesNonDup.end())
+        // looping through each adjacent territory, if it hasn't been added to the adjacentTerritories vector
+        // then add it, this way it prevents duplicates.
+        if (find(adjacentTerritoriesNonDup.begin(), adjacentTerritoriesNonDup.end(), t) != adjacentTerritoriesNonDup.end() == 0)
         {
             adjacentTerritoriesNonDup.push_back(t);
         }
+
     }
+    return adjacentTerritoriesNonDup;
 }
