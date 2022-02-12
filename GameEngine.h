@@ -3,13 +3,12 @@
 // Some actions or commands may eventually trigger a transition to another state, which is what controls the flow of the game. 
 #pragma once
 #include <iostream>
-#include <string>
-#include <vector>
-#include <list>
-#include "Orders.h"
-#include "Map.h"
-#include "Cards.h"
+#include "GameEngine.h"
 #include "Player.h"
+#include <string>
+#include <math.h>
+#include <fstream>
+using namespace std;
 
 using namespace std;
 using std::list;

@@ -1,6 +1,7 @@
 // Driver that reads many different map files, creates a Map object for valid files and rejects the
 // invalid ones.
 #include "Map.h"
+#include "Player.h"
 #include <iostream>
 #include <ctime>
 using namespace std;
@@ -11,9 +12,9 @@ using namespace std;
         // Bigeurope2Continents.map 1 country 2 continents line 32
         // bigeuropebadborders.map Same as artic
         // bigeuropebadcontinents.map Continents arent connected. Continent 1 is disconnected
-
+/*
 int main()
-{   
+{  
     bool playAgain = true;
     while (playAgain)
     {
@@ -76,4 +77,4 @@ int main()
     system("pause");
 
     return 0;
-}
+}*/

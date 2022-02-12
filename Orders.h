@@ -1,4 +1,14 @@
-#include "GameEngine.h"
+#pragma once
+#include <vector>
+#include <string>
+using namespace std;
+#include "Player.h"
+#include "Map.h"
+
+class Player;
+class Territory;
+class Map;
+
 class Order{
     public:
         Order();
@@ -24,6 +34,7 @@ class DeployOrder : public Order{
         DeployOrder(Player* player, int numOfArmies, Territory* destination);
         DeployOrder(const DeployOrder& deployOrder);
         ~DeployOrder();
+        DeployOrder& operator=(const DeployOrder& dOrder);
         bool validate();
         bool execute(); // execute will call validate method before executing
     private:
@@ -34,6 +45,8 @@ class AdvanceOrder : public Order{
     public:
         AdvanceOrder(Player* player, int armies, Territory* source, Territory* destination);
         ~AdvanceOrder();
+        AdvanceOrder& operator=(const AdvanceOrder& advanceOrder);
+        AdvanceOrder(const AdvanceOrder& advanceOrder);
         bool validate();
         bool execute();
     private:
@@ -45,6 +58,7 @@ class BombOrder : public Order{
     public:
         BombOrder(Player* player, Territory* destination);
         BombOrder(const BombOrder& bombOrder);
+        BombOrder& operator=(const BombOrder& bombOrder);
         ~BombOrder();
         bool validate();
         bool execute();
@@ -55,6 +69,7 @@ class BlockadeOrder : public Order{
     public:
         BlockadeOrder(Player* player, Territory* destination);
         BlockadeOrder(const BlockadeOrder& blockadeOrder);
+        BlockadeOrder& operator=(const BlockadeOrder& blockadeOrder);
         ~BlockadeOrder();
         bool validate();
         bool execute();
@@ -65,6 +80,7 @@ class AirliftOrder : public Order{
     public:
         AirliftOrder(Player* player, int army, Territory* source, Territory* destination); 
         AirliftOrder(const AirliftOrder& AirliftOrder);
+        AirliftOrder& operator=(const AirliftOrder& AirliftOrder);
         ~AirliftOrder();
         bool validate();
         bool execute();
@@ -78,6 +94,7 @@ class NegotiateOrder : public Order{
     public:
         NegotiateOrder(Player* player, Player* player2);
         NegotiateOrder(const NegotiateOrder& NegotiateOrder);
+        NegotiateOrder& operator=(const NegotiateOrder& nOrder);
         ~NegotiateOrder();
         bool validate();
         bool execute();

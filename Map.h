@@ -12,8 +12,16 @@
 #pragma once
 #include <iostream>
 #include <vector>
-using namespace std;
+#include "Player.h"
 
+using namespace std;
+class Player;                   // forward declaration to avoid Circular Dependencies 
+//class Order;
+//class OrderList;
+//class Card;
+
+
+/*  //dummy class
 class Player
 {
 public:
@@ -23,7 +31,7 @@ public:
     ~Player();
     void setPlayerName(string s);
 };
-
+*/
 // Territory
 
 class Territory
