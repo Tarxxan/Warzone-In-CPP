@@ -6,6 +6,8 @@
 
 #include "Player.h"
 #include <iostream>
+#include <math.h> 
+#include <algorithm>
 using namespace std;
 
 //Dummy class for Territory
