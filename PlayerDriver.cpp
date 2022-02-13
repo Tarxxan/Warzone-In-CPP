@@ -4,9 +4,8 @@
 #include <iostream>
 
 int main() {
-    Player* p2 = new Player("Test");
-    Player* p = p2;
-  
+    Player* p = new Player("Jack");
+    
     Territory* t0 = new Territory(1, "Labrador", "Canada", 10, vector<Territory*>());
     Territory* t1 = new Territory(2, "Ontario", "Canada", 8, vector<Territory*>());
     Territory* t2 = new Territory(0, "Quebec", "Canada", 1, vector<Territory*>() = {t0,t1});
@@ -14,8 +13,8 @@ int main() {
     t1->addAdjacentTerritory(t2);
     p->addTerritory(t2);
 
-    DeployOrder* deploy = new DeployOrder(p, 5, t1);
-    BombOrder* bomb = new BombOrder(p, t1);
+    DeployOrder* deploy = new DeployOrder(5, t1);
+    BombOrder* bomb = new BombOrder(t1);
     cout << "Issuing the orders" << endl;
     p->issueOrder(deploy);
     p->issueOrder(bomb);
@@ -33,6 +32,6 @@ int main() {
     for (Territory* territory : p->toAttack()) {
         cout << *territory << endl;
     }
-
+    
     return 0;
 }

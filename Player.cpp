@@ -6,6 +6,68 @@
 
 #include "Player.h"
 #include <iostream>
+using namespace std;
+
+//Dummy class for Territory
+Territory::Territory() {};
+Territory::Territory(int territoryId, string territoryName, string continentName, int numberOfArmies, vector<Territory*> adjacentTerritories)
+{
+    this->territoryId = territoryId;
+    this->territoryName = territoryName;
+    this->continentName = continentName;
+    this->numberOfArmies = numberOfArmies;
+    this->adjacentTerritories = adjacentTerritories;
+}
+vector<Territory*> Territory::getAdjacentTerritory()
+{
+    return adjacentTerritories; // this returns the vector
+}
+void Territory::addAdjacentTerritory(Territory* t)
+{
+    this->adjacentTerritories.push_back(t);
+}
+
+ostream& operator<<(ostream& output, const Territory& t)
+{
+    output << "--Territory ID: " << t.territoryId << endl;
+    output << "--Territory Name: " << t.territoryName << endl;
+    output << "--Continent Name: " << t.continentName << endl;
+    output << "--Number of armies: " << t.numberOfArmies << endl;
+    output << "--Adjacent territories: ";
+
+    for (Territory* t : t.adjacentTerritories)
+    {
+        output << t->territoryName << " | ";
+    }
+    output << endl
+        << "------------------------------------------------------" << endl;
+    return output;
+}
+
+//Dummy class for Order
+Order::Order() {}; // Empty constructor
+
+OrderList::OrderList() {};
+void OrderList::push(Order* order) {
+    orderList.push_back(order);
+}
+vector <Order*> OrderList::getOrders() {
+    return this->orderList;
+}
+DeployOrder::DeployOrder(int numOfArmies, Territory* destination) { // Parameter Constructor
+    this->name = "Deploy";
+    this->armies = numOfArmies;
+    this->destination = destination;
+}
+BombOrder::BombOrder(Territory* destination) {   // Parameter constructor
+    this->name = "Bomb";
+    this->destination = destination;
+}
+//Dummy class for Card
+Card::Card(string type) {
+    this->type = type;
+}
+
 
 Player::Player() {}; //Default Constructor
 

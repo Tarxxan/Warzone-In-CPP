@@ -1,17 +1,70 @@
 #pragma once
 using namespace std;
 #include <string>
-#include "Map.h"
-#include "Orders.h"
-#include "Cards.h"
-
 #include <vector>
 
-class Card;
-class OrderList;
-class Hand;
-class Territory;
-class Order;
+// Dummy classes for Territory, Order, Card, DeployOrder, BombOrder
+class Territory {
+public:
+    Territory();
+    Territory(int territoryId, string territoryName, string continentName, int numberOfArmies, vector<Territory*> adjacentTerritories);
+    vector<Territory*> getAdjacentTerritory();
+    void addAdjacentTerritory(Territory* t);
+    friend ostream& operator<<(ostream& output, const Territory& territory);
+private:
+    int territoryId;
+    string territoryName;
+    string continentName;
+    int numberOfArmies;
+    vector<Territory*> adjacentTerritories; // Store adjacent territory pointers in vector.
+};
+
+class Order {
+public:
+    Order();
+protected:
+    string name;
+};
+
+class OrderList {
+public:
+    // Empty Constructor
+    OrderList();
+    // Inserts an order at the end (as they supposed to)
+    vector <Order*> getOrders();
+    void push(Order* order);
+    // comparing pointers of 
+private:
+    vector <Order*> orderList;
+};
+
+class DeployOrder : public Order {
+public:
+    DeployOrder(int numOfArmies, Territory* destination); // Parameter Constructor
+   private:
+    // Data members
+    int armies;
+    Territory* destination;
+};
+class BombOrder : public Order {
+public:
+    BombOrder(Territory* destination);  // Parameter constructor
+   private:
+    // Data members
+    Territory* destination;
+};
+
+
+class Card {
+public:
+    Card(string type);
+private:
+    string type;
+};
+
+
+
+
 
 class Player {
 public:
