@@ -164,6 +164,7 @@ Player& Player::operator=(const Player &p) {
 
 //Copy constructor
 Player::Player(const Player& p) {
+    cout << "Copy constructor called" << endl;
     this->name = p.name;
     this->availableArmies = p.availableArmies;
     this->playerHand = p.playerHand;
