@@ -1,10 +1,13 @@
 #include "GameEngine.h"
 #include "Orders.h"
+// Dummy classes
 Player::Player(){};
 Player::Player(string name){
     this->name = name;
 }
-Player::~Player(){}
+Player::~Player(){
+    cout << "Player Destructor called" << endl;
+}
 string Player::getName(){
     return this->name;
 }
@@ -12,27 +15,32 @@ Territory::Territory(){};
 Territory::Territory(string name){
     this->name = name;
 }
-Territory::~Territory(){}
+Territory::~Territory(){
+    cout << "Territory Destructor called" << endl;
+}
 string Territory::getTerritoryName(){
     return this->name;
 }
 
-Order::Order(){};
-Order::Order(const Order& order){
+///////////////////////////////////////////////////// ORDER CLASS /////////////////////////////////
+Order::Order(){}; // Empty constructor
+Order::Order(const Order& order){ // Parameter Constructor
     this->name = order.name;
     this->description = order.description;
     this->effect = order.effect;
     this->player = order.player;
 }
-Order::~Order(){}
-Order& Order::operator=(const Order& o){
+Order::~Order(){
+    cout << "Order Destructor called" << endl;
+}                // Destructor
+Order& Order::operator=(const Order& o){ // Assignment Operator
     this->name = o.name;
     this->description = o.description;
     this->effect = o.effect;
     this->player = o.player;
     return *this;
 }
-//Assignment operator // It can be used to create an object just like the copy constructor
+// Getters
 string Order::getName(){
     return this->name;
 }
@@ -45,13 +53,15 @@ string Order::getEffect(){
 Player* Order::getPlayer(){
     return this->player;
 }
+// Promise that they will be reinitialized in sub orders
 bool Order::validate(){return true;}
 bool Order::execute(){return true;}
+// Friend method to print order's description and effect
 std::ostream& operator<<(ostream& out, const Order& o){
     return out << "Order: " << o.description << o.effect;
 }
-
-DeployOrder::DeployOrder(Player* player, int numOfArmies, Territory* destination){
+//////////////////////////////////////////////////// DeployOrder /////////////////////////////////////////////////////
+DeployOrder::DeployOrder(Player* player, int numOfArmies, Territory* destination){ // Parameter Constructor
     this->name = "Deploy";
     this->description = "Deploy " + to_string(numOfArmies) + " solders to " + destination->getTerritoryName()
                         + " by " + player->getName();
@@ -59,7 +69,7 @@ DeployOrder::DeployOrder(Player* player, int numOfArmies, Territory* destination
     this->player = player;
     this->destination = destination;
 }
-DeployOrder::DeployOrder(const DeployOrder& deployOrder){
+DeployOrder::DeployOrder(const DeployOrder& deployOrder){   // Copy Constructor
     this->name = deployOrder.name;
     this->description = deployOrder.description;
     this->effect = deployOrder.effect;
@@ -67,8 +77,10 @@ DeployOrder::DeployOrder(const DeployOrder& deployOrder){
     this->player = deployOrder.player;
     this->destination = deployOrder.destination;
 }
-DeployOrder::~DeployOrder(){}
-DeployOrder& DeployOrder::operator=(const DeployOrder& dOrder){
+DeployOrder::~DeployOrder(){
+    cout << "DeployOrder Destructor called" << endl;
+}   // Destructor
+DeployOrder& DeployOrder::operator=(const DeployOrder& dOrder){ // Assignment Operator
     this->name = dOrder.name;
     this->description = dOrder.description;
     this->effect = dOrder.effect;
@@ -82,7 +94,7 @@ bool DeployOrder::validate(){
     cout << "Deploy Validated for "<< this->armies << " armies\n";
     return true;
 }
-bool DeployOrder::execute(){
+bool DeployOrder::execute(){    // Triggers validate
     if (validate()){
         this->effect = "\nEffect: "+to_string(this->armies)+" solders are being deployed on " 
                         + this->destination->getTerritoryName() + " by " + this->player->getName();
@@ -90,8 +102,8 @@ bool DeployOrder::execute(){
     }
     return false;
 }
-
-AdvanceOrder::AdvanceOrder(Player* player, int armies, Territory* source, Territory* destination){
+/////////////////////////////////////////////////// AdvanceOrder ////////////////////////////////////////////////////
+AdvanceOrder::AdvanceOrder(Player* player, int armies, Territory* source, Territory* destination){  // Parameter constructor
     this->name = "Advance";
     this->description = "Advancing " + to_string(armies) + " solders from " + source->getTerritoryName()
                         + " to " + destination->getTerritoryName() + " by " + player->getName();
@@ -100,7 +112,7 @@ AdvanceOrder::AdvanceOrder(Player* player, int armies, Territory* source, Territ
     this->source = source;
     this->destination = destination;
 }
-AdvanceOrder::AdvanceOrder(const AdvanceOrder& advanceOrder){
+AdvanceOrder::AdvanceOrder(const AdvanceOrder& advanceOrder){   // Copy constructor
     this->name = advanceOrder.name;
     this->description = advanceOrder.description;
     this->effect = advanceOrder.effect;
@@ -109,8 +121,10 @@ AdvanceOrder::AdvanceOrder(const AdvanceOrder& advanceOrder){
     this->source = advanceOrder.source;
     this->destination = advanceOrder.destination;
 }
-AdvanceOrder::~AdvanceOrder(){}
-AdvanceOrder& AdvanceOrder::operator=(const AdvanceOrder& aOrder){
+AdvanceOrder::~AdvanceOrder(){
+    cout << "AdvanceOrder Destructor called" << endl;
+} // Destructor
+AdvanceOrder& AdvanceOrder::operator=(const AdvanceOrder& aOrder){  // Assignment operator
     this->name = aOrder.name;
     this->description = aOrder.description;
     this->effect = aOrder.effect;
@@ -126,7 +140,7 @@ bool AdvanceOrder::validate(){
     cout << "Advance Order is validated\n";
     return true;
 }
-bool AdvanceOrder::execute(){
+bool AdvanceOrder::execute(){   // Triggers validate
     if (validate()){
         // if both territories belong to one user then move if not attack TODO:
         this->effect = "\nEffect: "+to_string(this->armies)+" solders are being advanced from "
@@ -136,22 +150,24 @@ bool AdvanceOrder::execute(){
     }
     return false;
 }
-
-BombOrder::BombOrder(Player* player, Territory* destination){
+/////////////////////////////////////////////////// BombOrder //////////////////////////////////////////////////////
+BombOrder::BombOrder(Player* player, Territory* destination){   // Parameter constructor
     this->name = "Bomb";
     this->description = "Bombs half of the army on " + destination->getTerritoryName() + " by " + player->getName();
     this->player = player;
     this->destination = destination;
 }
-BombOrder::BombOrder(const BombOrder& bombOrder){
+BombOrder::BombOrder(const BombOrder& bombOrder){   // Copy constructor
     this->name = bombOrder.name;
     this->description = bombOrder.description;
     this->effect = bombOrder.effect;
     this->player = bombOrder.player;
     this->destination = bombOrder.destination;
 }
-BombOrder::~BombOrder(){}
-BombOrder& BombOrder::operator=(const BombOrder& bOrder){
+BombOrder::~BombOrder(){
+    cout << "BombOrder Destructor called" << endl;
+}   // Destructor 
+BombOrder& BombOrder::operator=(const BombOrder& bOrder){   // Assignment operator
     this->name = bOrder.name;
     this->description = bOrder.description;
     this->effect = bOrder.effect;
@@ -164,7 +180,7 @@ bool BombOrder::validate(){
     cout << "Bomb Order is validated\n";
     return true;
 }
-bool BombOrder::execute(){
+bool BombOrder::execute(){ // Will trigger validate method 
     if (validate()){
         this->effect = "\nEffect: half of the army is destroyed on " + this->destination->getTerritoryName()
                         + " by " + this->player->getName();
@@ -172,22 +188,24 @@ bool BombOrder::execute(){
     }
     return false;
 }
-
-BlockadeOrder::BlockadeOrder(Player* player, Territory* destination){
+//////////////////////////////////////////////// BlockadeOrder /////////////////////////////////////////////////////
+BlockadeOrder::BlockadeOrder(Player* player, Territory* destination){   // Parameter constructor
     this->name = "Blockade";
     this->description = "Tripples the army on " + destination->getTerritoryName() + " by " + player->getName();
     this->player = player;
     this->destination = destination;
 }
-BlockadeOrder::BlockadeOrder(const BlockadeOrder& blOrder){
+BlockadeOrder::BlockadeOrder(const BlockadeOrder& blOrder){     // Copy constructor
     this->name = blOrder.name;
     this->description = blOrder.description;
     this->effect = blOrder.effect;
     this->player = blOrder.player;
     this->destination = blOrder.destination;
 }
-BlockadeOrder::~BlockadeOrder(){}
-BlockadeOrder& BlockadeOrder::operator=(const BlockadeOrder& blOrder){
+BlockadeOrder::~BlockadeOrder(){
+    cout << "BlockadeOrder Destructor called" << endl;
+}       // Destructor
+BlockadeOrder& BlockadeOrder::operator=(const BlockadeOrder& blOrder){  // Assignment operator
     this->name = blOrder.name;
     this->description = blOrder.description;
     this->effect = blOrder.effect;
@@ -200,7 +218,7 @@ bool BlockadeOrder::validate(){
     cout << "Blockade Order is validated\n";
     return true;
 }
-bool BlockadeOrder::execute(){
+bool BlockadeOrder::execute(){  // Will trigger validate method
     if (validate()){
         this->effect = "\nEffect: the army is trippled on " + this->destination->getTerritoryName()
                         + " by " + this->player->getName();
@@ -208,8 +226,8 @@ bool BlockadeOrder::execute(){
     }
     return false;
 }
-
-AirliftOrder::AirliftOrder(Player* player, int army, Territory* source, Territory* destination){
+////////////////////////////////////////////// AirliftOrder /////////////////////////////////////////////////////
+AirliftOrder::AirliftOrder(Player* player, int army, Territory* source, Territory* destination){    // Parameter constructor
     this->name = "Airlift";
     this->description = "Advances " + to_string(army) + " solders from " + source->getTerritoryName() +
                         " to " + destination->getTerritoryName() + " even if they are not adjacent";
@@ -218,7 +236,7 @@ AirliftOrder::AirliftOrder(Player* player, int army, Territory* source, Territor
     this->source = source;
     this->destination = destination;
 }
-AirliftOrder::AirliftOrder(const AirliftOrder& aiOrder){
+AirliftOrder::AirliftOrder(const AirliftOrder& aiOrder){    // Copy constructor
     this->name = aiOrder.name;
     this->description = aiOrder.description;
     this->effect = aiOrder.effect;
@@ -227,8 +245,10 @@ AirliftOrder::AirliftOrder(const AirliftOrder& aiOrder){
     this->source = aiOrder.source;
     this->destination = aiOrder.destination;
 }
-AirliftOrder::~AirliftOrder(){}
-AirliftOrder& AirliftOrder::operator=(const AirliftOrder& aiOrder){
+AirliftOrder::~AirliftOrder(){
+    cout << "AirliftOrder Destructor called" << endl;
+} // Destructor
+AirliftOrder& AirliftOrder::operator=(const AirliftOrder& aiOrder){ // Assignment operator
     this->name = aiOrder.name;
     this->description = aiOrder.description;
     this->effect = aiOrder.effect;
@@ -243,7 +263,7 @@ bool AirliftOrder::validate(){
     cout << "Airlift Order is validated\n";
     return true;
 }
-bool AirliftOrder::execute(){
+bool AirliftOrder::execute(){   // Will trigger validate method
     if (validate()){
         this->effect = "\nEffect: "+to_string(this->armies)+" solders are moved from " + 
                         this->source->getTerritoryName() + " to " + this->destination->getTerritoryName()
@@ -252,23 +272,24 @@ bool AirliftOrder::execute(){
     }
     return false;
 }
-
-
-NegotiateOrder::NegotiateOrder(Player* player, Player* player2){
+///////////////////////////////////////////// NegotiateOrder ///////////////////////////////////////////////////
+NegotiateOrder::NegotiateOrder(Player* player, Player* player2){    // Parameter constructor
     this->name = "Negotiate";
     this->description = "Prevent attacks between " + player->getName() + " and " + player2->getName();
     this->player = player;
     this->second = player2;
 }
-NegotiateOrder::NegotiateOrder(const NegotiateOrder& nOrder){
+NegotiateOrder::NegotiateOrder(const NegotiateOrder& nOrder){   // Copy constructor
     this->name = nOrder.name;
     this->description = nOrder.description;
     this->effect = nOrder.effect;
     this->player = nOrder.player;
     this->second = nOrder.second;
 }
-NegotiateOrder::~NegotiateOrder(){}
-NegotiateOrder& NegotiateOrder::operator=(const NegotiateOrder& nOrder){
+NegotiateOrder::~NegotiateOrder(){
+    cout << "NegotiateOrder Destructor called" << endl;
+} // Destructor
+NegotiateOrder& NegotiateOrder::operator=(const NegotiateOrder& nOrder){    // Assignment oprator
     this->name = nOrder.name;
     this->description = nOrder.description;
     this->effect = nOrder.effect;
@@ -281,7 +302,7 @@ bool NegotiateOrder::validate(){
     cout << "Negotiate Order is validated\n";
     return true;
 }
-bool NegotiateOrder::execute(){
+bool NegotiateOrder::execute(){     // Will trigger validate
     if (validate()){
         this->effect = "\nEffect: no attacks can be done between " + this->player->getName()
                         + " and " + this->second->getName() + "until the end of the round";
@@ -291,28 +312,33 @@ bool NegotiateOrder::execute(){
 }
 
 // ***************************** ORDER LIST ***********************************
-OrderList::OrderList(){cout << "Created an empty order list\n";};
-OrderList::~OrderList(){};
-OrderList& OrderList::operator=(const OrderList& oList){
+OrderList::OrderList(){cout << "Created an empty order list\n";} // Empty constructor
+OrderList::~OrderList(){
+    cout << "OrderList Destructor called" << endl;
+};  // Destructor
+OrderList& OrderList::operator=(const OrderList& oList){    // Assignment operator
     this->orderList = oList.orderList;
     return *this;
 }
+// Getter
 vector <Order*> OrderList::getOrders(){
     return this->orderList;
 }
-OrderList::OrderList(const OrderList &copyOL){
+OrderList::OrderList(const OrderList &copyOL){  // Copy constructor
     this->orderList = copyOL.orderList;
 }
-std::ostream& operator << (std::ostream& strm,const OrderList& orderList) {
+std::ostream& operator << (std::ostream& strm,const OrderList& orderList) { // Assignment operator
     for(Order* order : orderList.orderList){
         cout << *order << endl;
     }
   
     return strm << "";
 }
+// Pushes the elemnt to the end of list
 void OrderList::push(Order* order){
     orderList.push_back(order);
 }
+// Removes an element from the list
 int OrderList::remove(Order *actual){
     int index = 0;
     for(Order* order : this->orderList){
