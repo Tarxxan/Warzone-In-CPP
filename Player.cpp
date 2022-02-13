@@ -6,14 +6,14 @@
 
 #include "Player.h"
 #include <iostream>
-Player::Player() {}; //Default
+
+Player::Player() {}; //Default Constructor
 
 Player::Player(string player_name) {
     this->name = player_name;
     this->hand = vector <Card*>();
     this->orders = new OrderList();
     this->territories = vector<Territory*>();
-
 }
 
 Player::~Player()   //Destructor
@@ -31,7 +31,8 @@ Player::~Player()   //Destructor
     cout << "~Player destructed" << endl;
 };
 
-//Copy constructor
+
+//assignment operator
 Player& Player::operator=(const Player& p) {
     if (this != &p) { 
         this->name = p.name;
@@ -41,12 +42,19 @@ Player& Player::operator=(const Player& p) {
     }
     return *this;
 }
-
+//Copy constructor
 Player::Player(const Player& p) {
     this->name = p.name;
-    this->hand = p.hand;
-    this->orders = p.orders;
-    this->territories = p.territories;
+    vector<Card*> temp_c(p.hand.size());
+    this->hand = temp_c;
+    for (int i = 0; i < p.hand.size(); i++)
+        hand[i] = new Card(*p.hand[i]);
+    this->orders = new OrderList;
+    *orders = *p.orders;
+    vector<Territory*> temp_t(p.territories.size());
+    this->territories = temp_t;
+    for (int i = 0; i < p.territories.size(); i++)
+        territories[i] = new Territory(*p.territories[i]);
 }
 
 ostream& operator<<(ostream& out, const Player& p)
@@ -56,25 +64,7 @@ ostream& operator<<(ostream& out, const Player& p)
     out << p.name << " has " << p.hand.size() << " cards" << endl;
     out << p.name << " has "<< p.territories.size() << " territories" << endl;
     out << p.name << " has " << p.orders->getOrders().size() << " orders" << endl;
-    /*
-    for (int i = 0; i < p.hand.size(); i++) {
-        out << p.hand[i] << endl;
-    }
-    for (int i = 0; i < p.territories.size(); i++) {
-        out << p.territories[i] << endl;
-    }
-    
-    
-    out << "List of orders: " << *p.orders << endl;
-    out << "List of territories: ";
-    
-    for (auto territory : p.territories) {
-        out << *territory << endl;
-    }
-    */
- 
     out << endl;
-    
     return out;
 }
 

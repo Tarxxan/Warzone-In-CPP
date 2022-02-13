@@ -22,11 +22,10 @@ public:
     Player& operator=(const Player& order);
 
     //getters
-  //  vector <Card*> getHand();
+    vector <Card*> getHand();
     OrderList* getOrders();
     vector <Territory*> getTerritories();
     string getName();
-    vector <Card*> getHand();
     int getAvailableArmies();
 
     friend ostream& operator<<(ostream& out, const Player& player);
