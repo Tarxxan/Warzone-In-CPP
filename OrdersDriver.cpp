@@ -54,6 +54,14 @@ int main() {
     cout << "Execute was performed, printing the order: \n";
     cout << *neg << endl;
 
+    AirliftOrder* air = new AirliftOrder(p1, 5, t1, t2);
+    cout << "\n\nTesting Airlift Order: \nAfter creation:\n";
+    cout << *air << endl;
+    cout << "Will now use execute method which should 1. trigger validate 2. set the effect\n";
+    air->execute();
+    cout << "Execute was performed, printing the order: \n";
+    cout << *air << endl;
+
     OrderList playerList;
     cout << "\n Making new list of orders; Will reuse the objects created previously to demonstrate adding to list" << endl;
     cout << "Player adds deployOrder in the list; Printing list\n";
@@ -66,6 +74,8 @@ int main() {
     playerList.push(bomb);
     cout << playerList << "\nAdding negotiateOrder\n";
     playerList.push(neg);
+    cout << playerList << "\nAdding airliftOrder\n";
+    playerList.push(air);
     cout << playerList << "\nDestructing each order \n";
     delete deploy;
     deploy = nullptr;
@@ -77,6 +87,8 @@ int main() {
     bomb = nullptr;
     delete neg;
     neg = nullptr;
+    delete air;
+    air = nullptr;
 
 
     // Tests for OrderList push , moveUp, moveDown, delete (testing for first, last and in between instances)
