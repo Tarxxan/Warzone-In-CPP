@@ -21,9 +21,6 @@ int main() {
     deploy->execute();
     cout << "Execute was performed, printing the order: \n";
     cout << *deploy << endl;
-    cout << "Desctructing order";
-    delete deploy;
-    deploy = nullptr;
 
     AdvanceOrder* advance = new AdvanceOrder(p1, 5, t1, t2);
     cout << "\n\nTesting Advance Order: \nAfter creation:\n";
@@ -32,9 +29,6 @@ int main() {
     advance->execute();
     cout << "Execute was performed, printing the order: \n";
     cout << *advance << endl;
-    cout << "Desctructing order\n";
-    delete advance;
-    advance = nullptr;
 
     BlockadeOrder* block = new BlockadeOrder(p1, t1);
     cout << "\n\nTesting Blockade Order: \nAfter creation:\n";
@@ -43,9 +37,6 @@ int main() {
     block->execute();
     cout << "Execute was performed, printing the order: \n";
     cout << *block << endl;
-    cout << "Desctructing order\n";
-    delete block;
-    block = nullptr;
 
     BombOrder* bomb = new BombOrder(p1, t1);
     cout << "\n\nTesting Bomb Order: \nAfter creation:\n";
@@ -54,10 +45,6 @@ int main() {
     bomb->execute();
     cout << "Execute was performed, printing the order: \n";
     cout << *bomb << endl;
-    cout << "Desctructing order\n";
-    delete bomb;
-    bomb = nullptr;
-
 
     NegotiateOrder* neg = new NegotiateOrder(p1, p2);
     cout << "\n\nTesting Negotiate Order: \nAfter creation:\n";
@@ -66,7 +53,28 @@ int main() {
     neg->execute();
     cout << "Execute was performed, printing the order: \n";
     cout << *neg << endl;
-    cout << "Desctructing order\n";
+
+    OrderList playerList;
+    cout << "\n Making new list of orders; Will reuse the objects created previously to demonstrate adding to list" << endl;
+    cout << "Player adds deployOrder in the list; Printing list\n";
+    playerList.push(deploy);
+    cout << playerList << "\nAdding advanceOrder\n";
+    playerList.push(advance);
+    cout << playerList << "\nAdding blockadeOrder\n";
+    playerList.push(block);
+    cout << playerList << "\nAdding bombOrder\n";
+    playerList.push(bomb);
+    cout << playerList << "\nAdding negotiateOrder\n";
+    playerList.push(neg);
+    cout << playerList << "\nDestructing each order \n";
+    delete deploy;
+    deploy = nullptr;
+    delete advance;
+    advance = nullptr;
+    delete block;
+    block = nullptr;
+    delete bomb;
+    bomb = nullptr;
     delete neg;
     neg = nullptr;
 
