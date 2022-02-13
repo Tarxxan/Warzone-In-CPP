@@ -4,8 +4,7 @@
 #include <iostream>
 
 int main() {
-    Player* p2 = new Player("Jack");
-    Player* p(p2);
+    Player* p = new Player("Jack");;
     Card* c = new Card("card 1");
     p->addCard(c);
     Card* c2 = new Card("card 2");
