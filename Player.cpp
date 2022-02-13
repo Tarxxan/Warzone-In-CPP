@@ -6,12 +6,11 @@
 
 #include "Player.h"
 #include <iostream>
-#include <math.h> 
-#include <algorithm>
 using namespace std;
 
-//Dummy class for Territory
+//-----------------------------------Dummy class for Territory--------------------------------------------
 Territory::Territory() {};
+
 Territory::Territory(int territoryId, string territoryName, string continentName, int numberOfArmies, vector<Territory*> adjacentTerritories)
 {
     this->territoryId = territoryId;
@@ -19,6 +18,10 @@ Territory::Territory(int territoryId, string territoryName, string continentName
     this->continentName = continentName;
     this->numberOfArmies = numberOfArmies;
     this->adjacentTerritories = adjacentTerritories;
+}
+Territory::~Territory()
+{
+    cout << "~Territory destructor is called" << endl;
 }
 vector<Territory*> Territory::getAdjacentTerritory()
 {
@@ -46,36 +49,92 @@ ostream& operator<<(ostream& output, const Territory& t)
     return output;
 }
 
-//Dummy class for Order
+//-----------------------------------Dummy class for Order----------------------------------------------
 Order::Order() {}; // Empty constructor
-
+Order::~Order()
+{   
+    cout << "~Order destructor is called" << endl;
+}
+//-----------------------------------Dummy class for OrderList-------------------------------------------
 OrderList::OrderList() {};
 void OrderList::push(Order* order) {
     orderList.push_back(order);
 }
+OrderList::~OrderList()
+{
+    cout << "~OrderList destructor is called" << endl;
+}
 vector <Order*> OrderList::getOrders() {
     return this->orderList;
 }
+//-----------------------------------Dummy class for DeployOrder--------------------------------------------
 DeployOrder::DeployOrder(int numOfArmies, Territory* destination) { // Parameter Constructor
     this->name = "Deploy";
     this->armies = numOfArmies;
     this->destination = destination;
 }
+DeployOrder::~DeployOrder()
+{
+    delete destination;
+    destination = nullptr;
+    cout << "~DeployOrder destructor is called" << endl;
+}
+//-----------------------------------Dummy class for BombOrder-------------+---------------------------------
 BombOrder::BombOrder(Territory* destination) {   // Parameter constructor
     this->name = "Bomb";
     this->destination = destination;
 }
-//Dummy class for Card
+BombOrder::~BombOrder()
+{
+    delete destination;
+    destination = nullptr;
+    cout << "~BombOrder destructor is called" << endl;
+}
+
+//-----------------------------------Dummy class for Card--------------------------------------------------
 Card::Card(string type) {
     this->type = type;
 }
+Card::~Card()
+{
+    cout << "~Card destructor is called" << endl;
+}
 
+std::ostream& operator << (ostream& strm, const Card& c) {
+    strm << c.type << endl;
+    return strm << "";
+}
 
+//-----------------------------------Dummy class for Hand--------------------------------------------------
+
+Hand::Hand() {
+    hand=  vector<Card*>() ;
+};
+Hand::~Hand()
+{
+    cout << "~Hand destructor is called" << endl;
+}
+vector <Card*> Hand::getHand() {
+    return this->hand;
+}
+void Hand::pushCard(Card* card) {
+    this->hand.push_back(card);
+};
+ostream& operator<<(ostream& out, const Hand& hO) {
+    int counter = 0;
+    for (Card* card : hO.hand) {
+        cout << "card #" << counter << " : " << *card << endl;
+    }
+    return out << "";
+
+}
+    
+//-----------------------------------Dummy class for Player-------------------------------------------------
 Player::Player() {}; //Default Constructor
 
 Player::Player(string player_name) {
     this->name = player_name;
-    this->hand = vector <Card*>();
+    this->playerHand = new Hand();
     this->orders = new OrderList();
     this->territories = vector<Territory*>();
 }
@@ -84,10 +143,8 @@ Player::~Player()   //Destructor
 {   //  To avoid memory leak, delete all pointer objects and assign them to nullptr
     delete orders;
     orders = nullptr;
-    for (int i = 0; i < hand.size(); i++) {
-        delete hand[i];
-        hand[i] = nullptr;
-    }
+    delete playerHand;
+    playerHand = nullptr;
     for (int i = 0; i < territories.size(); i++) {
         delete territories[i];
         territories[i] = nullptr;
@@ -97,45 +154,47 @@ Player::~Player()   //Destructor
 
 
 //assignment operator
-Player& Player::operator=(const Player& p) {
-    if (this != &p) { 
-        this->name = p.name;
-        this->hand = p.hand;
-        this->orders = p.orders;
-        this->territories = p.territories;
-    }
+Player& Player::operator=(const Player &p) {
+    this->name = p.name;
+    this->playerHand = p.playerHand;
+    this->orders = p.orders;
+    this->territories = p.territories;
     return *this;
 }
+
 //Copy constructor
 Player::Player(const Player& p) {
     this->name = p.name;
-    vector<Card*> temp_c(p.hand.size());
-    this->hand = temp_c;
-    for (int i = 0; i < p.hand.size(); i++)
-        hand[i] = new Card(*p.hand[i]);
-    this->orders = new OrderList;
-    *orders = *p.orders;
-    vector<Territory*> temp_t(p.territories.size());
-    this->territories = temp_t;
-    for (int i = 0; i < p.territories.size(); i++)
-        territories[i] = new Territory(*p.territories[i]);
+    this->availableArmies = p.availableArmies;
+    this->playerHand = p.playerHand;
+    this->orders = p.orders;
+    this->territories = p.territories;
+    this->playerHand = p.playerHand;
 }
 
 ostream& operator<<(ostream& out, const Player& p)
 {
     out << "Player " << p.name << " details:" << endl;
     out << p.name << " has the following cards " << endl;
-    out << p.name << " has " << p.hand.size() << " cards" << endl;
+    out << p.name << " has " << p.playerHand->getHand().size() << " cards" << endl;
+    cout << "--------------------------" << endl;
+    cout << *p.playerHand ;
+    cout << "--------------------------" << endl;
     out << p.name << " has "<< p.territories.size() << " territories" << endl;
+
+    for (int i = 0; i < p.territories.size(); i++) {
+        cout << *p.territories[i] << endl;
+    }
+
     out << p.name << " has " << p.orders->getOrders().size() << " orders" << endl;
-    out << endl;
+    cout << "-----------------------------------------------------" << endl;
     return out;
 }
 
 
 // getters
-vector <Card*> Player::getHand(){
-    return this->hand;
+Hand* Player::getPlayerHand(){
+    return this->playerHand;
 }
 
 OrderList* Player::getOrders() {
@@ -166,7 +225,7 @@ void Player::issueOrder(Order* order) {
 }
 
 void Player::addCard(Card* card) {
-    hand.push_back(card);
+    playerHand->pushCard(card);
 }
 
 void Player::computeAvailableArmies() {
