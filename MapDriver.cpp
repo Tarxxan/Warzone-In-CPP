@@ -4,7 +4,7 @@
 #include <iostream>
 #include <ctime>
 using namespace std;
-
+class Player;
 // Bigeurope.map Valid
         // sudamerica.map Valid
         // artic.map Invalid Territory are not connected last line of code

@@ -4,37 +4,8 @@
 #include <fstream> // file stream
 #include <string>  // Needed for Getline method
 #include <map>
-
+class Player;
 using namespace std;
-//class Player;
-
-// Dummy Player class
-Player::Player()
-{
-    name = "";
-}
-
-Player::Player(string name)
-{
-    this->name = name;
-}
-
-void Player::setPlayerName(string s)
-{
-    this->name = s;
-}
-
-Player::~Player()
-{
-
-    cout << "Player was destroyed" << endl;
-}
-
-ostream& operator<<(ostream& output, const Player& p)
-{
-    output << "--Player Name: " << p.name << endl;
-    return output;
-}
 //----------------------------------------------------------------------------------------------------
 //-----------------------------Territory Class--------------------------------------------------------
 //----------------------------------------------------------------------------------------------------
@@ -92,7 +63,7 @@ ostream& operator<<(ostream& output, const Territory& t)
     output << "--Territory ID: " << t.territoryId << endl;
     output << "--Territory Name: " << t.territoryName << endl;
     output << "--Continent Name: " << t.continentName << endl;
-    output << "--Player Name: " << t.ownerOfTerritory->name << endl;
+    output << "--Player Name: " << t.ownerOfTerritory->getName() << endl;
     output << "--Number of armies: " << t.numberOfArmies << endl;
     output << "--Adjacent territories: ";
 

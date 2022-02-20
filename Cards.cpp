@@ -1,140 +1,9 @@
 #include "Cards.h"
 #include <time.h>
-//Dummy Order class
-
-Order::Order(){};
-Order::Order(string type)
-{
-    this->name = type;
-    this->description = type + " Order";
-}
-Order::Order(const Order &order)
-{
-    this->name = order.name;
-    this->description = order.description;
-    this->effect = order.effect;
-    this->player = order.player;
-}
-Order::~Order() {}
-Order &Order::operator=(const Order &o)
-{
-    this->name = o.name;
-    this->description = o.description;
-    this->effect = o.effect;
-    this->player = o.player;
-    return *this;
-}
-//Assignment operator // It can be used to create an object just like the copy constructor
-string Order::getName()
-{
-    return this->name;
-}
-string Order::getDescription()
-{
-    return this->description;
-}
-string Order::getEffect()
-{
-    return this->effect;
-}
-Player *Order::getPlayer()
-{
-    return this->player;
-}
-bool Order::validate() { return true; }
-bool Order::execute() { return true; }
-std::ostream &operator<<(ostream &strm, Order &o)
-{
-    return strm << "Order: " << o.getDescription() << o.getEffect();
-}
-
-// DUMMY ORDER LIST
-
-OrderList::OrderList(){};
-OrderList::~OrderList(){};
-OrderList &OrderList::operator=(const OrderList &oList)
-{
-    this->orderList = oList.orderList;
-    return *this;
-}
-vector<Order *> OrderList::getOrders()
-{
-    return this->orderList;
-}
-OrderList::OrderList(const OrderList &copyOL)
-{
-    this->orderList = copyOL.orderList;
-}
-std::ostream &operator<<(std::ostream &strm, const OrderList &orderList)
-{
-    for (Order *order : orderList.orderList)
-    {
-        cout << *order << endl;
-    }
-
-    return strm << "";
-}
-void OrderList::push(Order *order)
-{
-    orderList.push_back(order);
-}
-int OrderList::remove(Order *actual)
-{
-    int index = 0;
-    for (Order *order : this->orderList)
-    {
-        if (order == actual)
-        {
-            auto posIt = this->orderList.begin() + index;
-            this->orderList.erase(posIt); // will delete the thing we are looking for
-            return index;
-        }
-        index++;
-    }
-    return -1;
-}
-// So if True it will move up if false it will move down
-bool OrderList::move(Order *order, bool moveUp)
-{
-    int index = remove(order);
-    if (index == -1)
-    {
-        cout << "Could not find the element in the list" << endl;
-        return false;
-    }
-    // If we try to move the first up
-    if (index == 0 && (moveUp || this->orderList.size() == 0))
-    {
-        this->orderList.insert(this->orderList.begin(), order);
-        return true;
-    }
-    //if we try to move the last one down
-    if (index == this->orderList.size() && !moveUp)
-    {
-        push(order);
-        return true;
-    }
-    if (moveUp)
-    {
-        this->orderList.insert(this->orderList.begin() + index - 1, order);
-    }
-    else
-    {
-        this->orderList.insert(this->orderList.begin() + index + 1, order);
-    }
-    return true;
-}
-
-// This is a more use friendly methods for move which will call move
-bool OrderList::moveUp(Order *order)
-{
-    return move(order, true);
-}
-bool OrderList::moveDown(Order *order)
-{
-    return move(order, false);
-}
-
+class Player;
+class Order;
+class OrderList;
+class Deck;
 ////////////////////////////////////////// CARD //////////////////////////////////////////////////////
 
 Card::Card(string type) //parameter constructor
@@ -164,12 +33,11 @@ void Card::setPlayer(Player *player) //assign player to Card
 void Card::play(Deck *deck) //play the current card by creating a new order, adding the order to the players orderlist.
                             // remove the current card from the players hand and add it back to the deck;
 {
-
-    this->player->hand->remove(this);
-    cout << this->type << " Card played!\n";
-    Order *newOrder = new Order(this->type);
-    this->player->orders->push(newOrder);
-    deck->push(this);
+    // this->player->hand->remove(this);
+    // cout << this->type << " Card played!\n";
+    // Order *newOrder = new Order(this->type*);
+    // this->player->orders->push(newOrder);
+    // deck->push(this);
 }
 string Card::getType()
 {
@@ -177,7 +45,7 @@ string Card::getType()
 }
 string Card::getPlayerName() // get name of owner of this card
 {
-    return this->player->name;
+    return this->player->getName();
 }
 std::ostream &operator<<(ostream &strm, Card &card) //print the card's type and the current owner;
 {
@@ -249,42 +117,6 @@ std::ostream &operator<<(ostream &strm, const Hand &hO) // print out each card i
         cout << *card << endl;
     }
     return strm << "";
-}
-
-// Dummy Player class
-Player::Player()
-{
-    name = "";
-}
-
-Player::Player(string name)
-{
-    this->name = name;
-    this->orders = new OrderList();
-}
-
-void Player::setPlayerName(string s)
-{
-    this->name = s;
-}
-void Player::setHand(Hand *newHand)
-{
-    this->hand = newHand;
-}
-Player::~Player()
-{
-    delete this->hand;
-    cout << "Player Deconstructor Called\n";
-}
-
-ostream &operator<<(ostream &output, const Player &p)
-{
-    output << "--Player Name: " << p.name << endl;
-    return output;
-}
-void Player::addCard(Card *card)
-{
-    this->hand->push(card);
 }
 
 /////////////////////////////////////// DECK //////////////////////////////////////////////////////

@@ -13,18 +13,10 @@
 #include <iostream>
 #include <vector>
 using namespace std;
-
-class Player
-{
-public:
-    string name;
-    Player();
-    Player(string name);
-    ~Player();
-    void setPlayerName(string s);
-};
+#include "Player.h"
 
 // Territory
+class Player;
 
 class Territory
 {
@@ -44,7 +36,7 @@ public:
     int getNumberOfArmies();                    // total number of arimes currently on that territory
     vector<Territory *> getAdjacentTerritory(); // get adjacent territories
     void addAdjacentTerritory(Territory *t);
-    Player *getOwnerOfTerritory();
+    Player* getOwnerOfTerritory();
     void setOwnerOfTerritory(Player *p);
     void setNumberOfArmies(int num);
 
@@ -54,7 +46,7 @@ private:
     string continentName;
     int numberOfArmies;
     vector<Territory *> adjacentTerritories; // Store adjacent territory pointers in vector.
-    Player *ownerOfTerritory;
+    Player* ownerOfTerritory;
 };
 
 // Continent

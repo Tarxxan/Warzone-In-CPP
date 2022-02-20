@@ -2,6 +2,18 @@
 
 #include "Player.h"
 #include <iostream>
+class Card;
+class Territory;
+class Order;
+class OrderList;
+class Hand;
+class Deck;
+class DeployOrder;
+class AdvanceOrder;
+class NegotiateOrder;
+class BombOrder;
+class BlockadeOrder;
+class AirliftOrder;
 
 int main() {
     Player* p2 = new Player("Jack");
@@ -19,9 +31,9 @@ int main() {
     t1->addAdjacentTerritory(t2);
     p->addTerritory(t2);
     p->addTerritory(t4);
-
-    DeployOrder* deploy = new DeployOrder(5, t1);
-    BombOrder* bomb = new BombOrder(t1);
+    // Check what players it hsould have
+    DeployOrder* deploy = new DeployOrder(p, 5, t1);
+    BombOrder* bomb = new BombOrder(p, t1);
     cout << "Issuing the orders" << endl;
     p->issueOrder(deploy);
     p->issueOrder(bomb);

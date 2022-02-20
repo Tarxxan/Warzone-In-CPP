@@ -9,61 +9,15 @@
 #include <string>
 #include <vector>
 #include <list>
+#include "Player.h"
+#include "Orders.h"
 
 using namespace std;
 
 class Player;
+class Order;
+class OrderList;
 class Deck;
-
-class Order
-{
-public:
-    Order();
-    Order(string type);
-    Order(const Order &order);
-    ~Order();
-    Order &operator=(const Order &order);
-    string getName();        // For friends methods
-    string getDescription(); // For friends methods
-    string getEffect();      // For friends methods
-    Player *getPlayer();     // For friends methods
-    virtual bool validate(); // For suborders
-    virtual bool execute();  // For suborders
-protected:
-    Player *player;
-    string name;
-    string effect;
-    string description;
-    friend ostream &operator<<(ostream &out, const Order &);
-};
-
-class OrderList
-{
-public:
-    // Empty Constructor
-    OrderList();
-    ~OrderList();
-    // Copy contructor
-    OrderList(const OrderList &copyOL);
-    //Assignment operator
-    OrderList &operator=(const OrderList &assignOL);
-    // Inserts an order at the end (as they supposed to)
-    vector<Order *> getOrders();
-    void push(Order *order);
-    // comparing pointers of order
-    int remove(Order *order);
-    // So if True it will move up if false it will move down
-    bool move(Order *order, bool moveUp);
-    // This is a more use friendly methods for move which will call move
-    bool moveUp(Order *order);
-    bool moveDown(Order *order);
-
-    // Streamline Operator
-    friend std::ostream &operator<<(ostream &out, const OrderList &ol);
-    // friend std::istream& operator >> (istream& in, OrderList& ol);
-private:
-    vector<Order *> orderList;
-};
 
 class Card
 {
@@ -97,21 +51,6 @@ public:
 private:
     vector<Card *> hand; //the actual hand of cards
 };
-
-class Player
-{
-public:
-    string name;
-    Player();
-    Player(string name);
-    ~Player();
-    void setPlayerName(string s);
-    Hand *hand;
-    OrderList *orders;
-    void setHand(Hand *newHand);
-    void addCard(Card *newCard);
-};
-
 class Deck
 {
 public:

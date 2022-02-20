@@ -1,26 +1,8 @@
 #include "GameEngine.h"
 #include "Orders.h"
-// Dummy classes
-Player::Player(){};
-Player::Player(string name){
-    this->name = name;
-}
-Player::~Player(){
-    cout << "Player Destructor called" << endl;
-}
-string Player::getName(){
-    return this->name;
-}
-Territory::Territory(){};
-Territory::Territory(string name){
-    this->name = name;
-}
-Territory::~Territory(){
-    cout << "Territory Destructor called" << endl;
-}
-string Territory::getTerritoryName(){
-    return this->name;
-}
+
+class Player;
+class Territory;
 
 ///////////////////////////////////////////////////// ORDER CLASS /////////////////////////////////
 Order::Order(){}; // Empty constructor

@@ -1,27 +1,12 @@
 #pragma once
 #include <vector>
 #include <string>
+#include "Player.h"
+#include "Map.h"
 using namespace std;
 
-// Dummy classes for Player and Territory TODO: Linkage after assignment 1
-class Player{
-    public:
-        Player();
-        Player(string name);
-        ~Player();
-        string getName();
-    private:
-        string name;
-};
-class Territory{
-    public:
-        Territory();
-        Territory(string name);
-        ~Territory();
-        string getTerritoryName();
-    private:
-        string name;
-};
+class Player;
+class Territory;
 
 // Order base class for all suborders types
 // For assignment 2 TODO: Maybe user should not have access to any members of Order base class as its only to be used by subclasses
