@@ -39,6 +39,7 @@ public:
     Player* getOwnerOfTerritory();
     void setOwnerOfTerritory(Player *p);
     void setNumberOfArmies(int num);
+    bool isAdjacent(Territory* two);
 
 private:
     int territoryId;

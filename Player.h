@@ -44,6 +44,7 @@ public:
     void addCard(Card* card);
     void addTerritory(Territory* territory);
     void addOrder(Order* order);
+    void removeSolders(int amount);
 
     // //member functions
     void computeAvailableArmies();

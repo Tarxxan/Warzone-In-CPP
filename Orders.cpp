@@ -72,14 +72,24 @@ DeployOrder& DeployOrder::operator=(const DeployOrder& dOrder){ // Assignment Op
     return *this;
 }
 bool DeployOrder::validate(){
-    // TODO: Check members of deploy to be proper aka check if territory belongs to the user and user has that army
-    cout << "Deploy Validated for "<< this->armies << " armies\n";
-    return true;
+    if (this->destination->getOwnerOfTerritory() == this->player){
+        if (this->player->getAvailableArmies() >= this->armies){
+            cout << "Deploy Order was validated.\n" << this->destination->getTerritoryName() <<
+            " belongs to the user and the user has enough army";
+            return true;
+        }
+        cout << "The user does not have enough solders to perform this operation\n";
+        return false;
+    }
+    cout << "This territory does not belong to the user\n";
+    return false;
 }
 bool DeployOrder::execute(){    // Triggers validate
     if (validate()){
         this->effect = "\nEffect: "+to_string(this->armies)+" solders are being deployed on " 
                         + this->destination->getTerritoryName() + " by " + this->player->getName();
+        this->destination->setNumberOfArmies(this->destination->getNumberOfArmies()+this->armies);
+        this->player->removeSolders(this->armies);
         return true;
     }
     return false;
@@ -158,14 +168,26 @@ BombOrder& BombOrder::operator=(const BombOrder& bOrder){   // Assignment operat
     return *this;
 }
 bool BombOrder::validate(){
-    // TODO check that the destination is adjacent to any territory belonging to the user and that its not his territory
-    cout << "Bomb Order is validated\n";
-    return true;
+    if (this->destination->getOwnerOfTerritory() != this->player){
+        for (Territory* t : this->player->getTerritories()){
+            if (t->isAdjacent(this->destination)){ // Check if any of players territories is adjaccent to the destination territory
+                cout << "Bomb order was successfuly validated\n";
+                return true;
+            }
+        }
+        cout << "The destination territory is not adjacent to any of the users territories\n";
+        return false;
+    }
+    cout << "The territory belongs to the user, wont bomb.\n";
+    return false;
 }
 bool BombOrder::execute(){ // Will trigger validate method 
     if (validate()){
         this->effect = "\nEffect: half of the army is destroyed on " + this->destination->getTerritoryName()
                         + " by " + this->player->getName();
+        
+        int future = int(floor(this->destination->getNumberOfArmies()/2));
+        this->destination->setNumberOfArmies(future);
         return true;
     }
     return false;
@@ -294,7 +316,7 @@ bool NegotiateOrder::execute(){     // Will trigger validate
 }
 
 // ***************************** ORDER LIST ***********************************
-OrderList::OrderList(){cout << "Created an empty order list\n";} // Empty constructor
+OrderList::OrderList(){} // Empty constructor
 OrderList::~OrderList(){
     cout << "OrderList Destructor called" << endl;
 };  // Destructor

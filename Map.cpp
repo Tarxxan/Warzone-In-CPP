@@ -123,6 +123,15 @@ void Territory::setOwnerOfTerritory(Player* p)
     this->ownerOfTerritory = p;
 }
 
+bool Territory::isAdjacent(Territory* two){
+    for (Territory* t : this->adjacentTerritories){
+        if (t == two){
+            return true;
+        }
+    }
+    return false;
+}
+
 //----------------------------------------------------------------------------------------------------
 //-----------------------------Continent Class--------------------------------------------------------
 //----------------------------------------------------------------------------------------------------

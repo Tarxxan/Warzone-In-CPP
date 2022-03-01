@@ -105,6 +105,7 @@ int Player::getAvailableArmies() {
 // adders
 void Player::addTerritory(Territory* territory) {
     territories.push_back(territory);
+    territory->setOwnerOfTerritory(this);   // Setting this player as the owner of territory
 }
 
 void Player::addOrder(Order* order) {
@@ -162,4 +163,8 @@ vector<Territory*> Player::toAttack() {
 
     }
     return adjacentTerritoriesNonDup;
+}
+
+void Player::removeSolders(int amount){
+    this->availableArmies = this->availableArmies - amount;
 }
