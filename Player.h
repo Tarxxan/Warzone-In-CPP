@@ -45,6 +45,9 @@ public:
     void addTerritory(Territory* territory);
     void addOrder(Order* order);
     void removeSolders(int amount);
+    void removeTerritory(Territory* t);
+    void printTerritories();
+    void drawCard(); // TODO: Should draw card from the deck and call addCard(card) not sure where we want to locate the deck
 
     // //member functions
     void computeAvailableArmies();
@@ -53,10 +56,15 @@ public:
     void issueOrder(Order* order);  // creates an Order object and puts it in the player's list of orders.
     void advance(Territory* from, Territory* to);
 
+    void negotiatePlayer(Player* enemy);
+    void deleteNegotiate(Player* enemy);
+    bool canAttack(Player* enemy);
+
 private:
     OrderList* orders;
     vector <Territory*> territories;
     Hand* playerHand;
     string name;
     int availableArmies;
+    vector <Player*> cannotAttack;
 };

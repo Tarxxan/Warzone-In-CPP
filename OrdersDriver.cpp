@@ -71,22 +71,172 @@ int main() {
     delete deploy;
     deploy = nullptr;
 
-    // TODO: Advance & Airlift
-    // AdvanceOrder* advance = new AdvanceOrder(p1, 5, t1, t2);
-    // cout << "\n\nTesting Advance Order: \nAfter creation:\n";
-    // cout << *advance << endl;
-    // cout << "Will now use execute method which should 1. trigger validate 2. set the effect\n";
-    // advance->execute();
-    // cout << "Printing the order: \n";
-    // cout << *advance << endl;
-    // AirliftOrder* air = new AirliftOrder(p1, 5, t1, t2);
-    // cout << "\n\nTesting Airlift Order: \nAfter creation:\n";
-    // cout << *air << endl;
-    // cout << "Will now use execute method which should 1. trigger validate 2. set the effect\n";
-    // air->execute();
-    // cout << "Printing the order: \n";
-    // cout << *air << endl;
+    // Testing valid advance attack order
+    t1->setNumberOfArmies(2);
+    t2->setNumberOfArmies(8);
+    AdvanceOrder* advance = new AdvanceOrder(p1, 2, t1, t2);
+    cout << "\n\nTesting valid Advance (attack) Orderwhich should lose: \nAfter creation:\n";
+    cout << *advance << endl;
+    cout << "The source territory\n";
+    cout << *t1 << endl;
+    cout << "The destination territory\n";
+    cout << *t2 << endl;
+    cout << "Will now use execute method which should validate and perform attack\n";
+    advance->execute();
+    cout << "The source territory\n";
+    cout << *t1 << endl;
+    cout << "The destination territory\n";
+    cout << *t2 << endl;
+    // Testing defintely win
+    t1->setNumberOfArmies(8);
+    t2->setNumberOfArmies(2);
+    advance = new AdvanceOrder(p1, 6, t1, t2);
+    cout << "\n\nTesting valid Advance (attack) Order which should win: \nAfter creation:\n";
+    cout << *advance << endl;
+    cout << "The source territory\n";
+    cout << *t1 << endl;
+    cout << "The destination territory\n";
+    cout << *t2 << endl;
+    cout << "Will now use execute method which should validate and perform attack\n";
+    advance->execute();
+    cout << "The source territory\n";
+    cout << *t1 << endl;
+    cout << "The destination territory\n";
+    cout << *t2 << endl;
+    // Testing invalid advance order where source doesnt belong to player
+    advance = new AdvanceOrder(p2, 6, t1, t2);
+    cout << "\n\nTesting invalid Advance Order where source doesnt belong to player: \nAfter creation:\n";
+    cout << *advance << endl;
+    cout << "The source territory\n";
+    cout << *t1 << endl;
+    cout << "The destination territory\n";
+    cout << *t2 << endl;
+    cout << "Will now use execute method which should validate and perform attack\n";
+    advance->execute();
+    cout << "The source territory\n";
+    cout << *t1 << endl;
+    cout << "The destination territory\n";
+    cout << *t2 << endl;
+    // Testing invalid advance order where source doesnt have enough army
+    advance = new AdvanceOrder(p1, 6, t1, t2);
+    cout << "\n\nTesting invalid Advance Order where source doesnt have enough army: \nAfter creation:\n";
+    cout << *advance << endl;
+    cout << "The source territory\n";
+    cout << *t1 << endl;
+    cout << "The destination territory\n";
+    cout << *t2 << endl;
+    cout << "Will now use execute method which should validate and perform attack\n";
+    advance->execute();
+    cout << "The source territory\n";
+    cout << *t1 << endl;
+    cout << "The destination territory\n";
+    cout << *t2 << endl;
+    // Testing valid advance order to move from one territory to another
+    advance = new AdvanceOrder(p1, 1, t1, t2);
+    cout << "\n\nTesting valid advance order to move from one territory to another: \nAfter creation:\n";
+    cout << *advance << endl;
+    cout << "The source territory\n";
+    cout << *t1 << endl;
+    cout << "The destination territory\n";
+    cout << *t2 << endl;
+    cout << "Will now use execute method which should validate and perform attack\n";
+    advance->execute();
+    cout << "The source territory\n";
+    cout << *t1 << endl;
+    cout << "The destination territory\n";
+    cout << *t2 << endl;
+    // Testing invalid advance order to move from one territory to non adjacent
+    advance = new AdvanceOrder(p1, 1, t1, t4);
+    cout << "\n\nTesting invalid advance order to move from one territory to non adjacent: \nAfter creation:\n";
+    cout << *advance << endl;
+    cout << "The source territory\n";
+    cout << *t1 << endl;
+    cout << "The destination territory\n";
+    cout << *t4 << endl;
+    cout << "Will now use execute method which should validate and perform attack\n";
+    advance->execute();
+    cout << "The source territory\n";
+    cout << *t1 << endl;
+    cout << "The destination territory\n";
+    cout << *t4 << endl;
+    delete advance;
+    advance = nullptr;
+    
+    // Testing valid airilift order on adjacent
+    AirliftOrder* air = new AirliftOrder(p1, 1, t1, t2);
+    cout << "\n\nTesting valid airilift order on adjacent: \nAfter creation:\n";
+    cout << *air << endl;
+    cout << "The source territory\n";
+    cout << *t1 << endl;
+    cout << "The destination territory\n";
+    cout << *t2 << endl;
+    cout << "Will now use execute method which should move 1 solder\n";
+    air->execute();
+    cout << "The source territory\n";
+    cout << *t1 << endl;
+    cout << "The destination territory\n";
+    cout << *t2 << endl;
+    // Testing valid airilift order on non adjacent
+    air = new AirliftOrder(p1, 1, t1, t4);
+    cout << "\n\nTesting valid airilift order on non adjacent: \nAfter creation:\n";
+    cout << *air << endl;
+    cout << "The source territory\n";
+    cout << *t1 << endl;
+    cout << "The destination territory\n";
+    cout << *t4 << endl;
+    cout << "Will now use execute method which should move 1 solder\n";
+    air->execute();
+    cout << "The source territory\n";
+    cout << *t1 << endl;
+    cout << "The destination territory\n";
+    cout << *t4 << endl;
+    p2->addTerritory(t2);
+    // Testing invalid airilift order where source doesnt belong to user
+    air = new AirliftOrder(p1, 1, t2, t1);
+    cout << "\n\nTesting invalid airilift order where source doesnt belong to user: \nAfter creation:\n";
+    cout << *air << endl;
+    cout << "The source territory\n";
+    cout << *t2 << endl;
+    cout << "The destination territory\n";
+    cout << *t1 << endl;
+    cout << "Will now use execute method which should move 1 solder\n";
+    air->execute();
+    cout << "The source territory\n";
+    cout << *t2 << endl;
+    cout << "The destination territory\n";
+    cout << *t1 << endl;
+    // Testing invalid airilift order where destination doesnt belong to user
+    air = new AirliftOrder(p1, 1, t1, t2);
+    cout << "\n\nTesting invalid airilift order where destination doesnt belong to user: \nAfter creation:\n";
+    cout << *air << endl;
+    cout << "The source territory\n";
+    cout << *t1 << endl;
+    cout << "The destination territory\n";
+    cout << *t2 << endl;
+    cout << "Will now use execute method which should move 1 solder\n";
+    air->execute();
+    cout << "The source territory\n";
+    cout << *t1 << endl;
+    cout << "The destination territory\n";
+    cout << *t2 << endl;
+    // Testing invalid airilift order where destination doesnt have enough army
+    air = new AirliftOrder(p1, 15, t1, t4);
+    cout << "\n\nTesting invalid airilift order where destination doesnt have enough army: \nAfter creation:\n";
+    cout << *air << endl;
+    cout << "The source territory\n";
+    cout << *t1 << endl;
+    cout << "The destination territory\n";
+    cout << *t4 << endl;
+    cout << "Will now use execute method which should move 1 solder\n";
+    air->execute();
+    cout << "The source territory\n";
+    cout << *t1 << endl;
+    cout << "The destination territory\n";
+    cout << *t4 << endl;
+    delete air;
+    air = nullptr;
 
+    t1->setNumberOfArmies(6);
     // Testing valid bomb order
     BombOrder* bomb = new BombOrder(p2, t1);
     cout << "\n\nTesting valid Bomb Order: \nAfter creation:\n";
@@ -120,21 +270,83 @@ int main() {
     delete bomb;
     bomb = nullptr;
 
-    // BlockadeOrder* block = new BlockadeOrder(p1, t1);
-    // cout << "\n\nTesting Blockade Order: \nAfter creation:\n";
-    // cout << *block << endl;
-    // cout << "Will now use execute method which should 1. trigger validate 2. set the effect\n";
-    // block->execute();
-    // cout << "Printing the order: \n";
-    // cout << *block << endl;
+    // Testing valid blockade order
+    BlockadeOrder* block = new BlockadeOrder(p1, t1);
+    cout << "\n\nTesting valid Blockade Order: \nAfter creation:\n";
+    cout << *block << endl;
+    cout << "The territory before blockade\n";
+    cout << *t1 << endl;
+    cout << "Printing the player's territories before blockade\n";
+    p1->printTerritories();
+    cout << "Will now use execute method which should validate and double the army and set the territory to neutral\n";
+    block->execute();
+    cout << "Printing the territory\n";
+    cout << *t1 << endl;
+    cout << "Printing the player's territories\n";
+    p1->printTerritories();
+    // Testing blockade order with not player's territory
+    t1->setOwnerOfTerritory(p2);
+    block = new BlockadeOrder(p1, t1);
+    cout << "\n\nTesting valid Blockade Order: \nAfter creation:\n";
+    cout << *block << endl;
+    cout << "The territory before blockade\n";
+    cout << *t1 << endl;
+    cout << "Printing the player's territories before blockade\n";
+    p1->printTerritories();
+    cout << "Will now use execute method which should validate and do nothing\n";
+    block->execute();
+    cout << "Printing the territory\n";
+    cout << *t1 << endl;
+    cout << "Printing the player's territories\n";
+    p1->printTerritories();
+    delete block;
+    block = nullptr;
 
-    // NegotiateOrder* neg = new NegotiateOrder(p1, p2);
-    // cout << "\n\nTesting Negotiate Order: \nAfter creation:\n";
-    // cout << *neg << endl;
-    // cout << "Will now use execute method which should 1. trigger validate 2. set the effect\n";
-    // neg->execute();
-    // cout << "Printing the order: \n";
-    // cout << *neg << endl;
+    // Testing invalid negotiate order (where both players are the same user)
+    NegotiateOrder* neg = new NegotiateOrder(p1, p1);
+    cout << "\n\nTesting invalid negotiate order: \nAfter creation:\n";
+    cout << *neg << endl;
+    cout << "Will now use execute method which should get validated and do nothing\n";
+    neg->execute();
+    // Testing valid negotiate order
+    neg = new NegotiateOrder(p1, p2);
+    cout << "\n\nTesting valid negotiate order: \nAfter creation:\n";
+    cout << *neg << endl;
+    cout << "Will now use execute method which should get validated and set the two players to not attack each other\n";
+    neg->execute();
+    cout << "Will try to perform attack from p1 to p2" << endl;
+    p1->addTerritory(t1);
+    p2->addTerritory(t2);
+    AdvanceOrder* newAdv = new AdvanceOrder(p1, 1, t1, t2);
+    cout << *newAdv << endl;
+    cout << "The source territory\n";
+    cout << *t1 << endl;
+    cout << "The destination territory\n";
+    cout << *t2 << endl;
+    cout << "Executing..." << endl;
+    newAdv->execute();
+    cout << "The source territory\n";
+    cout << *t1 << endl;
+    cout << "The destination territory\n";
+    cout << *t2 << endl;
+    cout << "Will try to perform attack from p2 to p1" << endl;
+    newAdv = new AdvanceOrder(p2, 1, t2, t1);
+    cout << *newAdv << endl;
+    cout << "The source territory\n";
+    cout << *t1 << endl;
+    cout << "The destination territory\n";
+    cout << *t2 << endl;
+    cout << "Executing..." << endl;
+    newAdv->execute();
+    cout << "The source territory\n";
+    cout << *t1 << endl;
+    cout << "The destination territory\n";
+    cout << *t2 << endl;
+
+    delete newAdv;
+    delete neg;
+    newAdv = nullptr;
+    neg = nullptr;
 
     cout << "Desctructing players and territories\n";
     delete p1;
@@ -153,4 +365,4 @@ int main() {
     
 }
 
-// g++ "OrdersDriver.cpp" "Orders.cpp" -o "orders.exe"
+// g++ "OrdersDriver.cpp" "Orders.cpp" "Player.cpp" "Map.cpp" "Cards.cpp" -o "orders.exe"

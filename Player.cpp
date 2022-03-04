@@ -168,3 +168,44 @@ vector<Territory*> Player::toAttack() {
 void Player::removeSolders(int amount){
     this->availableArmies = this->availableArmies - amount;
 }
+
+void Player::removeTerritory(Territory* t){
+    int index = 0;
+    for(Territory* ter : this->territories){
+        if(ter == t){
+            auto posIt = this->territories.begin()+index;
+            this->territories.erase(posIt); // will delete the thing we are looking for
+            break;
+        }
+        index++;
+    }
+}
+void Player::printTerritories(){
+    for (Territory* t : this->territories){
+        cout << *t << endl;
+    }
+}
+
+void Player::drawCard(){};
+void Player::negotiatePlayer(Player* enemy){
+    this->cannotAttack.push_back(enemy);
+}
+bool Player::canAttack(Player* enemy){
+    for (Player* p : this->cannotAttack){
+        if (p == enemy){
+            return false;
+        }
+    }
+    return true;
+}
+void Player::deleteNegotiate(Player* enemy){
+    int index = 0;
+    for(Player* p : this->cannotAttack){
+        if(p == enemy){
+            auto posIt = this->cannotAttack.begin()+index;
+            this->cannotAttack.erase(posIt); // will delete the thing we are looking for
+            return;
+        }
+        index++;
+    }
+}

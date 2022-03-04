@@ -53,6 +53,7 @@ class AdvanceOrder : public Order{
         AdvanceOrder& operator=(const AdvanceOrder& aOrder);    // Assignment operator 
         bool validate();    // Will eventually validate orders
         bool execute();     // Triggers   validation and performs action
+        void attack();
     private:
         // Data members
         int armies;

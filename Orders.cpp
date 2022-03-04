@@ -1,5 +1,7 @@
 #include "GameEngine.h"
 #include "Orders.h"
+#include <string>
+#include <time.h>
 
 class Player;
 class Territory;
@@ -127,20 +129,77 @@ AdvanceOrder& AdvanceOrder::operator=(const AdvanceOrder& aOrder){  // Assignmen
     return *this;
 }
 bool AdvanceOrder::validate(){
-    // TODO: check that source belongs to user and that he has the amount or soldiers needed
-    // check if source and dest are connected
-    cout << "Advance Order is validated\n";
-    return true;
+    if (this->source->getOwnerOfTerritory() == this->player){
+        if (this->source->isAdjacent(this->destination)){
+            if (this->source->getNumberOfArmies() >= this->armies){
+                cout << "Advance order validated" << endl;
+                return true;
+            }
+            cout << "Not enough solders on the territory to perform the operation" << endl;
+            return false;
+        }
+        cout << "The 2 territories are not adjacent to each other" << endl;
+        return false;
+    }
+    cout << "The source territory does not belong to the player" << endl;
+    return false;
 }
 bool AdvanceOrder::execute(){   // Triggers validate
     if (validate()){
-        // if both territories belong to one user then move if not attack TODO:
-        this->effect = "\nEffect: "+to_string(this->armies)+" solders are being advanced from "
+        if (this->destination->getOwnerOfTerritory() == this->player){ // we already know the source belongs to user from validate
+            this->effect = "\nEffect: "+to_string(this->armies)+" solders are being moved from "
                         + this->source->getTerritoryName() + " to " + this->destination->getTerritoryName()
                         + " by " + this->player->getName();
+            this->destination->setNumberOfArmies(this->destination->getNumberOfArmies()+this->armies);
+            this->source->setNumberOfArmies(this->source->getNumberOfArmies()-this->armies);
+            return true;
+        }
+        this->attack();
         return true;
     }
     return false;
+}
+void AdvanceOrder::attack(){
+    if (!this->player->canAttack(this->destination->getOwnerOfTerritory())){
+        cout << "The player cannot attack the opponent as the negotiate card was used" << endl;
+        return;
+    }
+    string log =  "Attack is performed between " + this->source->getTerritoryName() + " and "
+                + this->destination->getTerritoryName() + "\n " + to_string(this->armies) + " solders against "
+                + to_string(this->destination->getNumberOfArmies());
+    cout << log << endl;
+    int conquered = 0;
+    for (int i = 0; i < this->armies; i++){
+        int prob = (rand() % 10) +1 ;
+        if (prob <= 6){ // 60% chance of being true
+            conquered ++; // One solder more killed
+        }
+    }
+    int defended = 0;
+    for (int i = 0; i < this->armies; i++){
+        int prob = (rand() % 10) +1 ;
+        if (prob <= 7){ // 70% chance of being true
+            defended ++; // One attacking solder more killed
+        }
+    }
+    if (defended > this->armies){
+        defended = this->armies; // Cannot kill more than actually came tothe territory
+    }
+    cout << to_string(conquered) << " killed by " << this->player->getName() << endl;
+    cout << to_string(defended) << " killed by " << this->destination->getOwnerOfTerritory()->getName() << endl;
+
+    if (this->destination->getNumberOfArmies() <= conquered){
+        cout << "The territory now belongs to " << this->player->getName();
+        this->destination->getOwnerOfTerritory()->removeTerritory(this->destination);
+        this->player->addTerritory(this->destination);
+        this->destination->setNumberOfArmies(this->armies-defended); // setting the leftover army to this territory
+        this->player->drawCard();
+        this->source->setNumberOfArmies(this->source->getNumberOfArmies() - defended);
+        return;
+    }
+    cout << this->destination->getOwnerOfTerritory()->getName() << " deffended his territory" << endl;
+    this->destination->setNumberOfArmies(this->destination->getNumberOfArmies() - conquered);
+    this->source->setNumberOfArmies(this->source->getNumberOfArmies() - defended);
 }
 /////////////////////////////////////////////////// BombOrder //////////////////////////////////////////////////////
 BombOrder::BombOrder(Player* player, Territory* destination){   // Parameter constructor
@@ -195,7 +254,7 @@ bool BombOrder::execute(){ // Will trigger validate method
 //////////////////////////////////////////////// BlockadeOrder /////////////////////////////////////////////////////
 BlockadeOrder::BlockadeOrder(Player* player, Territory* destination){   // Parameter constructor
     this->name = "Blockade";
-    this->description = "Tripples the army on " + destination->getTerritoryName() + " by " + player->getName();
+    this->description = "Doubles the army on " + destination->getTerritoryName() + " by " + player->getName();
     this->player = player;
     this->destination = destination;
 }
@@ -218,14 +277,21 @@ BlockadeOrder& BlockadeOrder::operator=(const BlockadeOrder& blOrder){  // Assig
     return *this;
 }
 bool BlockadeOrder::validate(){
-    // TODO check that the territory belongs to the user
-    cout << "Blockade Order is validated\n";
-    return true;
+    if (this->destination->getOwnerOfTerritory() == this->player){
+        cout << "Blockade order was validated";
+        return true;
+    }
+    cout << "The territory does not belong to the player.\n";
+    return false;
 }
 bool BlockadeOrder::execute(){  // Will trigger validate method
     if (validate()){
-        this->effect = "\nEffect: the army is trippled on " + this->destination->getTerritoryName()
+        this->effect = "\nEffect: the army is doubled on " + this->destination->getTerritoryName()
                         + " by " + this->player->getName();
+        this->destination->setNumberOfArmies(this->destination->getNumberOfArmies() * 2);
+        Player* neutral = new Player("Neutral");
+        this->destination->setOwnerOfTerritory(neutral);
+        this->player->removeTerritory(this->destination);
         return true;
     }
     return false;
@@ -263,15 +329,28 @@ AirliftOrder& AirliftOrder::operator=(const AirliftOrder& aiOrder){ // Assignmen
     return *this;
 }
 bool AirliftOrder::validate(){
-    // check if source belongs to user and that he has that army on it
-    cout << "Airlift Order is validated\n";
-    return true;
+    if (this->source->getOwnerOfTerritory() == this->player){
+        if (this->destination->getOwnerOfTerritory() == this->player){
+            if (this->source->getNumberOfArmies() >= this->armies){
+                cout << "Airilift order vallidated" << endl;
+                return true;
+            }
+            cout << "Not enough army to perform this operation" << endl;
+            return false;
+        }
+        cout << "Destination territory does not belong to user" << endl;
+        return false;
+    }
+    cout << "Source territory does not belong to user" << endl;
+    return false;
 }
 bool AirliftOrder::execute(){   // Will trigger validate method
     if (validate()){
         this->effect = "\nEffect: "+to_string(this->armies)+" solders are moved from " + 
                         this->source->getTerritoryName() + " to " + this->destination->getTerritoryName()
                         + " by " + this->player->getName();
+        this->source->setNumberOfArmies(this->source->getNumberOfArmies()-this->armies);
+        this->destination->setNumberOfArmies(this->destination->getNumberOfArmies()+this->armies);
         return true;
     }
     return false;
@@ -302,7 +381,10 @@ NegotiateOrder& NegotiateOrder::operator=(const NegotiateOrder& nOrder){    // A
     return *this;
 }
 bool NegotiateOrder::validate(){
-    // Check that two players exist?
+    if(this->second == this->player){
+        cout << "The two players are the same user" << endl;
+        return false;
+    }
     cout << "Negotiate Order is validated\n";
     return true;
 }
@@ -310,6 +392,8 @@ bool NegotiateOrder::execute(){     // Will trigger validate
     if (validate()){
         this->effect = "\nEffect: no attacks can be done between " + this->player->getName()
                         + " and " + this->second->getName() + "until the end of the round";
+        this->player->negotiatePlayer(this->second);
+        this->second->negotiatePlayer(this->player);
         return true;
     }
     return false;
