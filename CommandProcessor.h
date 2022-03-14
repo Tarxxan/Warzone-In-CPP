@@ -5,9 +5,10 @@ using namespace std;
 //#include "LoggingObserver.h"
 
 #pragma once
-
+class Iloggable;
+class Subject;
 // Should inherit iloggable and subject
-class Command
+class Command: public  Iloggable, Subject
 {
 public:
     string command;
@@ -25,32 +26,30 @@ public:
 
     void saveEffect(string effect);
 
-    friend ostream &operator<<(ostream &out, const Command &command);
+    friend ostream &operator<<(ostream &output, const Command &command);
 
     virtual string stringToLog(); // From Iloggable class
 };
 
 // Should inherit iloggable and subject
-class CommandProcessor
+class CommandProcessor: public Iloggable, Subject
 {
 public:
     // list of commands IDK if we can use vectors so im just following picture format in A2 doc
-    list<Command *> CommandList;
+    list<Command*> CommandList;
 
     CommandProcessor();
 
     CommandProcessor(CommandProcessor &commandProcessor);
 
     // Need to make it virtual since its base class
+    // Delete all pointers in the list
     virtual ~CommandProcessor();
 
     // Assignment operator
     const CommandProcessor &operator=(const CommandProcessor &commandProcessor);
 
-    // Method to validate commands
-    bool validate(string coammdn, string gameState);
-
-    friend ostream &operator<<(ostream &out, const CommandProcessor &commandProcessor);
+    friend ostream &operator<<(ostream &output, const CommandProcessor &commandProcessor);
 
     virtual string stringToLog();
 
@@ -59,7 +58,7 @@ public:
     // Method that reads commmand for the console, can be overriden to read commands from a file
     virtual string readCommand();
 
-    bool validate(string coammdn, string gameState);
+    bool validate(string command, string gameState);
 
     // Method that saves command into a list of commands
     void saveCommand(Command *c);
@@ -71,6 +70,7 @@ public:
     ifstream file;
     int currentLine;
 
+
     FileLineReader();
 
     FileLineReader(FileLineReader &file);
@@ -81,7 +81,7 @@ public:
 
     string ReadLine(string fileName);
 
-    friend ostream &operator<<(ostream &out, const FileLineReader &file);
+    friend ostream &operator<<(ostream &output, const FileLineReader &file);
 };
 
 class FileCommandProcessorAdapter : public CommandProcessor
@@ -89,7 +89,7 @@ class FileCommandProcessorAdapter : public CommandProcessor
 public:
     FileLineReader *fileLineReader;
     string fileName;
-
+    
     FileCommandProcessorAdapter(string fileName);
 
     FileCommandProcessorAdapter(FileCommandProcessorAdapter &fileCommandAdapter);
@@ -98,7 +98,7 @@ public:
 
     const FileCommandProcessorAdapter &operator=(const FileCommandProcessorAdapter &fileCommandAdapter);
 
-    friend ostream &operator<<(ostream &out, const FileCommandProcessorAdapter &fileCommandAdapter);
-
+    friend ostream &operator<<(ostream &output, const FileCommandProcessorAdapter &fileCommandAdapter);
+  
     string readCommand();
 };
