@@ -1,6 +1,6 @@
 //#include "GameEngine.h"
 #include "CommandProcessor.h"
-#include "LogObserver.h"
+#include "LoggingObserver.h"
 #include <iostream>
 #include <fstream>
 #include <string>
@@ -66,7 +66,6 @@ string Command::checkCommand(string command)
 
 void Command::saveEffect(string command)
 {
-
     effect = checkCommand(command);
     Notify(this);
 }
@@ -75,8 +74,7 @@ string Command::stringToLog()
 {
     ofstream gameLog;
     gameLog.open("gamelog.txt", ios_base::app);
-    gameLog << "Effect of Command:" << this->effect << "\n"
-            << endl;
+    gameLog << "Effect of Command:" << this->effect << "\n"<< endl;
     gameLog.close();
     return this->effect;
 }
@@ -154,6 +152,8 @@ string CommandProcessor::readCommand()
     string command;
     cout << "Enter a command" << endl;
     getline(cin, command);
+    Command *c = new Command(command);
+    saveCommand(c);
     return command;
 }
 

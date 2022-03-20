@@ -1,10 +1,11 @@
+#pragma once
 #include <string>
-using namespace std;
 #include <fstream>
 #include <list>
-#include "LogObserver.h"
+#include "LoggingObserver.h"
 
-#pragma once
+using namespace std;
+
 class ILoggable;
 class Subject;
 
@@ -64,7 +65,6 @@ public:
     void saveCommand(Command *c);
 
 private:
-
     virtual string readCommand();
 };
 
