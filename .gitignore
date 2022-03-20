@@ -49,3 +49,6 @@ Thumbs.db
 *.wmv
 #VS Code
 *.vscode
+
+#logging
+loggingdriver
