@@ -1,0 +1,6 @@
+loadmap FileMap
+validatemap
+addplayer FilePlayer
+gamestart
+replay
+quit
