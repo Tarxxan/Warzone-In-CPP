@@ -1,18 +1,23 @@
 #include "LoggingObserver.h"
 
-
 int main()
 {
-    LogObserver *obs = new LogObserver();
+    
     FakeCommand *test = new FakeCommand();
-    test->Attach(obs);
+    fakeOrder *testingOrder = new fakeOrder();
+
+    LogObserver *obs = new LogObserver(test);
+    LogObserver *obstwo = new LogObserver(testingOrder);
+    
 
     test->saveCommand();
-    
+    testingOrder->execute();
+    test->saveCommand();
+
     delete obs;
+    delete obstwo;
     delete test;
-
-
+    delete testingOrder;
 
     return 0;
 }
