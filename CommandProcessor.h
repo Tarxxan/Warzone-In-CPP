@@ -4,6 +4,7 @@
 #include <list>
 #include "LoggingObserver.h"
 
+
 using namespace std;
 
 class ILoggable;

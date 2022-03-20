@@ -147,13 +147,12 @@ void CommandProcessor::getCommand(string gameState)
 }
 
 // Method that reads commmand for the console, can be overriden to read commands from a file
+
 string CommandProcessor::readCommand()
 {
     string command;
     cout << "Enter a command" << endl;
     getline(cin, command);
-    Command *c = new Command(command);
-    saveCommand(c);
     return command;
 }
 
