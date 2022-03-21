@@ -18,6 +18,7 @@ Command::Command()
 
 Command::Command(string command)
 {
+    LogObserver *observer = new LogObserver(this);
     this->command = command;
     isValid = true;
 }
@@ -74,6 +75,7 @@ string Command::checkCommand(string command, bool isValid)
 void Command::saveEffect(string effect)
 {
     this->effect = effect;
+    cout << "in save effect" << endl;
     Notify(this);
 }
 
@@ -85,7 +87,10 @@ string Command::stringToLog()
     return "Effect: " + this->effect + "\n";
 }
 
-CommandProcessor::CommandProcessor() {}
+CommandProcessor::CommandProcessor()
+ {
+    LogObserver *observer = new LogObserver(this);
+ }
 
 CommandProcessor::~CommandProcessor()
 {
@@ -98,6 +103,7 @@ CommandProcessor::~CommandProcessor()
 
 CommandProcessor::CommandProcessor(CommandProcessor &commandProcessor)
 {
+
     this->CommandList = commandProcessor.CommandList;
 }
 
@@ -152,7 +158,6 @@ Command *CommandProcessor::readCommand()
     getline(cin, command);
     cout << endl;
     Command *c = new Command(command);
-    LogObserver *observer = new LogObserver(c);
     saveCommand(c);
     return c;
 }
@@ -185,6 +190,7 @@ bool CommandProcessor::validate(Command *c, string gameState)
 void CommandProcessor::saveCommand(Command *c)
 {
     this->CommandList.push_back(c);
+    cout << "in save command" << endl;
     Notify(this);
 }
 /*
@@ -273,7 +279,6 @@ Command *FileCommandProcessorAdapter::readCommand()
 {
     string command = fileLineReader->ReadLine(fileName);
     Command *c = new Command(command);
-    LogObserver *observer = new LogObserver(c);
     saveCommand(c);
     return c;
 }

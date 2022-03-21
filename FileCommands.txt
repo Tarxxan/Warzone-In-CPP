@@ -4,3 +4,4 @@ addplayer FilePlayer
 gamestart
 replay
 quit
+validatemap

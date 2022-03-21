@@ -18,7 +18,6 @@ int main()
         {
 
             CommandProcessor *commandProc = new CommandProcessor();
-            LogObserver *o = new LogObserver(commandProc);
             commandProc->getCommand("start");
             commandProc->getCommand("maploaded");
             commandProc->getCommand("mapvalidated");
@@ -36,7 +35,6 @@ int main()
             cout << endl;
 
             CommandProcessor *FCommandProc = new FileCommandProcessorAdapter(conOrFile.substr(6));
-            LogObserver *o = new LogObserver(FCommandProc);
             FCommandProc->getCommand("start");
             FCommandProc->getCommand("maploaded");
             FCommandProc->getCommand("mapvalidated");
