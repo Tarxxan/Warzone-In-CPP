@@ -1,6 +1,5 @@
 //#include "GameEngine.h"
 #include "CommandProcessor.h"
-#include "LoggingObserver.h"
 #include <iostream>
 #include <fstream>
 #include <string>
@@ -73,10 +72,7 @@ void Command::saveEffect(string command)
 string Command::stringToLog()
 {
     ofstream gameLog;
-    gameLog.open("gamelog.txt", ios_base::app);
-    gameLog << "Effect of Command:" << this->effect << "\n"<< endl;
-    gameLog.close();
-    return this->effect;
+    return "Effect: "+this->effect;
 }
 
 CommandProcessor::CommandProcessor() {}
@@ -88,11 +84,10 @@ CommandProcessor::CommandProcessor(CommandProcessor &commandProcessor)
 
 CommandProcessor::~CommandProcessor()
 {
-
     for (Command *c : CommandList)
     {
         delete c;
-        c = NULL;
+        //c = NULL;
     }
 }
 
@@ -108,20 +103,21 @@ ostream &operator<<(ostream &output, const CommandProcessor &commandProcessor)
 
 string CommandProcessor::stringToLog()
 {
-    ofstream gameLog;
-    gameLog.open("gamelog.txt", ios_base::app);
-    gameLog << "Commands: " << endl;
-    string commandContents;
-    for (Command *c : this->CommandList)
-    {
 
-        commandContents += c->command + "\t";
-    }
-    cout << commandContents;
-    gameLog << commandContents;
-    gameLog << endl;
-    gameLog.close();
-    return commandContents;
+    //TO FIX
+    // cout << "In CommandProcessor S2L";
+    
+    // string commandContents;
+    // for (Command *c : this->CommandList)
+    // {
+
+    //     commandContents += c->command + "\t";
+    // }
+    // cout << commandContents;
+    // gameLog << commandContents;
+    // gameLog << endl;
+    // gameLog.close();
+    // return commandContents;
 }
 // Uses validate method to get commands and ensure they are correct given the gamestate
 void CommandProcessor::getCommand(string gameState)
@@ -195,7 +191,8 @@ FileLineReader::FileLineReader(FileLineReader &file)
     this->currentLine = file.currentLine;
 }
 
-FileLineReader::~FileLineReader() {}
+FileLineReader::~FileLineReader() {
+}
 
 const FileLineReader &FileLineReader::operator=(const FileLineReader &file)
 {

@@ -37,6 +37,7 @@ int main()
             FCommandProc->getCommand("playersadded");
             FCommandProc->getCommand("win");
             FCommandProc->getCommand("win");
+            cout << "-------------------------"<<endl;
             cout << *FCommandProc;
 
             delete FCommandProc;
