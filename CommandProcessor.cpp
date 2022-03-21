@@ -12,6 +12,7 @@ Command::Command()
 {
     command = "";
     effect = "";
+    isValid = true;
 }
 
 Command::~Command()
@@ -20,6 +21,7 @@ Command::~Command()
 Command::Command(string command)
 {
     this->command = command;
+    isValid = true;
 }
 
 Command::Command(const Command &command)
@@ -32,6 +34,7 @@ Command &Command::operator=(const Command &command)
 {
     this->command = command.command;
     this->effect = command.effect;
+    this->isValid = command.isValid;
     return *this;
 }
 
@@ -42,9 +45,11 @@ ostream &operator<<(ostream &output, const Command &command)
     return output;
 }
 
-string Command::checkCommand(string command)
+string Command::checkCommand(string command, bool isValid)
 {
     string effect = "";
+    if (!isValid)
+        return effect = "invalid Command, no effect will occur.";
     if (command.compare("quit") == 0)
         return effect = "The game has ended, No new games will be played";
     else if (command.compare("replay") == 0)
@@ -63,16 +68,17 @@ string Command::checkCommand(string command)
         return effect = "invalid Command, no effect will occur.";
 }
 
-void Command::saveEffect(string command)
+void Command::saveEffect(string effect)
 {
-    effect = checkCommand(command);
+    this->effect = effect;
     Notify(this);
 }
 // call detatch in destructors in observer to ensure you arent notifying a deleted object
 string Command::stringToLog()
 {
-    ofstream gameLog;
-    return "Effect: "+this->effect;
+    cout << "Writing Effect in log file\n" << endl;
+
+    return "Effect: " + this->effect + "\n";
 }
 
 CommandProcessor::CommandProcessor() {}
@@ -87,13 +93,13 @@ CommandProcessor::~CommandProcessor()
     for (Command *c : CommandList)
     {
         delete c;
-        //c = NULL;
+        c = NULL;
     }
 }
 
 ostream &operator<<(ostream &output, const CommandProcessor &commandProcessor)
 {
-    output << "Commands in the List"<< endl;
+    output << "Commands in the List" << endl;
     for (Command *c : commandProcessor.CommandList)
     {
         output << *c << endl;
@@ -103,72 +109,59 @@ ostream &operator<<(ostream &output, const CommandProcessor &commandProcessor)
 
 string CommandProcessor::stringToLog()
 {
-
-    //TO FIX
-    // cout << "In CommandProcessor S2L";
-    
-    // string commandContents;
-    // for (Command *c : this->CommandList)
-    // {
-
-    //     commandContents += c->command + "\t";
-    // }
-    // cout << commandContents;
-    // gameLog << commandContents;
-    // gameLog << endl;
-    // gameLog.close();
-    // return commandContents;
+    cout << "Writing Command in log file" << endl;
+    string commandstr = "Command: " + CommandList.back()->command;
+    return commandstr;
 }
 // Uses validate method to get commands and ensure they are correct given the gamestate
-void CommandProcessor::getCommand(string gameState)
+Command *CommandProcessor::getCommand(string gameState)
 {
-    string currCommand = readCommand();
-    if (validate(currCommand, gameState))
+    Command *c = readCommand();
+    if (validate(c, gameState))
     {
-        Command *c = new Command(currCommand);
-        LogObserver *observer = new LogObserver(c);
-        c->saveEffect(currCommand);
-        saveCommand(c);
-       
+        c->saveEffect(c->checkCommand(c->command, c->isValid));
+        return c;
     }
 
     else
     {
-        Command *c = new Command(currCommand);
-        LogObserver *observer = new LogObserver(c);
-        c->saveEffect(currCommand);
-        saveCommand(c);
+        c->isValid = false;
+        c->saveEffect(c->checkCommand(c->command, c->isValid));
         cerr << "An invalid command has been given for current state." << endl;
+        return c;
     }
 }
 
 // Method that reads commmand for the console, can be overriden to read commands from a file
 
-string CommandProcessor::readCommand()
+Command *CommandProcessor::readCommand()
 {
     string command;
     cout << "Enter a command" << endl;
     getline(cin, command);
-    return command;
+    Command *c = new Command(command);
+    LogObserver *observer = new LogObserver(c);
+    saveCommand(c);
+    return c;
 }
 
-bool CommandProcessor::validate(string command, string gameState)
+bool CommandProcessor::validate(Command *c, string gameState)
 {
-    if (command.find("loadmap") != string::npos && (gameState == "start" || gameState == "maploaded"))
+    if (c->command.find("loadmap") != string::npos && (gameState == "start" || gameState == "maploaded"))
     {
         return true;
     }
 
-    else if (command == "validatemap" && gameState == "maploaded")
+    else if (c->command == "validatemap" && gameState == "maploaded")
         return true;
 
-    else if (command.find("addplayer") !=string::npos && (gameState == "mapvalidated" || gameState == "playersadded"))
+    else if (c->command.find("addplayer") != string::npos && (gameState == "mapvalidated" || gameState == "playersadded"))
         return true;
 
-    else if (command == "gamestart" && gameState == "playersadded")
+    else if (c->command == "gamestart" && gameState == "playersadded")
         return true;
 
-    else if ((command == "replay" || command == "quit") && gameState == "win")
+    else if ((c->command == "replay" || c->command == "quit") && gameState == "win")
         return true;
 
     return false;
@@ -191,7 +184,8 @@ FileLineReader::FileLineReader(FileLineReader &file)
     this->currentLine = file.currentLine;
 }
 
-FileLineReader::~FileLineReader() {
+FileLineReader::~FileLineReader()
+{
 }
 
 const FileLineReader &FileLineReader::operator=(const FileLineReader &file)
@@ -205,7 +199,8 @@ string FileLineReader::ReadLine(string fileName)
 {
     string command;
     file.open(fileName);
-    for(int count=0;count<=currentLine;){
+    for (int count = 0; count <= currentLine;)
+    {
         if (count != currentLine)
         {
             getline(file, command);
@@ -214,7 +209,6 @@ string FileLineReader::ReadLine(string fileName)
         else
         {
             getline(file, command);
-            cout << command<<endl;
             currentLine++;
             break;
         }
@@ -254,8 +248,11 @@ ostream &operator<<(ostream &output, const FileCommandProcessorAdapter &FileComm
     return output;
 }
 
-string FileCommandProcessorAdapter::readCommand()
+Command *FileCommandProcessorAdapter::readCommand()
 {
     string command = fileLineReader->ReadLine(fileName);
-    return command;
+    Command *c = new Command(command);
+    LogObserver *observer = new LogObserver(c);
+    saveCommand(c);
+    return c;
 }

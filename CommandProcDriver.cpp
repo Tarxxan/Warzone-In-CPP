@@ -12,16 +12,18 @@ int main()
              << " -console to enter commands from console" << endl
              << " -file <file name> to read commands from a file" << endl;
         getline(cin, conOrFile);
+       
         if (conOrFile == "-console")
         {
+            
             CommandProcessor *commandProc = new CommandProcessor();
+            LogObserver *o= new LogObserver(commandProc);
             commandProc->getCommand("start");
             commandProc->getCommand("maploaded");
             commandProc->getCommand("mapvalidated");
             commandProc->getCommand("playersadded");
             commandProc->getCommand("win");
             commandProc->getCommand("win");
-            cout << *commandProc;
 
             delete commandProc;
             commandProc = NULL;
@@ -30,7 +32,9 @@ int main()
         else if (conOrFile.find("-file")!=string::npos)
         {
             cout << endl;
+            
             CommandProcessor *FCommandProc = new FileCommandProcessorAdapter(conOrFile.substr(6));
+            LogObserver *o= new LogObserver(FCommandProc);
             FCommandProc->getCommand("start");
             FCommandProc->getCommand("maploaded");
             FCommandProc->getCommand("mapvalidated");
@@ -38,7 +42,6 @@ int main()
             FCommandProc->getCommand("win");
             FCommandProc->getCommand("win");
             cout << "-------------------------"<<endl;
-            cout << *FCommandProc;
 
             delete FCommandProc;
             FCommandProc = NULL;

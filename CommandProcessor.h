@@ -15,6 +15,7 @@ class Command : public ILoggable, public Subject
 public:
     string command;
     string effect;
+    bool isValid;
 
     Command();
 
@@ -28,7 +29,7 @@ public:
 
     void saveEffect(string effect);
 
-    string checkCommand(string command);
+    string checkCommand(string command, bool isValid);
 
     friend ostream &operator<<(ostream &output, const Command &command);
 
@@ -57,16 +58,16 @@ public:
 
     virtual string stringToLog();
 
-    void getCommand(string gameState);
+    Command* getCommand(string gameState);
 
     // Method that reads commmand for the console, can be overriden to read commands from a file
 
-    bool validate(string command, string gameState);
+    bool validate(Command *c, string gameState);
     // Method that saves command into a list of commands
     void saveCommand(Command *c);
 
 private:
-    virtual string readCommand();
+    virtual Command* readCommand();
 };
 
 class FileLineReader
@@ -104,5 +105,5 @@ public:
 
     friend ostream &operator<<(ostream &output, const FileCommandProcessorAdapter &fileCommandAdapter);
 
-    string readCommand();
+    Command* readCommand();
 };
