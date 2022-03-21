@@ -4,7 +4,6 @@
 #include <list>
 #include "LoggingObserver.h"
 
-
 using namespace std;
 
 class ILoggable;
@@ -21,9 +20,9 @@ public:
 
     Command(string command);
 
-    Command(const Command &command);
-
     ~Command();
+
+    Command(const Command &command);
 
     Command &operator=(const Command &command);
 
@@ -44,30 +43,29 @@ public:
     list<Command *> CommandList;
 
     CommandProcessor();
-
-    CommandProcessor(CommandProcessor &commandProcessor);
-
     // Need to make it virtual since its base class
     // Delete all pointers in the list
     virtual ~CommandProcessor();
 
-    // Assignment operator
-    const CommandProcessor &operator=(const CommandProcessor &commandProcessor);
+    CommandProcessor(CommandProcessor &commandProcessor);
+
+    CommandProcessor &operator=(const CommandProcessor &commandProcessor);
 
     friend ostream &operator<<(ostream &output, const CommandProcessor &commandProcessor);
 
     virtual string stringToLog();
 
-    Command* getCommand(string gameState);
+    Command *getCommand(string gameState);
 
     // Method that reads commmand for the console, can be overriden to read commands from a file
 
     bool validate(Command *c, string gameState);
     // Method that saves command into a list of commands
+
+protected:
     void saveCommand(Command *c);
 
-private:
-    virtual Command* readCommand();
+    virtual Command *readCommand();
 };
 
 class FileLineReader
@@ -78,9 +76,9 @@ public:
 
     FileLineReader();
 
-    FileLineReader(FileLineReader &file);
-
     ~FileLineReader();
+
+    FileLineReader(FileLineReader &file);
 
     const FileLineReader &operator=(const FileLineReader &file);
 
@@ -105,5 +103,5 @@ public:
 
     friend ostream &operator<<(ostream &output, const FileCommandProcessorAdapter &fileCommandAdapter);
 
-    Command* readCommand();
+    Command *readCommand();
 };

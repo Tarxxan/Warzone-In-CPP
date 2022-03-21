@@ -8,6 +8,7 @@ using namespace std;
 class ILoggable;
 class Subject;
 
+// Contains isValid to be used by GameEngine to determine if they should bother executing a command
 Command::Command()
 {
     command = "";
@@ -15,19 +16,21 @@ Command::Command()
     isValid = true;
 }
 
-Command::~Command()
-{
-}
 Command::Command(string command)
 {
     this->command = command;
     isValid = true;
 }
 
+Command::~Command()
+{
+}
+
 Command::Command(const Command &command)
 {
     this->command = command.command;
     this->effect = command.effect;
+    this->isValid = command.isValid;
 }
 
 Command &Command::operator=(const Command &command)
@@ -73,20 +76,16 @@ void Command::saveEffect(string effect)
     this->effect = effect;
     Notify(this);
 }
-// call detatch in destructors in observer to ensure you arent notifying a deleted object
+
 string Command::stringToLog()
 {
-    cout << "Writing Effect in log file\n" << endl;
+    cout << "Writing Effect in log file\n"
+         << endl;
 
     return "Effect: " + this->effect + "\n";
 }
 
 CommandProcessor::CommandProcessor() {}
-
-CommandProcessor::CommandProcessor(CommandProcessor &commandProcessor)
-{
-    this->CommandList = commandProcessor.CommandList;
-}
 
 CommandProcessor::~CommandProcessor()
 {
@@ -97,6 +96,17 @@ CommandProcessor::~CommandProcessor()
     }
 }
 
+CommandProcessor::CommandProcessor(CommandProcessor &commandProcessor)
+{
+    this->CommandList = commandProcessor.CommandList;
+}
+
+CommandProcessor &CommandProcessor::operator=(const CommandProcessor &commandProcessor)
+{
+
+    this->CommandList = commandProcessor.CommandList;
+    return *this;
+}
 ostream &operator<<(ostream &output, const CommandProcessor &commandProcessor)
 {
     output << "Commands in the List" << endl;
@@ -113,7 +123,9 @@ string CommandProcessor::stringToLog()
     string commandstr = "Command: " + CommandList.back()->command;
     return commandstr;
 }
-// Uses validate method to get commands and ensure they are correct given the gamestate
+
+// With help from readCommand() creates a command which will be passed to the validate to ensure its validity given the gamestate.
+// This can be used by GameEngine.
 Command *CommandProcessor::getCommand(string gameState)
 {
     Command *c = readCommand();
@@ -132,23 +144,25 @@ Command *CommandProcessor::getCommand(string gameState)
     }
 }
 
-// Method that reads commmand for the console, can be overriden to read commands from a file
-
+// Method that reads commmand for the console, can be overriden to read commands from a file in FileCommandProcessorAdapter
 Command *CommandProcessor::readCommand()
 {
     string command;
     cout << "Enter a command" << endl;
     getline(cin, command);
+    cout << endl;
     Command *c = new Command(command);
     LogObserver *observer = new LogObserver(c);
     saveCommand(c);
     return c;
 }
 
+// Validates the Command given the current Gamestate
 bool CommandProcessor::validate(Command *c, string gameState)
 {
     if (c->command.find("loadmap") != string::npos && (gameState == "start" || gameState == "maploaded"))
     {
+
         return true;
     }
 
@@ -167,25 +181,27 @@ bool CommandProcessor::validate(Command *c, string gameState)
     return false;
 }
 
-// Method that saves command into a list of commands
+// Saves Command and then notifies Observers
 void CommandProcessor::saveCommand(Command *c)
 {
     this->CommandList.push_back(c);
     Notify(this);
 }
-
+/*
+  ///////////////////////////////////////////////////////
+ //                 FILE LINE READER                  //
+///////////////////////////////////////////////////////
+*/
 FileLineReader::FileLineReader()
 {
     currentLine = 0;
 }
 
+FileLineReader::~FileLineReader() {}
+
 FileLineReader::FileLineReader(FileLineReader &file)
 {
     this->currentLine = file.currentLine;
-}
-
-FileLineReader::~FileLineReader()
-{
 }
 
 const FileLineReader &FileLineReader::operator=(const FileLineReader &file)
@@ -194,7 +210,6 @@ const FileLineReader &FileLineReader::operator=(const FileLineReader &file)
     return *this;
 }
 
-// Want to check if theres a way to put a bit somewhere where we can just start from there instead of iterating over it a bunch of times
 string FileLineReader::ReadLine(string fileName)
 {
     string command;
@@ -222,6 +237,12 @@ ostream &operator<<(ostream &output, const FileLineReader &file)
     output << "Reading with linereader" << endl;
     return output;
 }
+
+/*
+  ///////////////////////////////////////////////////////
+ //       FILE COMMMAND PROCESSOR ADAPTER             //
+///////////////////////////////////////////////////////
+*/
 
 FileCommandProcessorAdapter::FileCommandProcessorAdapter(string fileName) : CommandProcessor()
 {
