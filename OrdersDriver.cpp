@@ -365,4 +365,4 @@ int main() {
     
 }
 
-// g++ "OrdersDriver.cpp" "Orders.cpp" "Player.cpp" "Map.cpp" "Cards.cpp" -o "orders.exe"
+// g++ "OrdersDriver.cpp" "Orders.cpp" "Player.cpp" "Map.cpp" "Cards.cpp" "LoggingObserver.cpp" -o "orders.exe"

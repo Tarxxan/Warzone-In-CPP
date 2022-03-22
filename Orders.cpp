@@ -7,8 +7,11 @@ class Player;
 class Territory;
 
 ///////////////////////////////////////////////////// ORDER CLASS /////////////////////////////////
-Order::Order(){}; // Empty constructor
+Order::Order(){
+    LogObserver *observer = new LogObserver(this);
+}; // Empty constructor
 Order::Order(const Order& order){ // Parameter Constructor
+    LogObserver *observer = new LogObserver(this);
     this->name = order.name;
     this->description = order.description;
     this->effect = order.effect;
@@ -43,6 +46,9 @@ bool Order::execute(){return true;}
 // Friend method to print order's description and effect
 std::ostream& operator<<(ostream& out, const Order& o){
     return out << "Order: " << o.description << o.effect;
+}
+string Order::stringToLog(){
+    return "Order Executed: " + this->effect;
 }
 //////////////////////////////////////////////////// DeployOrder /////////////////////////////////////////////////////
 DeployOrder::DeployOrder(Player* player, int numOfArmies, Territory* destination){ // Parameter Constructor
@@ -88,12 +94,15 @@ bool DeployOrder::validate(){
 }
 bool DeployOrder::execute(){    // Triggers validate
     if (validate()){
-        this->effect = "\nEffect: "+to_string(this->armies)+" solders are being deployed on " 
+        this->effect = "\n"+to_string(this->armies)+" solders are being deployed on " 
                         + this->destination->getTerritoryName() + " by " + this->player->getName();
         this->destination->setNumberOfArmies(this->destination->getNumberOfArmies()+this->armies);
         this->player->removeSolders(this->armies);
+        Notify(this);
         return true;
     }
+    this->effect = this->player->getName() + " was unable to deploy " +to_string(this->armies)+" solders to " + this->destination->getTerritoryName();
+    Notify(this);
     return false;
 }
 /////////////////////////////////////////////////// AdvanceOrder ////////////////////////////////////////////////////
@@ -147,26 +156,32 @@ bool AdvanceOrder::validate(){
 bool AdvanceOrder::execute(){   // Triggers validate
     if (validate()){
         if (this->destination->getOwnerOfTerritory() == this->player){ // we already know the source belongs to user from validate
-            this->effect = "\nEffect: "+to_string(this->armies)+" solders are being moved from "
+            this->effect = "\n"+to_string(this->armies)+" solders are being moved from "
                         + this->source->getTerritoryName() + " to " + this->destination->getTerritoryName()
                         + " by " + this->player->getName();
             this->destination->setNumberOfArmies(this->destination->getNumberOfArmies()+this->armies);
             this->source->setNumberOfArmies(this->source->getNumberOfArmies()-this->armies);
+            Notify(this);
             return true;
         }
         this->attack();
+        Notify(this);
         return true;
     }
+    this->effect = this->player->getName() + " was unable to advance " +to_string(this->armies)+" solders from " + this->source->getTerritoryName() + " to "+ this->destination->getTerritoryName();
+    Notify(this);
     return false;
 }
 void AdvanceOrder::attack(){
     if (!this->player->canAttack(this->destination->getOwnerOfTerritory())){
         cout << "The player cannot attack the opponent as the negotiate card was used" << endl;
+        this->effect = "The player cannot attack the opponent as the negotiate card was used";
         return;
     }
     string log =  "Attack is performed between " + this->source->getTerritoryName() + " and "
                 + this->destination->getTerritoryName() + "\n " + to_string(this->armies) + " solders against "
                 + to_string(this->destination->getNumberOfArmies());
+    
     cout << log << endl;
     int conquered = 0;
     for (int i = 0; i < this->armies; i++){
@@ -187,7 +202,7 @@ void AdvanceOrder::attack(){
     }
     cout << to_string(conquered) << " killed by " << this->player->getName() << endl;
     cout << to_string(defended) << " killed by " << this->destination->getOwnerOfTerritory()->getName() << endl;
-
+    this->effect = log;
     if (this->destination->getNumberOfArmies() <= conquered){
         cout << "The territory now belongs to " << this->player->getName();
         this->destination->getOwnerOfTerritory()->removeTerritory(this->destination);
@@ -200,6 +215,7 @@ void AdvanceOrder::attack(){
     cout << this->destination->getOwnerOfTerritory()->getName() << " deffended his territory" << endl;
     this->destination->setNumberOfArmies(this->destination->getNumberOfArmies() - conquered);
     this->source->setNumberOfArmies(this->source->getNumberOfArmies() - defended);
+
 }
 /////////////////////////////////////////////////// BombOrder //////////////////////////////////////////////////////
 BombOrder::BombOrder(Player* player, Territory* destination){   // Parameter constructor
@@ -242,13 +258,16 @@ bool BombOrder::validate(){
 }
 bool BombOrder::execute(){ // Will trigger validate method 
     if (validate()){
-        this->effect = "\nEffect: half of the army is destroyed on " + this->destination->getTerritoryName()
+        this->effect = "\nHalf of the army is destroyed on " + this->destination->getTerritoryName()
                         + " by " + this->player->getName();
         
         int future = int(floor(this->destination->getNumberOfArmies()/2));
         this->destination->setNumberOfArmies(future);
+        Notify(this);
         return true;
     }
+    this->effect = this->player->getName() + " was unable to bomb " + this->destination->getTerritoryName();
+    Notify(this);
     return false;
 }
 //////////////////////////////////////////////// BlockadeOrder /////////////////////////////////////////////////////
@@ -286,14 +305,17 @@ bool BlockadeOrder::validate(){
 }
 bool BlockadeOrder::execute(){  // Will trigger validate method
     if (validate()){
-        this->effect = "\nEffect: the army is doubled on " + this->destination->getTerritoryName()
+        this->effect = "\nThe army is doubled on " + this->destination->getTerritoryName()
                         + " by " + this->player->getName();
         this->destination->setNumberOfArmies(this->destination->getNumberOfArmies() * 2);
         Player* neutral = new Player("Neutral");
         this->destination->setOwnerOfTerritory(neutral);
         this->player->removeTerritory(this->destination);
+        Notify(this);
         return true;
     }
+    this->effect = this->player->getName() + " was unable to blockade " + this->destination->getTerritoryName();
+    Notify(this);
     return false;
 }
 ////////////////////////////////////////////// AirliftOrder /////////////////////////////////////////////////////
@@ -346,13 +368,16 @@ bool AirliftOrder::validate(){
 }
 bool AirliftOrder::execute(){   // Will trigger validate method
     if (validate()){
-        this->effect = "\nEffect: "+to_string(this->armies)+" solders are moved from " + 
+        this->effect = "\n"+to_string(this->armies)+" solders are moved from " + 
                         this->source->getTerritoryName() + " to " + this->destination->getTerritoryName()
                         + " by " + this->player->getName();
         this->source->setNumberOfArmies(this->source->getNumberOfArmies()-this->armies);
         this->destination->setNumberOfArmies(this->destination->getNumberOfArmies()+this->armies);
+        Notify(this);
         return true;
     }
+    this->effect = this->player->getName() + " was unable to airlift " +to_string(this->armies)+" solders from " + this->source->getTerritoryName() + " to "+ this->destination->getTerritoryName();
+    Notify(this);
     return false;
 }
 ///////////////////////////////////////////// NegotiateOrder ///////////////////////////////////////////////////
@@ -390,17 +415,20 @@ bool NegotiateOrder::validate(){
 }
 bool NegotiateOrder::execute(){     // Will trigger validate
     if (validate()){
-        this->effect = "\nEffect: no attacks can be done between " + this->player->getName()
+        this->effect = "\nNo attacks can be done between " + this->player->getName()
                         + " and " + this->second->getName() + "until the end of the round";
         this->player->negotiatePlayer(this->second);
         this->second->negotiatePlayer(this->player);
+        Notify(this);
         return true;
     }
     return false;
 }
 
 // ***************************** ORDER LIST ***********************************
-OrderList::OrderList(){} // Empty constructor
+OrderList::OrderList(){
+    LogObserver *observer = new LogObserver(this);
+} // Empty constructor
 OrderList::~OrderList(){
     cout << "OrderList Destructor called" << endl;
 };  // Destructor
@@ -425,6 +453,7 @@ std::ostream& operator << (std::ostream& strm,const OrderList& orderList) { // A
 // Pushes the elemnt to the end of list
 void OrderList::push(Order* order){
     orderList.push_back(order);
+    Notify(this);
 }
 // Removes an element from the list
 int OrderList::remove(Order *actual){
@@ -471,4 +500,8 @@ bool OrderList::moveUp(Order *order){
 }
 bool OrderList::moveDown(Order *order){
     return move(order, false);
+}
+string OrderList::stringToLog(){
+    Order* last_added = this->orderList.back();
+    return "Added order: " + last_added->getDescription();
 }

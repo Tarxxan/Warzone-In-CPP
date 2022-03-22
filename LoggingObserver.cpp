@@ -14,11 +14,12 @@ Subject::Subject()
 
 Subject::~Subject()
 {
-    list<Observer *>::iterator i = observers->begin();
-    for (; i != observers->end(); ++i)
-    {
-        this->Detach((*i));
-    }
+    // list<Observer *>::iterator i = observers->begin();
+    // for (; i != observers->end(); ++i)
+    // {
+    //     this->Detach((*i));
+    // }
+    delete observers;
 }
 
 void Subject::Attach(Observer *observer)

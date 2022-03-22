@@ -3,14 +3,16 @@
 #include <string>
 #include "Player.h"
 #include "Map.h"
+#include "LoggingObserver.h"
 using namespace std;
 
+class ILoggable;
+class Subject;
 class Player;
 class Territory;
 
 // Order base class for all suborders types
-// For assignment 2 TODO: Maybe user should not have access to any members of Order base class as its only to be used by subclasses
-class Order{
+class Order: public ILoggable, public Subject{
     public:
         Order();                    // Empty Constructor
         Order(const Order& order);  // Copy Constructor 
@@ -23,7 +25,9 @@ class Order{
         Player* getPlayer();        // Returns the player whos order it is
         virtual bool validate();    // A promise that subOrders will implement it
         virtual bool execute();     // A promise that subOrders will implement it
-        friend ostream& operator << (ostream &out, const Order &o); // Friend function to print the object  
+        friend ostream& operator << (ostream &out, const Order &o); // Friend function to print the object 
+
+        virtual string stringToLog(); // From Iloggable class 
     protected:
         // Data members
         Player* player;
@@ -112,7 +116,7 @@ class NegotiateOrder : public Order{
         Player* second;  
 };
 
-class OrderList{
+class OrderList: public ILoggable, public Subject{
     public:
         // Empty Constructor
         OrderList();
@@ -134,7 +138,7 @@ class OrderList{
         
         // Streamline Operator
         friend std::ostream& operator << (ostream& out,const OrderList& ol);
-        // friend std::istream& operator >> (istream& in, OrderList& ol);
+        virtual string stringToLog(); // From Iloggable class
     private:
         vector <Order*> orderList;
 };
