@@ -5,7 +5,8 @@ using namespace std;
 
 Observer::Observer(){};
 
-Observer::~Observer(){};
+Observer::~Observer(){
+};
 
 Subject::Subject()
 {
@@ -14,11 +15,6 @@ Subject::Subject()
 
 Subject::~Subject()
 {
-    // list<Observer *>::iterator i = observers->begin();
-    // for (; i != observers->end(); ++i)
-    // {
-    //     this->Detach((*i));
-    // }
     delete observers;
 }
 
