@@ -82,6 +82,9 @@ class Map
 {
 public:
     Map();                                                                                // default constructor
+    
+    Map(string mapName);
+    
     Map(string mapName, vector<Continent *> continents); // param constructor
     Map(const Map &map);                                                                  // copy constructor
     ~Map();
