@@ -8,7 +8,7 @@ class ILoggable;
 class Observer
 {
 public:
-    ~Observer();
+    virtual ~Observer();
     virtual void Update(ILoggable *s) = 0;
 
 protected:
@@ -22,7 +22,7 @@ public:
     virtual void Detach(Observer *observer);
     virtual void Notify(ILoggable *s);
     Subject();
-    ~Subject();
+    virtual ~Subject();
 
 private:
     list<Observer *> *observers;

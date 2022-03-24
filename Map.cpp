@@ -235,6 +235,13 @@ Map::Map()
 {
 }
 
+Map::Map(string mapName)
+{
+    this->mapName = mapName;
+}
+
+
+
 
 // parameterized constructor
 Map::Map(string mapName, vector<Continent*> continents)
@@ -638,7 +645,8 @@ MapLoader::MapLoader(string FileName)
         return;
     }
 
-    this->map->validate();
+    
+    
     in.close();
 }
 // IO Stream Operators for MapLoader

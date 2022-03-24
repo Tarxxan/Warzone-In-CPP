@@ -75,22 +75,18 @@ string Command::checkCommand(string command, bool isValid)
 void Command::saveEffect(string effect)
 {
     this->effect = effect;
-    cout << "in save effect" << endl;
     Notify(this);
 }
 
 string Command::stringToLog()
 {
-    cout << "Writing Effect in log file\n"
-         << endl;
-
     return "Effect: " + this->effect + "\n";
 }
 
 CommandProcessor::CommandProcessor()
- {
+{
     LogObserver *observer = new LogObserver(this);
- }
+}
 
 CommandProcessor::~CommandProcessor()
 {
@@ -125,7 +121,6 @@ ostream &operator<<(ostream &output, const CommandProcessor &commandProcessor)
 
 string CommandProcessor::stringToLog()
 {
-    cout << "Writing Command in log file" << endl;
     string commandstr = "Command: " + CommandList.back()->command;
     return commandstr;
 }
@@ -153,6 +148,8 @@ Command *CommandProcessor::getCommand(string gameState)
 // Method that reads commmand for the console, can be overriden to read commands from a file in FileCommandProcessorAdapter
 Command *CommandProcessor::readCommand()
 {
+    cin.clear();
+    cin.ignore(10000, '\n');
     string command;
     cout << "Enter a command" << endl;
     getline(cin, command);
@@ -167,7 +164,6 @@ bool CommandProcessor::validate(Command *c, string gameState)
 {
     if (c->command.find("loadmap") != string::npos && (gameState == "start" || gameState == "maploaded"))
     {
-
         return true;
     }
 
@@ -189,8 +185,8 @@ bool CommandProcessor::validate(Command *c, string gameState)
 // Saves Command and then notifies Observers
 void CommandProcessor::saveCommand(Command *c)
 {
+
     this->CommandList.push_back(c);
-    cout << "in save command" << endl;
     Notify(this);
 }
 /*
