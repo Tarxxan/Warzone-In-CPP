@@ -19,6 +19,8 @@ Order::Order(const Order& order){ // Parameter Constructor
 }
 Order::~Order(){
     cout << "Order Destructor called" << endl;
+    delete this->player;
+    this->player = nullptr;
 }                // Destructor
 Order& Order::operator=(const Order& o){ // Assignment Operator
     this->name = o.name;
@@ -69,6 +71,10 @@ DeployOrder::DeployOrder(const DeployOrder& deployOrder){   // Copy Constructor
 }
 DeployOrder::~DeployOrder(){
     cout << "DeployOrder Destructor called" << endl;
+    delete this->player;
+    this->player = nullptr;
+    delete this->destination;
+    this->destination = nullptr;
 }   // Destructor
 DeployOrder& DeployOrder::operator=(const DeployOrder& dOrder){ // Assignment Operator
     this->name = dOrder.name;
@@ -126,6 +132,10 @@ AdvanceOrder::AdvanceOrder(const AdvanceOrder& advanceOrder){   // Copy construc
 }
 AdvanceOrder::~AdvanceOrder(){
     cout << "AdvanceOrder Destructor called" << endl;
+    delete this->player;
+    this->player = nullptr;
+    delete this->destination;
+    this->destination = nullptr;
 } // Destructor
 AdvanceOrder& AdvanceOrder::operator=(const AdvanceOrder& aOrder){  // Assignment operator
     this->name = aOrder.name;
@@ -233,6 +243,10 @@ BombOrder::BombOrder(const BombOrder& bombOrder){   // Copy constructor
 }
 BombOrder::~BombOrder(){
     cout << "BombOrder Destructor called" << endl;
+    delete this->player;
+    this->player = nullptr;
+    delete this->destination;
+    this->destination = nullptr;
 }   // Destructor 
 BombOrder& BombOrder::operator=(const BombOrder& bOrder){   // Assignment operator
     this->name = bOrder.name;
@@ -286,6 +300,10 @@ BlockadeOrder::BlockadeOrder(const BlockadeOrder& blOrder){     // Copy construc
 }
 BlockadeOrder::~BlockadeOrder(){
     cout << "BlockadeOrder Destructor called" << endl;
+    delete this->player;
+    this->player = nullptr;
+    delete this->destination;
+    this->destination = nullptr;
 }       // Destructor
 BlockadeOrder& BlockadeOrder::operator=(const BlockadeOrder& blOrder){  // Assignment operator
     this->name = blOrder.name;
@@ -339,6 +357,12 @@ AirliftOrder::AirliftOrder(const AirliftOrder& aiOrder){    // Copy constructor
 }
 AirliftOrder::~AirliftOrder(){
     cout << "AirliftOrder Destructor called" << endl;
+    delete this->player;
+    this->player = nullptr;
+    delete this->destination;
+    this->destination = nullptr;
+    delete this->source;
+    this->source = nullptr;
 } // Destructor
 AirliftOrder& AirliftOrder::operator=(const AirliftOrder& aiOrder){ // Assignment operator
     this->name = aiOrder.name;
@@ -396,6 +420,10 @@ NegotiateOrder::NegotiateOrder(const NegotiateOrder& nOrder){   // Copy construc
 }
 NegotiateOrder::~NegotiateOrder(){
     cout << "NegotiateOrder Destructor called" << endl;
+    delete this->player;
+    this->player = nullptr;
+    delete this->second;
+    this->second = nullptr;
 } // Destructor
 NegotiateOrder& NegotiateOrder::operator=(const NegotiateOrder& nOrder){    // Assignment oprator
     this->name = nOrder.name;
@@ -431,6 +459,10 @@ OrderList::OrderList(){
 } // Empty constructor
 OrderList::~OrderList(){
     cout << "OrderList Destructor called" << endl;
+    for(Order* order : this->orderList){
+        delete order;
+        order = nullptr;
+    }
 };  // Destructor
 OrderList& OrderList::operator=(const OrderList& oList){    // Assignment operator
     this->orderList = oList.orderList;
