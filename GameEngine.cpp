@@ -3,15 +3,15 @@
 #include <string>
 
 #include "GameEngine.h"
-#include "CommandProcessor.h"
-#include "Player.h"
+
+
 
 
 using namespace std;
 
 
 
-GameEngine::GameEngine() :GameState(""),players(0) {
+GameEngine::GameEngine() :GameState(""),numPlayers(0) {
     LogObserver* observer = new LogObserver(this);
 }//default constructor
 
@@ -87,10 +87,9 @@ void GameEngine::startupPhase()
 
     // with polymorphism, we can use child class function even when child class is casted with parent class type.  
     CommandProcessor* cp;
-    //FileCommandProcessorAdapter* fcpa;
-    //Command* cmdObj;
 
 
+    //global variable..
     string mapName;
 
     
@@ -98,7 +97,7 @@ void GameEngine::startupPhase()
 
     cout << "Welcome to Warzone!" << endl;
 
-
+    //set state 
     this->setState("start");
 
     //Check if command is from file or console
@@ -110,7 +109,8 @@ void GameEngine::startupPhase()
     if (conOrFile == "-console")
     {
         cp = new CommandProcessor();
-
+      /*  cin.clear();
+        cin.ignore(10000, '\n');*/
     }
 
 
@@ -123,9 +123,12 @@ void GameEngine::startupPhase()
 
 
         cp = new FileCommandProcessorAdapter(conOrFile.substr(6));
-
+      /*  cin.clear();
+        cin.ignore(10000, '\n');*/
     }
+    
 
+    //-----------load map-------------- 
 
     // loop untill you load a Good map
     while (this->getState() == "start") {
@@ -134,55 +137,223 @@ void GameEngine::startupPhase()
         cout << "\nUse loadmap <filename> command to load a map" << endl;
 
         //command object returned
-        // at this point, all the validation is done internally from commandProcessor.. 
-        Command* cmdObj = cp->getCommand(this->GameState);
+        // at this point, all the command and state validation is done internally from commandProcessor.. 
+        Command* cmdObj = cp->getCommand(this);
 
 
+        // if command and state validation is good
         if (cmdObj->isValid) {
-            mapName = cmdObj->command.substr(8);// TODO: how to extrac map file name form cmdObjString?
-            //load the map and is validated.. 
+            mapName = cmdObj->command.substr(8);// extrac map file name
+
+            //load the map 
             mapL = new  MapLoader(mapName);
 
 
-
+            //if it's a good .map file, change state.
             if (!mapL->isbadFile) {
-                //if it's a good file
-
+                
+                // state changed 
                 this->transition("maploaded");
             }
 
         }
+        
         // TODO: if commandfile is bad. 
     }
 
-    
+    //-----------validate map---------------
     //check if map is valid
+    while (GameState == "maploaded") {
+        cout << "\nUse validatemap command to validate the map" << endl;
 
-    Command* cmdObj = cp->getCommand(this->GameState);
+        Command* cmdObj = cp->getCommand(this);
 
-    if (cmdObj->isValid) {
-        if (this->mapL->map->validate()) {
-            // map is valid
+        if (cmdObj->isValid) {
+            if (this->mapL->map->validate()) {
+                // map is valid
+                this->transition("mapvalidated");
 
-            this->transition("mapvalidated");
+            }
+            else {
+                // map is invalid.
+                cout << "Map is invalid, exiting the game." << endl;
+                exit(0);
+            }
 
         }
-        else {
-            // map is invalid.
-            cout << "Map is invalid, exiting game." << endl;
-            exit(0);
-        }
-        
+    
     }
     
     
+    
+
+    //-----------addplayer <playername>---------
+
+    
+
+    
+
+    while (this->getState() == "mapvalidated" || this->getState() == "playersadded") {
+        cout << ">>How many players will be playing Warzone?(2-6 players) :" << endl;
+        
+        
+        cin >> this->numPlayers; //TODO: exception when string is inputed
+
+        if (numPlayers >= 2 && numPlayers <= 6) //&& isdigit(numPlayers)
+        {
+            cout << "\n>>You entered " << numPlayers << " if this is correct, type \"yes\". If not type anything." << endl;
+
+
+            string temp;
+            //getline(cin, temp);
+            cin >> temp;
+            if (temp.compare("yes") == 0)
+            {
+                cout << "\nUse addplayer <playername> command to enter players in the game" << endl;
+
+                for (int i = 0; i < numPlayers;) {
+
+
+                    
+                    Command* cmdObj = cp->getCommand(this);
+
+                    //if command is valid
+                    if (cmdObj->isValid && cmdObj->command.substr(0, 9) == "addplayer") {
+
+                        //create player object
+                        Player* p = new Player(cmdObj->command.substr(10));
+                        
+                        allPlayers.push_back(p);
+                        cout << "\tPlayer " << p->getName()<<" added..." << endl;
+                        if (i == 0) {
+                            this->transition("playersadded");
+                        }
+                        i++;
+                    }
+                }
+
+
+
+                
+
+
+
+
+            }
+            break;
+        }
+        else
+            cout << "\n>>You must have 2-6 players" << endl;
+    }
+    
+
+
+    //------gamestart--------------------
+
+
+    while (this->getState().compare("playersadded") == 0 ) {
+
+        cout << "\n\nUse gamestart command to enter the main game." << endl;
+   /*         << "\n\ta) fairly distribute all the territories to the players"
+            << "\n\tb) determine randomly the order of play of the players in the game"
+            << "\n\tc) give 50 initial armies to the players, which are placed in their respective reinforcement pool"
+            << "\n\td) let each player draw 2 initial cards from the deck using the decks draw() method"
+            << "\n\te) switch the game to the play phase";*/
+
+
+        //cout << "is it before gmdObj?" << endl;
+
+        Command* cmdObj = cp->getCommand(this);
+
+        //cout << "is it after gmdObj?" << endl;
+
+        if (cmdObj->isValid && cmdObj->command == "gamestart") {
+            
+
+            this->transition("assignreinforcement");
+
+            //--------------------------------------------------------------------
+            // a) fairly distribute all the territories to the players"
+            for (int i = 0; i < this->mapL->combinedTerritories.size();) {
+                
+                for (int j = 0; j < allPlayers.size();j++) {
+                    
+                    //cout << mapL->combinedTerritories[i] << endl;
+                    allPlayers[j]->addTerritory(mapL->combinedTerritories[i]);
+                    i++;
+
+                    
+                }
+            }
+
+
+            cout << "Distributing all the territories to the players.." << endl;
+
+            //test
+            //cout << *allPlayers[0] << endl;
+
+            //--------------------------------------------------------------------
+            //b) determine randomly the order of play of the players in the game"
+
+            //changes the order of players
+            random_shuffle(allPlayers.begin(), allPlayers.end());
+
+            //cout << allPlayers[0]->getName() << endl;
+            //cout << allPlayers[1]->getName() << endl;
+
+            //--------------------------------------------------------------------
+            //c) give 50 initial armies to the players, which are placed in their respective
+
+            for (int i = 0; i < allPlayers.size(); i++) {
+                allPlayers[i]->setAvailableArmies(50);
+            }
+            cout <<"Assigning 50 initial armies to the players..." << endl;
+
+    /*        cout << allPlayers[0]->getAvailableArmies() << endl;
+            cout << allPlayers[3]->getAvailableArmies();*/
+
+
+
+            //--------------------------------------------------------------------
+            //d) let each player draw 2 initial cards from the deck using the decks draw() method"
+            
+            Deck* deck = new Deck; //DELETE later
+            deck->initalizeDeck();
+
+            for (int i = 0; i < allPlayers.size(); i++) {
+                deck->draw(allPlayers[i]);
+                deck->draw(allPlayers[i]);
+
+
+            }
+
+            cout << "each player draw 2 initial cards from the deck..." << endl;
+            //cout << *allPlayers[0]->getPlayerHand();
+            //cout << *allPlayers[3]->getPlayerHand();
+
+
+            //--------------------------------------------------------------------
+            //e) switch the game to the play phase
+
+            cout << "Entering the play phase!" << endl;
+
+            // enter main game loop
+            mainGameLoop();
+            
+
+        }//end of if
+
+
+        
+
+
+    }
 
 
 
 
     
-
-
+       
 
 
     //------ 
@@ -201,4 +372,9 @@ void GameEngine::transition(string nextState)
     this->setState(nextState);
     Notify(this);
 
+}
+
+void GameEngine::mainGameLoop()
+{
+    cout << "in maingame loop" << endl;
 }
