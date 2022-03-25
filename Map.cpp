@@ -41,7 +41,7 @@ Territory::Territory(const Territory& t)
 // destructor
 Territory::~Territory()
 {
-    delete ownerOfTerritory;
+    
     ownerOfTerritory = nullptr;
     cout << "~Territory destructor is called" << endl;
 }
