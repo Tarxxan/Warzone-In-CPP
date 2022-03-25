@@ -11,12 +11,15 @@ using namespace std;
 int main()
 {
 
-	GameEngine GE;
+	GameEngine* GE = new GameEngine;
+
+	//start of the game
+	GE->startupPhase();
 
 
-	GE.startupPhase();
-
-
+	//end of the game, avoid memotry leak 
+	delete GE;
+	GE = nullptr;
 
 
 	system("pause");
