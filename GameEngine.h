@@ -3,6 +3,8 @@
 #include <iostream>
 #include "LoggingObserver.h"
 #include "Map.h"
+#include "Player.h"
+#include "CommandProcessor.h"
 using namespace std;
 
 class GameEngine : public ILoggable, public Subject
@@ -13,6 +15,7 @@ private:
      //string transition;
      int numPlayers;
      MapLoader* mapL;
+     vector<Player*> allPlayers;
      
 
 
@@ -44,4 +47,6 @@ public:
      virtual string stringToLog(); // From Iloggable class
      void startupPhase();
      void transition(string nextState);
+
+     void mainGameLoop();
 };
