@@ -177,6 +177,7 @@ Command *CommandProcessor::readCommand()
 // Validates the Command given the current Gamestate
 bool CommandProcessor::validate(Command *c, string gameState)
 {
+    //Check the command length so we could confirm whether
     if (c->command.find("loadmap") != string::npos && (gameState == "start" || gameState == "maploaded") && c->command.length()>8)
     {
         return true;

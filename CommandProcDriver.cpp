@@ -25,6 +25,7 @@ int main()
             commandProc->getCommand("win");
             cout << "-------------------------" << endl;
 
+        
             delete commandProc;
             commandProc = NULL;
         }
@@ -43,7 +44,7 @@ int main()
             // This will show how we handle Invalid Commands.
             FCommandProc->getCommand("win");
             cout << "-------------------------" << endl;
-
+    
             delete FCommandProc;
             FCommandProc = NULL;
         }
