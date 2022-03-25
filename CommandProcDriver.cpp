@@ -1,5 +1,4 @@
 #include "CommandProcessor.h"
-#include "GameEngine.h"
 #include <iostream>
 using namespace std;
 
@@ -51,17 +50,17 @@ int main()
 
         string answer;
         cout << "Would you like to use a different format to get commands ? Y/N" << endl;
-        cin >> answer;
+        getline(cin, answer);
         if (answer == "N")
             break;
-        cin.clear();
-        cin.ignore(10000, '\n');
+
+            
     }
 
     GameEngine *ge = new GameEngine();
     ge->setState("quit");
     CommandProcessor *cp = new CommandProcessor();
-    cp->getCommand(ge->getState());
+    cp->getCommand(ge);
 
     cout << "This GameEngine Stuff clearly worked since we changed state with the game Engine. More use of the collaboration of both of these classes in GE driver" << endl;
 }

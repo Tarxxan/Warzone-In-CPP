@@ -3,11 +3,14 @@
 #include <fstream>
 #include <list>
 #include "LoggingObserver.h"
+#include "GameEngine.h"
+
 
 using namespace std;
 
 class ILoggable;
 class Subject;
+class GameEngine;
 
 class Command : public ILoggable, public Subject
 {
@@ -54,6 +57,8 @@ public:
     friend ostream &operator<<(ostream &output, const CommandProcessor &commandProcessor);
 
     virtual string stringToLog();
+
+    Command *getCommand(GameEngine *G);
 
     Command *getCommand(string gameState);
 

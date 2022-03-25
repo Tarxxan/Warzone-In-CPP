@@ -1,4 +1,3 @@
-//#include "GameEngine.h"
 #include "CommandProcessor.h"
 #include <iostream>
 #include <fstream>
@@ -80,7 +79,7 @@ void Command::saveEffect(string effect)
 
 string Command::stringToLog()
 {
-    return "Effect: " + this->effect + "\n";
+    return "Effect: " + this->effect+"\n";
 }
 
 CommandProcessor::CommandProcessor()
@@ -145,11 +144,27 @@ Command *CommandProcessor::getCommand(string gameState)
     }
 }
 
+Command *CommandProcessor::getCommand(GameEngine *G)
+{
+    Command *c = readCommand();
+    if (validate(c, G->getState()))
+    {
+        c->saveEffect(c->checkCommand(c->command, c->isValid));
+        return c;
+    }
+
+    else
+    {
+        c->isValid = false;
+        c->saveEffect(c->checkCommand(c->command, c->isValid));
+        cerr << "An invalid command has been given for current state." << endl;
+        return c;
+    }
+}
+
 // Method that reads commmand for the console, can be overriden to read commands from a file in FileCommandProcessorAdapter
 Command *CommandProcessor::readCommand()
 {
-    cin.clear();
-    cin.ignore(10000, '\n');
     string command;
     cout << "Enter a command" << endl;
     getline(cin, command);
