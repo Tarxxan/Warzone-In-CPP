@@ -177,7 +177,7 @@ Command *CommandProcessor::readCommand()
 // Validates the Command given the current Gamestate
 bool CommandProcessor::validate(Command *c, string gameState)
 {
-    if (c->command.find("loadmap") != string::npos && (gameState == "start" || gameState == "maploaded"))
+    if (c->command.find("loadmap") != string::npos && (gameState == "start" || gameState == "maploaded") && c->command.length()>8)
     {
         return true;
     }
@@ -185,7 +185,7 @@ bool CommandProcessor::validate(Command *c, string gameState)
     else if (c->command == "validatemap" && gameState == "maploaded")
         return true;
 
-    else if (c->command.find("addplayer") != string::npos && (gameState == "mapvalidated" || gameState == "playersadded"))
+    else if (c->command.find("addplayer") != string::npos && (gameState == "mapvalidated" || gameState == "playersadded") &&c->command.length()>10)
         return true;
 
     else if (c->command == "gamestart" && gameState == "playersadded")

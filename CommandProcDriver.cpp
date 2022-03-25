@@ -61,6 +61,7 @@ int main()
     ge->setState("quit");
     CommandProcessor *cp = new CommandProcessor();
     cp->getCommand(ge);
-
+    delete ge;
+    ge=nullptr;
     cout << "This GameEngine Stuff clearly worked since we changed state with the game Engine. More use of the collaboration of both of these classes in GE driver" << endl;
 }
