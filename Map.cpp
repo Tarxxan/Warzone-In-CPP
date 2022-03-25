@@ -535,6 +535,21 @@ void MapLoader::SplitString(string s, vector<string>& v)
     v.push_back(temp);
 }
 
+void MapLoader::getAllTerritories()
+{
+    vector<Continent*> c = this->map->getAllContinents();
+    for (Continent* c1 : c)
+    {
+        for (Territory* t : c1->getTerritories())
+        {
+            combinedTerritories.push_back(t);
+        }
+    }
+
+}
+
+
+
 //destructor
 MapLoader::~MapLoader()
 {
@@ -589,6 +604,13 @@ MapLoader::MapLoader(string FileName)
                 adjacentTokens.push_back(TempText);
             }
         }
+
+
+
+
+
+
+
     }
 
     vector<Territory*> Territories;
@@ -646,6 +668,13 @@ MapLoader::MapLoader(string FileName)
     }
 
     
+
+    // populate combinedTerritories vector
+    getAllTerritories();
+
+
+
+
     
     in.close();
 }
