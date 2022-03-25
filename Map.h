@@ -125,4 +125,10 @@ public:
     bool isbadFile;
     Map *map;
     void SplitString(string s, vector<string> &v);
+
+
+    vector<Territory*> combinedTerritories;
+    void getAllTerritories();
+
+
 };
