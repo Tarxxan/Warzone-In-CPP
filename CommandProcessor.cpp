@@ -59,11 +59,11 @@ string Command::checkCommand(string command, bool isValid)
         return effect = " A new game of Warzone will follow.";
     else if (command.compare("gamestart") == 0)
         return effect = "Game has been initializaed. It will now begin";
-    else if (command.find("loadmap") != string::npos)
+    else if (command.find("loadmap") != string::npos && command.length()>8)
         return effect = command.substr(8) + " has been loaded";
     else if (command.find("validatemap") != string::npos)
         return effect = "The map has been validated";
-    else if (command.find("addplayer") != string::npos)
+    else if (command.find("addplayer") != string::npos && command.length>10)
         return effect = command.substr(10) + " has been added to the game";
     else if (command.compare("gamestart") == 0)
         return effect = "Players have been added and the game will now begin";
