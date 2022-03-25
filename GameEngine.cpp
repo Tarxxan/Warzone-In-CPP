@@ -1,6 +1,7 @@
 #include <iostream>
 #include <vector>
 #include <string>
+#include <regex>
 
 #include "GameEngine.h"
 
@@ -97,35 +98,69 @@ void GameEngine::startupPhase()
 
     cout << "Welcome to Warzone!" << endl;
 
-    //set state 
-    this->setState("start");
+    
 
     //Check if command is from file or console
-    string conOrFile = "";
-    cout << "Please enter one of the following:" << endl
-        << " -console to enter commands from console" << endl
-        << " -file <filename> to read commands from a file" << endl;
-    getline(cin, conOrFile);
-    if (conOrFile == "-console")
-    {
-        cp = new CommandProcessor();
-      /*  cin.clear();
-        cin.ignore(10000, '\n');*/
+
+    bool isSet = false;
+
+    while (!isSet) {
+
+        
+        //set state 
+        this->setState("start");
+
+
+        std::regex e ("-file[ ]+[^]+.txt");
+        std::smatch cm;
+
+
+        string conOrFile = "";
+        cout << "Please enter one of the following:" << endl
+            << " -console to enter commands from console" << endl
+            << " -file <filename> to read commands from a file" << endl;
+        getline(cin, conOrFile);
+        if (conOrFile == "-console")
+        {
+            cp = new CommandProcessor();
+            /*  cin.clear();
+              cin.ignore(10000, '\n');*/
+
+            isSet = true;
+
+        }
+
+
+        // --------------------------need to verify for'-file <??>'
+        //else if (conOrFile.find("-file[ ]+[^]+.txt") != string::npos)
+        else if (regex_match(conOrFile, cm, e))
+        {
+            //string path;
+            //// --------------how do I pass the file path..? 
+            //cin >> path;
+
+    
+            
+
+            //check command file 
+            ifstream f(conOrFile.substr(6).c_str());
+
+            //if command file is in the path is good 
+            if (f.good()) {
+
+                cp = new FileCommandProcessorAdapter(conOrFile.substr(6));
+                isSet = true;
+            }
+
+        }
+        else {
+        
+            cout << "Invalid command" << endl;
+        }
+    
     }
 
-
-    // --------------------------need to verify for'-file <??>'
-    else if (conOrFile.find("-file") != string::npos)
-    {
-        //string path;
-        //// --------------how do I pass the file path..? 
-        //cin >> path;
-
-
-        cp = new FileCommandProcessorAdapter(conOrFile.substr(6));
-      /*  cin.clear();
-        cin.ignore(10000, '\n');*/
-    }
+    
     
 
     //-----------load map-------------- 
@@ -191,59 +226,114 @@ void GameEngine::startupPhase()
 
     
 
+
+    //std::regex ep("addplayer[ ]+[^]+");
+    //std::smatch cm;
+
     
 
     while (this->getState() == "mapvalidated" || this->getState() == "playersadded") {
         cout << ">>How many players will be playing Warzone?(2-6 players) :" << endl;
         
+        //float temFloat = 0;
+        /*cin.clear();
+        cin.ignore(10000, '\n');*/
+        cin >> this->numPlayers; 
+        //cin >> temFloat; 
+
+        // if non-integer input
+        if (cin.fail()) {
+            cout << ">>cin fails.. why?"<< endl;
+            cin.clear();
+            cin.ignore(10000, '\n');
+            numPlayers = 0;
+        }
         
-        cin >> this->numPlayers; //TODO: exception when string is inputed
+            
+
+      
 
         if (numPlayers >= 2 && numPlayers <= 6) //&& isdigit(numPlayers)
         {
             cout << "\n>>You entered " << numPlayers << " if this is correct, type \"yes\". If not type anything." << endl;
 
-
+            cin.clear();
+            cin.ignore(10000, '\n');
             string temp;
             //getline(cin, temp);
+            
             cin >> temp;
             if (temp.compare("yes") == 0)
             {
+                //cin.clear();
                 cout << "\nUse addplayer <playername> command to enter players in the game" << endl;
+                cin.clear();
+                cin.ignore(10000, '\n');
+
 
                 for (int i = 0; i < numPlayers;) {
 
 
-                    
+
                     Command* cmdObj = cp->getCommand(this);
+
+
+                    //cout << "test ::" << cmdObj->command << endl;
+                    //cout << cmdObj->isValid << endl;
+                    //cout << regex_match(cmdObj->command, cm, ep) << endl;
 
                     //if command is valid
                     if (cmdObj->isValid && cmdObj->command.substr(0, 9) == "addplayer") {
+                    //if (cmdObj->isValid && regex_match(cmdObj->command, cm, ep) && cmdObj->command.length() >10) {
 
-                        //create player object
-                        Player* p = new Player(cmdObj->command.substr(10));
+                        bool isDup = false;
                         
-                        allPlayers.push_back(p);
-                        cout << "\tPlayer " << p->getName()<<" added..." << endl;
-                        if (i == 0) {
-                            this->transition("playersadded");
+                        //check if player name is not a duplicate
+                        
+                        for (int k = 0; k < allPlayers.size(); k++) {
+
+                            
+
+                            if (cmdObj->command.substr(10) == allPlayers[k]->getName()) {
+
+                                cout << "It is a duplicate name. " << endl;
+                                isDup = true;
+                            }
+                            
+                            
                         }
-                        i++;
+                           
+                        if (!isDup) {
+                            //create player object
+                            Player* p = new Player(cmdObj->command.substr(10));
+
+                            allPlayers.push_back(p);
+                            cout << "\tPlayer " << p->getName() << " added..." << endl;
+                            if (i == 0) {
+                                this->transition("playersadded");
+                            }
+                            i++;
+                        }
+                                
+                            
+                            
+                            
+
+
+
+                        
                     }
                 }
 
-
-
-                
-
-
-
+                //all players are added. Moving to gamestart state.
+                break;
 
             }
-            break;
+
+            
         }
         else
-            cout << "\n>>You must have 2-6 players" << endl;
+            cout << ">>You must have 2-6 players" << endl;
     }
     
 
