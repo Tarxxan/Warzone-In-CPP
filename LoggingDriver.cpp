@@ -15,8 +15,7 @@ int main()
     BombOrder *bo = new BombOrder(p,t);
 
 
-    FakeCommand *test = new FakeCommand();
-    fakeOrder *testingOrder = new fakeOrder();
+  
 
     // LogObserver *obs = new LogObserver(cp);
     // LogObserver *ob2 = new LogObserver(ol);

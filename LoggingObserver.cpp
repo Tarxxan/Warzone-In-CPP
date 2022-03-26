@@ -42,6 +42,10 @@ LogObserver::LogObserver(Subject *s){
     subject = s;
     subject->Attach(this);
 }
+LogObserver::LogObserver(const LogObserver &o){
+    subject = o.subject;
+    subject->Attach(this);
+}
 LogObserver::~LogObserver(){
     subject->Detach(this);
 };
@@ -58,25 +62,4 @@ void LogObserver::Update(ILoggable *s)
     writeToFile(s->stringToLog());
 }
 
-FakeCommand::FakeCommand(){};
-FakeCommand::~FakeCommand(){};
 
-string FakeCommand::stringToLog()
-{
-    return "This is a fake Command!!! NUMBER 2";
-}
-void FakeCommand::saveCommand()
-{
-    Notify(this);
-}
-
-fakeOrder::fakeOrder(){};
-fakeOrder::~fakeOrder(){};
-string fakeOrder::stringToLog()
-{
-    return "An Order was Executed!!";
-}
-void fakeOrder::execute()
-{
-    Notify(this);
-}

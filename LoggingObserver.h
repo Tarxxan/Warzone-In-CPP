@@ -42,28 +42,10 @@ class LogObserver : public Observer
 public:
     LogObserver();
     LogObserver(Subject *s);
+    LogObserver(const LogObserver &o);
     ~LogObserver();
     void Update(ILoggable *s);
     void writeToFile(string s);
 private:
     Subject *subject;
-};
-
-class FakeCommand : public Subject, public ILoggable
-{
-
-public:
-    FakeCommand();
-    ~FakeCommand();
-    string stringToLog();
-    void saveCommand();
-};
-
-class fakeOrder : public Subject, public ILoggable
-{
-public:
-    fakeOrder();
-    ~fakeOrder();
-    string stringToLog();
-    void execute();
 };
