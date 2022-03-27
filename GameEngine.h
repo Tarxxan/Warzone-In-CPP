@@ -35,4 +35,8 @@ public:
      void startupPhase(); // start of the game
      void transition(string nextState); //set states and notify objserber 
      void mainGameLoop(); 
+     void reinforcementPhase();
+     void issueOrdersPhase();
+     void executeOrdersPhase();
+     void computeContinentControlValue(Player* p);
 };

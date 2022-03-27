@@ -44,18 +44,20 @@ public:
     void addCard(Card* card);
     void addTerritory(Territory* territory);
     void addOrder(Order* order);
+    void printOwnedTerritories();
     void removeSolders(int amount);
     void removeTerritory(Territory* t);
-    void printTerritories();
     void drawCard(); // TODO: Should draw card from the deck and call addCard(card) not sure where we want to locate the deck
-
+    void setAvailableArmies(int i);
+    void addAvailableArmies(int n);
     // //member functions
-    void computeAvailableArmies();
+    void computeReinforcementPool();
     vector <Territory*> toDefend(); // return an arbitrary list of territories to be defended
     vector <Territory*> toAttack(); // returns arbitrary list of territories that are to be attacked.
-    void issueOrder(Order* order);  // creates an Order object and puts it in the player's list of orders.
-    void advance(Territory* from, Territory* to);
-
+    void issueOrder();  // creates an Order object and puts it in the player's list of orders.
+    void advance();
+    void defend();
+    void useCard();
     void negotiatePlayer(Player* enemy);
     void deleteNegotiate(Player* enemy);
     bool canAttack(Player* enemy);
