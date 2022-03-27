@@ -105,6 +105,7 @@ bool DeployOrder::execute(){    // Triggers validate
         this->destination->setNumberOfArmies(this->destination->getNumberOfArmies()+this->armies);
         this->player->removeSolders(this->armies);
         Notify(this);
+        this->player->getOrders()->remove(this);
         return true;
     }
     this->effect = this->player->getName() + " was unable to deploy " +to_string(this->armies)+" solders to " + this->destination->getTerritoryName();
@@ -172,6 +173,7 @@ bool AdvanceOrder::execute(){   // Triggers validate
             this->destination->setNumberOfArmies(this->destination->getNumberOfArmies()+this->armies);
             this->source->setNumberOfArmies(this->source->getNumberOfArmies()-this->armies);
             Notify(this);
+            this->player->getOrders()->remove(this);
             return true;
         }
         this->attack();
@@ -201,7 +203,7 @@ void AdvanceOrder::attack(){
         }
     }
     int defended = 0;
-    for (int i = 0; i < this->armies; i++){
+    for (int i = 0; i < this->destination->getNumberOfArmies(); i++){
         int prob = (rand() % 10) +1 ;
         if (prob <= 7){ // 70% chance of being true
             defended ++; // One attacking solder more killed
@@ -209,6 +211,9 @@ void AdvanceOrder::attack(){
     }
     if (defended > this->armies){
         defended = this->armies; // Cannot kill more than actually came tothe territory
+    }
+    if (conquered > this->destination->getNumberOfArmies()){
+        conquered = this->destination->getNumberOfArmies();
     }
     cout << to_string(conquered) << " killed by " << this->player->getName() << endl;
     cout << to_string(defended) << " killed by " << this->destination->getOwnerOfTerritory()->getName() << endl;
@@ -278,6 +283,7 @@ bool BombOrder::execute(){ // Will trigger validate method
         int future = int(floor(this->destination->getNumberOfArmies()/2));
         this->destination->setNumberOfArmies(future);
         Notify(this);
+        this->player->getOrders()->remove(this);
         return true;
     }
     this->effect = this->player->getName() + " was unable to bomb " + this->destination->getTerritoryName();
@@ -330,6 +336,7 @@ bool BlockadeOrder::execute(){  // Will trigger validate method
         this->destination->setOwnerOfTerritory(neutral);
         this->player->removeTerritory(this->destination);
         Notify(this);
+        this->player->getOrders()->remove(this);
         return true;
     }
     this->effect = this->player->getName() + " was unable to blockade " + this->destination->getTerritoryName();
@@ -398,6 +405,7 @@ bool AirliftOrder::execute(){   // Will trigger validate method
         this->source->setNumberOfArmies(this->source->getNumberOfArmies()-this->armies);
         this->destination->setNumberOfArmies(this->destination->getNumberOfArmies()+this->armies);
         Notify(this);
+        this->player->getOrders()->remove(this);
         return true;
     }
     this->effect = this->player->getName() + " was unable to airlift " +to_string(this->armies)+" solders from " + this->source->getTerritoryName() + " to "+ this->destination->getTerritoryName();
@@ -448,6 +456,7 @@ bool NegotiateOrder::execute(){     // Will trigger validate
         this->player->negotiatePlayer(this->second);
         this->second->negotiatePlayer(this->player);
         Notify(this);
+        this->player->getOrders()->remove(this);
         return true;
     }
     return false;
