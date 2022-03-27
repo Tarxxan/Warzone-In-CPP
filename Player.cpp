@@ -104,6 +104,9 @@ int Player::getAvailableArmies() {
 
 
 // adders
+void Player::setOpponents(Player* p) {
+    opponents.push_back(p);
+}
 
 void Player::setAvailableArmies(int i)
 {
@@ -157,62 +160,68 @@ void Player::issueOrder() {
     string ready = "";
     cin >> ready;
     // issuing deploy order
-    int dummy_availableArmies = availableArmies;
-    while (dummy_availableArmies > 0) {
-        cout << "Deploying Order... you have " << dummy_availableArmies << " armies to deploy" << endl;
-        cout << "These are the territories that are available to deploy your soliders"
-            << "\n\n ------Please choose one of the following index to deploy armies ------" << endl;
-        printOwnedTerritories();
-        int choice = 0;
-        int numberOfArmies = 0;
-        while (true) {
-            cout << " ------Please choose one of the following index to deploy armies ------(" << dummy_availableArmies << ") remaining" << endl;
-            cin >> choice;
-            if (choice < 0 || choice >= territories.size()) {
-                cout << "Invalid input.. Please try again" << endl;
+    int dummy_availableArmies = availableArmies;        // creating a dummy available armies since the value of availableArmies
+                                                        // will not decrease until the deploy order is executed
+    int initial_val_availableArmies= availableArmies;
+    while (true) {
+        while (dummy_availableArmies > 0) {
+            cout << "Deploying Order... you have " << dummy_availableArmies << " armies to deploy" << endl;
+            cout << "These are the territories that are available to deploy your soliders"
+                << "\n\n ------Please choose one of the following index to deploy armies ------" << endl;
+            printOwnedTerritories();
+            int choice = 0;
+            int numberOfArmies = 0;
+            while (true) {
+                cout << " ------Please choose one of the following index to deploy armies ------(" << dummy_availableArmies << ") remaining" << endl;
+                cin >> choice;
+                if (choice < 0 || choice >= territories.size()) {
+                    cout << "Invalid input.. Please try again" << endl;
+                }
+                else {
+                    break;
+                }
             }
-            else {
-                break;
+            while (true) {
+                cout << "How many armies would you like to deploy ? You have " << dummy_availableArmies << " remaining" << endl;
+                cin >> numberOfArmies;
+                if (numberOfArmies > 0 && numberOfArmies <= dummy_availableArmies) {
+                    break;
+                }
+                else {
+                    cout << "Invalid input.. Please try again" << endl;
+                }
+            }
+
+            cout << "Deploy Order " << numberOfArmies << " solders to \n" << *territories[choice] << endl;
+            DeployOrder* d = new DeployOrder(this, numberOfArmies, territories[choice]);
+            dummy_availableArmies -= numberOfArmies;
+            orders->push(d);
+        }
+
+        // ---------------------------issuing attack / defend / useCard  order------------------------------------
+        int decision = -1;
+        cout << "Please enter \n1 : to attack\n2 : to defend\n3 : to use card\n0 : to finish issuing orders " << endl;
+        cin >> decision;
+        int sourceIndex = 0;
+        int targetIndex = 0;
+        if (decision == 1) {
+            advance();
+        }
+        else if (decision == 2) {
+            defend();
+        }
+        else if (decision == 3) {
+            useCard();
+            // check if the value of availableArmies has changed due to reinforcementCard, therefore modify dummyAvailabeArmies value
+            if (availableArmies != initial_val_availableArmies) {
+                dummy_availableArmies += (availableArmies - initial_val_availableArmies);
             }
         }
-        while (true) {
-            cout << "How many armies would you like to deploy ? You have " << dummy_availableArmies << " remaining" << endl;
-            cin >> numberOfArmies;
-            if (numberOfArmies > 0 && numberOfArmies <= dummy_availableArmies) {
-                break;
-            }
-            else {
-                cout << "Invalid input.. Please try again" << endl;
-            }
+        else {
+            cout << name << "'s turn is finished" << endl;
+            break;
         }
-
-        cout << "Deploy Order " << numberOfArmies << " solders to \n" << *territories[choice] << endl;
-        DeployOrder* d = new DeployOrder(this, numberOfArmies, territories[choice]);
-        dummy_availableArmies -= numberOfArmies;
-        orders->push(d);
     }
-
-
-    // issuing attack or defend order
-    int decision = -1;
-    cout << "Please enter \n1 : to attack\n2 : to defend\n3 : to use card\n0 : to finish issuing orders " << endl;
-    cin >> decision;
-    int sourceIndex = 0;
-    int targetIndex = 0;
-    if (decision == 1) {
-        advance();
-    }
-    else if (decision == 2) {
-        defend();
-    }
-    else if (decision == 3) {
-        useCard();
-    }
-    else {
-        cout << name << "'s turn is finished" << endl;
-        exit(0);
-    }
-
 }
 
 void Player::addCard(Card* card) {
@@ -320,6 +329,7 @@ void Player::useCard() {
         }
     }
     string type = playerHand->getHand()[cardChoice]->getType();
+    // -------------------------------------------Bomb Order---------------------------------------------------
     if (type == "bomb") {
         cout << "Please select one of your adjacent territories to bomb?" << endl;
         vector<Territory*> territoriesToBomb = toAttack();
@@ -341,10 +351,12 @@ void Player::useCard() {
         orders->push(o);
         cout << "Bomb order at " << *territoriesToBomb[target] << endl;
     }
+    // -------------------------------------------Reinforcement Order---------------------------------------------------
     else if (type == "reinforcement") {
-        cout << "using diplomacy card" << endl;
-        //??
+        cout << "using reinforcement card" << endl;
+        availableArmies += 5;
     }
+    // -------------------------------------------Blockade Order---------------------------------------------------
     else if (type == "blockade") {
         cout << "Please select one of your territories to block and double the amount of solders?" << endl;
         for (int i = 0; i < territories.size(); i++) {
@@ -366,6 +378,7 @@ void Player::useCard() {
         orders->push(o);
         cout << "Blockade order at " << *territories[target] << endl;
     }
+    // -------------------------------------------Airlift Order---------------------------------------------------
     else if (type == "airlift") {
         for (int i = 0; i < territories.size(); i++) {
             cout << i << *territories[i] << endl;
@@ -412,9 +425,26 @@ void Player::useCard() {
         orders->push(o);
         cout << "Airlift order " << n_solders << " solders from " << *territories[sourceIndex] << " to " << *territories[targetIndex] << endl;
     }
+    // -------------------------------------------Negotiate Order---------------------------------------------------
     else if (type == "diplomacy") {
         cout << "using diplomacy card" << endl;
-        //??
+        for (int i = 0; i < opponents.size(); i++) {
+            cout << i << " - " << opponents[i]->getName() << endl;
+        }
+        int opponentIndex = 0;
+        while (true) {
+            cout << "Please select the opponent you would like to negotiate?" << endl;
+            cin >> opponentIndex;
+            if (opponentIndex < 0 || opponentIndex >= opponents.size()) {
+                cout << "Invalid input, please select the right index" << endl;
+            }
+            else {
+                break;
+            }
+        }
+        negotiatePlayer(opponents[opponentIndex]);
+        // DO I call NegotiateOrder like what I did with every other order and push into orderlist?
+        // or you have something in mind with this negotiatePlayer function?
     }
 
 }

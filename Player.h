@@ -50,6 +50,7 @@ public:
     void drawCard(); // TODO: Should draw card from the deck and call addCard(card) not sure where we want to locate the deck
     void setAvailableArmies(int i);
     void addAvailableArmies(int n);
+    void setOpponents(Player* p);
     // //member functions
     void computeReinforcementPool();
     vector <Territory*> toDefend(); // return an arbitrary list of territories to be defended
@@ -69,4 +70,5 @@ private:
     string name;
     int availableArmies;
     vector <Player*> cannotAttack;
+    vector <Player*> opponents;
 };

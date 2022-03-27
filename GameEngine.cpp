@@ -264,8 +264,17 @@ void GameEngine::startupPhase()
             cout << ">>You must have 2-6 players" << endl;
     }
     
-
-
+    // Setting all the player's opponents to be used in Negotiate Card
+    for (int i = 0; i < allPlayers.size(); i++) {
+        for (int j = 0; j < allPlayers.size(); j++) {
+            if (i == j) {
+                continue;
+            }
+            else {
+                allPlayers[i]->setOpponents(allPlayers[j]);
+            }
+        }
+    }
     //------gamestart--------------------
 
 
