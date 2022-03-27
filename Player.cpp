@@ -157,15 +157,16 @@ void Player::issueOrder() {
     string ready = "";
     cin >> ready;
     // issuing deploy order
-    while (availableArmies > 0) {
-        cout << "Deploying Order... you have " << availableArmies << " armies to deploy" << endl;
+    int dummy_availableArmies = availableArmies;
+    while (dummy_availableArmies > 0) {
+        cout << "Deploying Order... you have " << dummy_availableArmies << " armies to deploy" << endl;
         cout << "These are the territories that are available to deploy your soliders"
             << "\n\n ------Please choose one of the following index to deploy armies ------" << endl;
         printOwnedTerritories();
         int choice = 0;
         int numberOfArmies = 0;
         while (true) {
-            cout<< " ------Please choose one of the following index to deploy armies ------" <<endl;
+            cout << " ------Please choose one of the following index to deploy armies ------(" << dummy_availableArmies << ") remaining" << endl;
             cin >> choice;
             if (choice < 0 || choice >= territories.size()) {
                 cout << "Invalid input.. Please try again" << endl;
@@ -175,9 +176,9 @@ void Player::issueOrder() {
             }
         }
         while (true) {
-            cout << "How many armies would you like to deploy ? You have " << availableArmies << " remaining" << endl;
+            cout << "How many armies would you like to deploy ? You have " << dummy_availableArmies << " remaining" << endl;
             cin >> numberOfArmies;
-            if (numberOfArmies > 0 && numberOfArmies <= availableArmies) {
+            if (numberOfArmies > 0 && numberOfArmies <= dummy_availableArmies) {
                 break;
             }
             else {
@@ -187,6 +188,7 @@ void Player::issueOrder() {
 
         cout << "Deploy Order " << numberOfArmies << " solders to \n" << *territories[choice] << endl;
         DeployOrder* d = new DeployOrder(this, numberOfArmies, territories[choice]);
+        dummy_availableArmies -= numberOfArmies;
         orders->push(d);
     }
 
@@ -241,7 +243,7 @@ void Player::advance() {
         cout << i << *territoriesToAttack[i] << endl;
     }
 
-    while(true){
+    while (true) {
         cout << "\n\nPlease choose a target to attack" << endl;
         cin >> targetIndex;
         if (targetIndex < 0 || targetIndex >= territoriesToAttack.size()) {
@@ -260,7 +262,7 @@ void Player::defend() {
     int sourceIndex = 0;
     int targetIndex = 0;
     printOwnedTerritories();
-    
+
     while (true) {
         cout << "Please choose which territory you would like to send reinforcement from (source)" << endl;
         cin >> sourceIndex;
@@ -271,7 +273,7 @@ void Player::defend() {
             break;
         }
     }
-   
+
     while (true) {
         cout << "Please choose a target to send your reinforcement" << endl;
         cin >> targetIndex;
@@ -283,7 +285,7 @@ void Player::defend() {
         }
     }
     int numberReinforcement = 0;
-   
+
     while (true) {
         cout << "How many armies would you like to send?" << endl;
         cin >> numberReinforcement;
@@ -302,11 +304,11 @@ void Player::defend() {
 }
 
 void Player::useCard() {
-   
+
     for (int i = 0; i < playerHand->getHand().size(); i++) {
         cout << i << " - " << playerHand->getHand()[i]->getType() << endl;
     }
-    int cardChoice = 0;                                      
+    int cardChoice = 0;
     while (true) {
         cout << "Please select the index of the card you would like to use" << endl;
         cin >> cardChoice;
@@ -349,7 +351,7 @@ void Player::useCard() {
             cout << i << *territories[i] << endl;
         }
         int target = 0;
-        
+
         while (true) {
             cout << "Please select one of your territories to block and double the amount of solders?" << endl;
             cin >> target;
@@ -372,7 +374,7 @@ void Player::useCard() {
         int targetIndex = 0;
         int n_solders = 0;
         // need validating the inputs
-        
+
         while (true) {
             cout << "Please select the source territory to airlift solders?" << endl;
             cin >> sourceIndex;
@@ -383,7 +385,7 @@ void Player::useCard() {
                 break;
             }
         }
-        
+
         while (true) {
             cout << "Please select the target territory to airlift solders?" << endl;
             cin >> targetIndex;
@@ -394,11 +396,11 @@ void Player::useCard() {
                 break;
             }
         }
-        
+
         while (true) {
             cout << "Please select the number of solders to airlfit?" << endl;
             cin >> n_solders;
-            if (n_solders < 0 || n_solders > territories[sourceIndex]->getNumberOfArmies() ) {
+            if (n_solders < 0 || n_solders > territories[sourceIndex]->getNumberOfArmies()) {
                 cout << "Invalid input, please select the right index" << endl;
             }
             else {
