@@ -6,37 +6,34 @@
 #include "Player.h"
 int main()
 {
-    Player *p = new Player();
-    Territory *t = new Territory();
+
+    //Initialize all the objects that use the Observer pattern
+    vector<Territory*> terrs;
+
+    Player *p = new Player("Joe");
+    Territory *t = new Territory(1,"TestLand","TestContinent",5,terrs);
     CommandProcessor *cp = new CommandProcessor();
     OrderList *ol = new OrderList();
-    // GameEngine *ge = new GameEngine();
+    GameEngine *ge = new GameEngine();
     Command *comm = new Command("TEST COMMAND");
     BombOrder *bo = new BombOrder(p,t);
 
 
-  
+    //Call all the methods in each object that would use *NOTIFY* and trigger the Observer
 
-    // LogObserver *obs = new LogObserver(cp);
-    // LogObserver *ob2 = new LogObserver(ol);
-    // // LogObserver *ob3 = new LogObserver(ge);
-    // LogObserver *ob4 = new LogObserver(comm);
-    // LogObserver *ob5 = new LogObserver(bo);
-    
     cp->getCommand("start");
     ol->push(bo);
     bo->execute();
     cp->getCommand("test command");
     comm->saveEffect("TEST EFFECT");
-    // ge->transition("TEST STATE");
+    ge->transition("TEST STATE");
 
-    delete p;
-    delete t;
+   
     delete cp;
     delete ol;
-    // delete ge;
+    delete ge;
     delete comm;
-    delete bo;
+    
 
 
 

@@ -8,44 +8,42 @@ class ILoggable;
 class Observer
 {
 public:
-    virtual ~Observer();
-    virtual void Update(ILoggable *s) = 0;
+    virtual ~Observer();                            //Interface destructor
+    virtual void Update(ILoggable *s) = 0;          //Interface Update method
 
 protected:
-    Observer();
+    Observer();                                    //Interface Constructor
 };
 
 class Subject
 {
 public:
-    virtual void Attach(Observer *observer);
-    virtual void Detach(Observer *observer);
-    virtual void Notify(ILoggable *s);
-    Subject();
-    virtual ~Subject();
+    virtual void Attach(Observer *observer);       //insert observer into list
+    virtual void Detach(Observer *observer);       //remove observer from list
+    virtual void Notify(ILoggable *s);             //notify observers in list
+    Subject();                                     //constructor
+    virtual ~Subject();                            //destructor
 
 private:
-    list<Observer *> *observers;
+    list<Observer *> *observers;                   //list of observers
 };
 
-class ILoggable
+class ILoggable                                   
 {
 public:
-    virtual string stringToLog() = 0;
+    virtual string stringToLog() = 0;             //method to be overrridden 
 
-private:
-    string toLog;
 };
 
-class LogObserver : public Observer
+class LogObserver : public Observer               
 {
 public:
-    LogObserver();
-    LogObserver(Subject *s);
-    LogObserver(const LogObserver &o);
-    ~LogObserver();
-    void Update(ILoggable *s);
-    void writeToFile(string s);
+    LogObserver();                                  //Default Constructor
+    LogObserver(Subject *s);                        //Parameterized Constructor
+    LogObserver(const LogObserver &o);              //copy Constructor
+    ~LogObserver();                                 //Destructor
+    void Update(ILoggable *s);                      //trigger write to file
+    void writeToFile(string s);                     //write to gamelog
 private:
-    Subject *subject;
+    Subject *subject;                               //subject using this observer
 };
