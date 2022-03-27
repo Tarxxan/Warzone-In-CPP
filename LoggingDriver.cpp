@@ -7,6 +7,8 @@
 int main()
 {
 
+    //g++ LoggingObserver.cpp Orders.cpp CommandProcessor.cpp Player.cpp Map.cpp Cards.cpp GameEngine.cpp LoggingDriver.cpp -o logdriver
+
     //Initialize all the objects that use the Observer pattern
     vector<Territory*> terrs;
 
@@ -24,7 +26,7 @@ int main()
     cp->getCommand("start");
     ol->push(bo);
     bo->execute();
-    cp->getCommand("test command");
+    // cp->getCommand("test command");
     comm->saveEffect("TEST EFFECT");
     ge->transition("TEST STATE");
 

@@ -79,7 +79,7 @@ void Command::saveEffect(string effect)
 
 string Command::stringToLog()
 {
-    return "Effect: " + this->effect+"\n";
+    return "Effect: " + this->effect;
 }
 
 CommandProcessor::CommandProcessor()
