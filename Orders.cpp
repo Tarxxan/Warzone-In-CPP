@@ -99,13 +99,13 @@ bool DeployOrder::validate(){
     return false;
 }
 bool DeployOrder::execute(){    // Triggers validate
+    this->player->getOrders()->remove(this);
     if (validate()){
         this->effect = "\n"+to_string(this->armies)+" solders are being deployed on " 
                         + this->destination->getTerritoryName() + " by " + this->player->getName();
         this->destination->setNumberOfArmies(this->destination->getNumberOfArmies()+this->armies);
         this->player->removeSolders(this->armies);
         Notify(this);
-        this->player->getOrders()->remove(this);
         return true;
     }
     this->effect = this->player->getName() + " was unable to deploy " +to_string(this->armies)+" solders to " + this->destination->getTerritoryName();
@@ -165,6 +165,7 @@ bool AdvanceOrder::validate(){
     return false;
 }
 bool AdvanceOrder::execute(){   // Triggers validate
+    this->player->getOrders()->remove(this);
     if (validate()){
         if (this->destination->getOwnerOfTerritory() == this->player){ // we already know the source belongs to user from validate
             this->effect = "\n"+to_string(this->armies)+" solders are being moved from "
@@ -173,7 +174,6 @@ bool AdvanceOrder::execute(){   // Triggers validate
             this->destination->setNumberOfArmies(this->destination->getNumberOfArmies()+this->armies);
             this->source->setNumberOfArmies(this->source->getNumberOfArmies()-this->armies);
             Notify(this);
-            this->player->getOrders()->remove(this);
             return true;
         }
         this->attack();
@@ -276,6 +276,7 @@ bool BombOrder::validate(){
     return false;
 }
 bool BombOrder::execute(){ // Will trigger validate method 
+    this->player->getOrders()->remove(this);
     if (validate()){
         this->effect = "\nHalf of the army is destroyed on " + this->destination->getTerritoryName()
                         + " by " + this->player->getName();
@@ -283,7 +284,6 @@ bool BombOrder::execute(){ // Will trigger validate method
         int future = int(floor(this->destination->getNumberOfArmies()/2));
         this->destination->setNumberOfArmies(future);
         Notify(this);
-        this->player->getOrders()->remove(this);
         return true;
     }
     this->effect = this->player->getName() + " was unable to bomb " + this->destination->getTerritoryName();
@@ -328,6 +328,7 @@ bool BlockadeOrder::validate(){
     return false;
 }
 bool BlockadeOrder::execute(){  // Will trigger validate method
+    this->player->getOrders()->remove(this);
     if (validate()){
         this->effect = "\nThe army is doubled on " + this->destination->getTerritoryName()
                         + " by " + this->player->getName();
@@ -336,7 +337,6 @@ bool BlockadeOrder::execute(){  // Will trigger validate method
         this->destination->setOwnerOfTerritory(neutral);
         this->player->removeTerritory(this->destination);
         Notify(this);
-        this->player->getOrders()->remove(this);
         return true;
     }
     this->effect = this->player->getName() + " was unable to blockade " + this->destination->getTerritoryName();
@@ -398,6 +398,7 @@ bool AirliftOrder::validate(){
     return false;
 }
 bool AirliftOrder::execute(){   // Will trigger validate method
+    this->player->getOrders()->remove(this);
     if (validate()){
         this->effect = "\n"+to_string(this->armies)+" solders are moved from " + 
                         this->source->getTerritoryName() + " to " + this->destination->getTerritoryName()
@@ -405,7 +406,6 @@ bool AirliftOrder::execute(){   // Will trigger validate method
         this->source->setNumberOfArmies(this->source->getNumberOfArmies()-this->armies);
         this->destination->setNumberOfArmies(this->destination->getNumberOfArmies()+this->armies);
         Notify(this);
-        this->player->getOrders()->remove(this);
         return true;
     }
     this->effect = this->player->getName() + " was unable to airlift " +to_string(this->armies)+" solders from " + this->source->getTerritoryName() + " to "+ this->destination->getTerritoryName();
@@ -450,13 +450,13 @@ bool NegotiateOrder::validate(){
     return true;
 }
 bool NegotiateOrder::execute(){     // Will trigger validate
+    this->player->getOrders()->remove(this);
     if (validate()){
         this->effect = "\nNo attacks can be done between " + this->player->getName()
                         + " and " + this->second->getName() + "until the end of the round";
         this->player->negotiatePlayer(this->second);
         this->second->negotiatePlayer(this->player);
         Notify(this);
-        this->player->getOrders()->remove(this);
         return true;
     }
     return false;
