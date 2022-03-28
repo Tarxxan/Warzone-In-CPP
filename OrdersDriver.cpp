@@ -69,7 +69,6 @@ int main() {
     cout << "Printing the territory\n";
     cout << *t1 << endl;
     
-    cout << "after null" << endl;    // Testing valid advance attack order
     t1->setNumberOfArmies(2);
     t2->setNumberOfArmies(8);
     AdvanceOrder* advance = new AdvanceOrder(p1, 2, t1, t2);
