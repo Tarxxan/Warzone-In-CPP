@@ -147,6 +147,8 @@ void Player::computeReinforcementPool() {
 
 // function to print all the territories user possesses
 void Player::printOwnedTerritories() {
+    cout << "drawing card..." << endl;
+    drawCard();
     cout << "------------------------------\nHere are your owned territories" << endl;
     for (int i = 0; i < territories.size(); i++) {
         cout << i << *territories[i] << endl;
@@ -474,6 +476,15 @@ void Player::useCard() {
         // DO I call NegotiateOrder like what I did with every other order and push into orderlist?
         // or you have something in mind with this negotiatePlayer function?
     }
+    // removing card from hand
+    if (cardChoice != -1) {
+        
+        cout << "removing " << playerHand->getHand()[cardChoice]->getType() << " card from player's hand " << endl;
+        //playerHand.remove(playerHand->getHand()[i]);
+        playerHand->remove(playerHand->getHand()[cardChoice]);
+              
+    }
+
 
 }
 

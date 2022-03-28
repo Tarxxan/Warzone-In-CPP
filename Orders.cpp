@@ -105,7 +105,7 @@ bool DeployOrder::execute(){    // Triggers validate
                         + this->destination->getTerritoryName() + " by " + this->player->getName();
         this->destination->setNumberOfArmies(this->destination->getNumberOfArmies()+this->armies);
         this->player->removeSolders(this->armies);
-        cout << "Deploy Order executed\n" << endl;
+        cout << "\nDeploy Order executed\n" << endl;
         Notify(this);
         return true;
     }
@@ -228,7 +228,7 @@ void AdvanceOrder::attack(){
         this->source->setNumberOfArmies(this->source->getNumberOfArmies() - defended);
         return;
     }
-    cout << this->destination->getOwnerOfTerritory()->getName() << " deffended his territory" << endl;
+    cout << this->destination->getOwnerOfTerritory()->getName() << " defended their territory" << endl;
     this->destination->setNumberOfArmies(this->destination->getNumberOfArmies() - conquered);
     this->source->setNumberOfArmies(this->source->getNumberOfArmies() - defended);
 
