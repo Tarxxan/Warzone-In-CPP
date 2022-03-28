@@ -7,6 +7,7 @@ using namespace std;
 #include "Orders.h"
 #include "Map.h"
 #include "Cards.h"
+#include "PlayerStrategies.h"
 
 class Card;
 class Territory;
@@ -20,6 +21,8 @@ class NegotiateOrder;
 class BombOrder;
 class BlockadeOrder;
 class AirliftOrder;
+
+class PlayerStrategy;
 
 // -------------------------------------------Player--------------------------------------------------
 class Player {
@@ -63,6 +66,8 @@ public:
     void deleteNegotiate(Player* enemy);
     bool canAttack(Player* enemy);
 
+    PlayerStrategy* getStrategy();
+    void setStrategy(PlayerStrategy* strategy);
 private:
     OrderList* orders;
     vector <Territory*> territories;
@@ -71,4 +76,6 @@ private:
     int availableArmies;
     vector <Player*> cannotAttack;
     vector <Player*> opponents;
+
+    PlayerStrategy* strategy;
 };

@@ -19,8 +19,6 @@ Order::Order(const Order& order){ // Parameter Constructor
 }
 Order::~Order(){
     cout << "Order Destructor called" << endl;
-    //delete this->player;
-    //this->player = nullptr;
 }                // Destructor
 Order& Order::operator=(const Order& o){ // Assignment Operator
     this->name = o.name;

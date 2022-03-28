@@ -18,6 +18,7 @@ public:
 
     //getters
     Player* getPlayer();
+    string getName();
 
     virtual vector <Territory*> toDefend() = 0; // return an arbitrary list of territories to be defended
     virtual vector <Territory*> toAttack() = 0; // returns arbitrary list of territories that are to be attacked.

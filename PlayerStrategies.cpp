@@ -25,6 +25,9 @@ std::ostream& operator<<(ostream& out, const PlayerStrategy& playerStrategy){
 Player* PlayerStrategy::getPlayer(){
     return this->player;
 }
+string PlayerStrategy::getName(){
+    return this->strategyName;
+}
 /////////////////////////////////////////// Human Player //////////////////////////////////////////
 HumanPlayerStrategy::HumanPlayerStrategy(Player* player){
     this->player = player;
