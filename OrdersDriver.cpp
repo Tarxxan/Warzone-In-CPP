@@ -115,7 +115,7 @@ int main() {
     cout << "The destination territory\n";
     cout << *t2 << endl;
     // Testing invalid advance order where source doesnt have enough army
-    advance = new AdvanceOrder(p1, 6, t1, t2);
+    advance = new AdvanceOrder(p1, 56, t1, t2);
     cout << "\n\nTesting invalid Advance Order where source doesnt have enough army: \nAfter creation:\n";
     cout << *advance << endl;
     cout << "The source territory\n";
