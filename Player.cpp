@@ -151,6 +151,13 @@ void Player::printOwnedTerritories() {
     for (int i = 0; i < territories.size(); i++) {
         cout << i << *territories[i] << endl;
     }
+    if (getOrders()->getOrders().size() > 0) {
+        cout << "\nHere are your orderList Queue" << endl;
+        for (int j = 0; j < getOrders()->getOrders().size(); j++) {
+            cout << *getOrders()->getOrders()[j] << endl;
+        }
+        cout << endl;
+    }
 }
 
 // user issues order and add all the orders into order list. All decision-makings are done here
@@ -162,7 +169,8 @@ void Player::issueOrder() {
     // issuing deploy order
     int dummy_availableArmies = availableArmies;        // creating a dummy available armies since the value of availableArmies
                                                         // will not decrease until the deploy order is executed
-    int initial_val_availableArmies= availableArmies;
+    int initial_val_availableArmies = availableArmies;
+
     while (true) {
         while (dummy_availableArmies > 0) {
             cout << "Deploying Order... you have " << dummy_availableArmies << " armies to deploy" << endl;
@@ -262,9 +270,22 @@ void Player::advance() {
             break;
         }
     }
-    AdvanceOrder* a = new AdvanceOrder(this, territories[sourceIndex]->getNumberOfArmies(), territories[sourceIndex], territoriesToAttack[targetIndex]);
+    // prompt user to enter how many armies to advance
+    //AdvanceOrder* a = new AdvanceOrder(this, territories[sourceIndex]->getNumberOfArmies(), territories[sourceIndex], territoriesToAttack[targetIndex]);
+    int armiesToSend = 0;
+    while (true) {
+        cout << "\nPlease choose how many armies you would like to send to attack (" << territories[sourceIndex]->getNumberOfArmies() << ")" << endl;
+        cin >> armiesToSend;
+        if (armiesToSend < 0 || armiesToSend > territories[sourceIndex]->getNumberOfArmies()) {
+            cout << "Invalid input, please select the right amount of armies" << endl;
+        }
+        else {
+            break;
+        }
+    }
+    AdvanceOrder* a = new AdvanceOrder(this, armiesToSend, territories[sourceIndex], territoriesToAttack[targetIndex]);
     orders->push(a);
-    cout << "\nAdvance Order " << territories[sourceIndex]->getNumberOfArmies() << " solders from \n" << *territories[sourceIndex] << " to \n" << *territoriesToAttack[targetIndex] << endl;
+    cout << *a << endl;
 }
 
 void Player::defend() {
@@ -298,7 +319,7 @@ void Player::defend() {
     while (true) {
         cout << "How many armies would you like to send?" << endl;
         cin >> numberReinforcement;
-        if (numberReinforcement < 0 || numberReinforcement > availableArmies) {
+        if (numberReinforcement <= 0 || numberReinforcement > territories[sourceIndex]->getNumberOfArmies()) {
             cout << "Invalid input, please select the right amount of armies" << endl;
         }
         else {
@@ -318,17 +339,22 @@ void Player::useCard() {
         cout << i << " - " << playerHand->getHand()[i]->getType() << endl;
     }
     int cardChoice = 0;
+    string type = "";
     while (true) {
-        cout << "Please select the index of the card you would like to use" << endl;
+        cout << "\nPlease select the index of the card you would like to use" << endl;
         cin >> cardChoice;
+        if (cardChoice == -1) {
+            break;
+        }
         if (cardChoice < 0 || cardChoice >= playerHand->getHand().size()) {
             cout << "Invalid input, please select the right index of cards" << endl;
         }
         else {
+            type = playerHand->getHand()[cardChoice]->getType();
             break;
         }
     }
-    string type = playerHand->getHand()[cardChoice]->getType();
+
     // -------------------------------------------Bomb Order---------------------------------------------------
     if (type == "bomb") {
         cout << "Please select one of your adjacent territories to bomb?" << endl;
@@ -423,7 +449,7 @@ void Player::useCard() {
 
         AirliftOrder* o = new AirliftOrder(this, n_solders, territories[sourceIndex], territories[targetIndex]);
         orders->push(o);
-        cout << "Airlift order " << n_solders << " solders from " << *territories[sourceIndex] << " to " << *territories[targetIndex] << endl;
+        cout << "Airlift order " << n_solders << " solders from \n" << *territories[sourceIndex] << " to \n" << *territories[targetIndex] << endl;
     }
     // -------------------------------------------Negotiate Order---------------------------------------------------
     else if (type == "diplomacy") {
@@ -443,6 +469,8 @@ void Player::useCard() {
             }
         }
         negotiatePlayer(opponents[opponentIndex]);
+        NegotiateOrder* n = new NegotiateOrder(this, opponents[opponentIndex]);
+        orders->push(n);
         // DO I call NegotiateOrder like what I did with every other order and push into orderlist?
         // or you have something in mind with this negotiatePlayer function?
     }

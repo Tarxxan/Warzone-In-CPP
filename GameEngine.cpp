@@ -413,14 +413,16 @@ void GameEngine::computeContinentControlValue(Player *p) {
             }
         }
         if (ownsContinent == true) {
-            cout << p->getName() << " has all the continent of " << c->getContinentName() << endl;
+            cout << "\n\n" << p->getName() << " has all the continent of " << c->getContinentName() << endl;
             cout << p->getName() << " receives extra " << c->getContinentControlValue() << " armies\n" << endl;
             continentControlValue += c->getContinentControlValue();
         }
     }
+    if (continentControlValue > 0) {
+        p->addAvailableArmies(continentControlValue);
+        cout << "\n"  << p->getName() << "\'s total additional armies : " << continentControlValue << "\n" << endl;
+    }
     
-    p->addAvailableArmies(continentControlValue);
-    cout << p->getName() << "\'s total additional armies " << continentControlValue << endl;
 }
 
 void GameEngine::reinforcementPhase() {
@@ -435,32 +437,27 @@ void GameEngine::reinforcementPhase() {
         }
         allPlayers[i]->computeReinforcementPool();          // compute the reinforcementPool based on number of territories player possesses 
     }
-    cout << "Exiting Reinforcement Phase\n" << endl;
+    cout << "\nExiting Reinforcement Phase\n" << endl;
 }
 void GameEngine::issueOrdersPhase() {
     cout << "\nEntering Issue Orders Phase" << endl;
     for (auto p : allPlayers) {
         p->issueOrder();
     }
-    cout << "Exiting Issue Orders Phase\n" << endl;
+    cout << "\nExiting Issue Orders Phase\n" << endl;
 }
 void GameEngine::executeOrdersPhase() {
     cout << "\nEntering Execute Orders Phase" << endl;
     for (auto p : allPlayers) {
-        vector <Order*> orders= p->getOrders()->getOrders();
-        for (int i = 0; i < orders.size(); i++) {
-            if (orders[i]->validate()) {
-                cout << "Executing order: \n" << orders[i] << endl;
-                orders[i]->execute();
-            }
-            else {
-                cout << *orders[i] << " has failed and will now be removed from orderList" << endl;
-            }
-            p->getOrders()->getOrders().erase(p->getOrders()->getOrders().begin() + i);
+        
+       while(p->getOrders()->getOrders().size() > 0)  {
+            cout << "\n-----------------------\nExecuting order: \n" << *p->getOrders()->getOrders()[0] << endl;
+            p->getOrders()->getOrders()[0]->execute();
+            //p->getOrders()->remove(p->getOrders()->getOrders()[0]);
         }
 
     }
-    cout << "Exiting Execute Orders Phase\n" << endl;
+    cout << "\nExiting Execute Orders Phase\n" << endl;
 }
 
 

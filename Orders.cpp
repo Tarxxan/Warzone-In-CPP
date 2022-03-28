@@ -99,11 +99,13 @@ bool DeployOrder::validate(){
     return false;
 }
 bool DeployOrder::execute(){    // Triggers validate
+    this->player->getOrders()->remove(this);
     if (validate()){
         this->effect = "\n"+to_string(this->armies)+" solders are being deployed on " 
                         + this->destination->getTerritoryName() + " by " + this->player->getName();
         this->destination->setNumberOfArmies(this->destination->getNumberOfArmies()+this->armies);
         this->player->removeSolders(this->armies);
+        cout << "Deploy Order executed\n" << endl;
         Notify(this);
         return true;
     }
@@ -164,6 +166,7 @@ bool AdvanceOrder::validate(){
     return false;
 }
 bool AdvanceOrder::execute(){   // Triggers validate
+    this->player->getOrders()->remove(this);
     if (validate()){
         if (this->destination->getOwnerOfTerritory() == this->player){ // we already know the source belongs to user from validate
             this->effect = "\n"+to_string(this->armies)+" solders are being moved from "
@@ -201,7 +204,7 @@ void AdvanceOrder::attack(){
         }
     }
     int defended = 0;
-    for (int i = 0; i < this->armies; i++){
+    for (int i = 0; i < this->destination->getNumberOfArmies(); i++){
         int prob = (rand() % 10) +1 ;
         if (prob <= 7){ // 70% chance of being true
             defended ++; // One attacking solder more killed
@@ -209,6 +212,9 @@ void AdvanceOrder::attack(){
     }
     if (defended > this->armies){
         defended = this->armies; // Cannot kill more than actually came tothe territory
+    }
+    if (conquered > this->destination->getNumberOfArmies()){
+        conquered = this->destination->getNumberOfArmies();
     }
     cout << to_string(conquered) << " killed by " << this->player->getName() << endl;
     cout << to_string(defended) << " killed by " << this->destination->getOwnerOfTerritory()->getName() << endl;
@@ -271,6 +277,7 @@ bool BombOrder::validate(){
     return false;
 }
 bool BombOrder::execute(){ // Will trigger validate method 
+    this->player->getOrders()->remove(this);
     if (validate()){
         this->effect = "\nHalf of the army is destroyed on " + this->destination->getTerritoryName()
                         + " by " + this->player->getName();
@@ -322,6 +329,7 @@ bool BlockadeOrder::validate(){
     return false;
 }
 bool BlockadeOrder::execute(){  // Will trigger validate method
+    this->player->getOrders()->remove(this);
     if (validate()){
         this->effect = "\nThe army is doubled on " + this->destination->getTerritoryName()
                         + " by " + this->player->getName();
@@ -391,6 +399,7 @@ bool AirliftOrder::validate(){
     return false;
 }
 bool AirliftOrder::execute(){   // Will trigger validate method
+    this->player->getOrders()->remove(this);
     if (validate()){
         this->effect = "\n"+to_string(this->armies)+" solders are moved from " + 
                         this->source->getTerritoryName() + " to " + this->destination->getTerritoryName()
@@ -442,6 +451,7 @@ bool NegotiateOrder::validate(){
     return true;
 }
 bool NegotiateOrder::execute(){     // Will trigger validate
+    this->player->getOrders()->remove(this);
     if (validate()){
         this->effect = "\nNo attacks can be done between " + this->player->getName()
                         + " and " + this->second->getName() + "until the end of the round";
