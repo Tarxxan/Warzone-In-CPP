@@ -302,17 +302,23 @@ void GameEngine::startupPhase()
                     i++;
                 }
             }
-
+            
+            // Testing win condition
+            /*
+            for (int i = 0; i < this->mapL->combinedTerritories.size()-1;) {
+                allPlayers[0]->addTerritory(mapL->combinedTerritories[i]);
+                i++;
+            }
+            allPlayers[1]->addTerritory(mapL->combinedTerritories[mapL->combinedTerritories.size()-1]);
+            
             cout << "\nDistributing all the territories to the players.." << endl;
 
             //testing for demo , print out one players details
             cout << "\t" << * allPlayers[0] << endl;
-
+            */
 
             //--------------------------------------------------------------------
             //b) determine randomly the order of play of the players in the game"
-
-
             //randomly changes the order of players
             unsigned seed = chrono::system_clock::now()
                 .time_since_epoch()
@@ -413,14 +419,16 @@ void GameEngine::computeContinentControlValue(Player *p) {
             }
         }
         if (ownsContinent == true) {
-            cout << p->getName() << " has all the continent of " << c->getContinentName() << endl;
+            cout << "\n" << p->getName() << " has all the continent of " << c->getContinentName() << endl;
             cout << p->getName() << " receives extra " << c->getContinentControlValue() << " armies\n" << endl;
             continentControlValue += c->getContinentControlValue();
         }
     }
+    if (continentControlValue > 0) {
+        p->addAvailableArmies(continentControlValue);
+        cout << "\n"  << p->getName() << "\'s total additional armies : " << continentControlValue << "\n" << endl;
+    }
     
-    p->addAvailableArmies(continentControlValue);
-    cout << p->getName() << "\'s total additional armies " << continentControlValue << endl;
 }
 
 void GameEngine::reinforcementPhase() {
@@ -428,37 +436,33 @@ void GameEngine::reinforcementPhase() {
     for (int i = 0; i < allPlayers.size(); i++) {
         computeContinentControlValue(allPlayers[i]);    // compute the continent control values to add if player possesses
                                                         // all territories of a continent
-        if (allPlayers[i]->getTerritories().size() == 0) {      
-            cout << "Player " << allPlayers[i]->getName() << " occupies 0 territory " << endl;
-            cout << "Player " << allPlayers[i]->getName() << " is now eliminated from the game " << endl;
-            allPlayers.erase(allPlayers.begin() + i);       // eliminate player if they do not possess any territory
-        }
         allPlayers[i]->computeReinforcementPool();          // compute the reinforcementPool based on number of territories player possesses 
     }
-    cout << "Exiting Reinforcement Phase\n" << endl;
+    cout << "\nExiting Reinforcement Phase\n" << endl;
 }
 void GameEngine::issueOrdersPhase() {
     cout << "\nEntering Issue Orders Phase" << endl;
     for (auto p : allPlayers) {
         p->issueOrder();
     }
-    cout << "Exiting Issue Orders Phase\n" << endl;
+    cout << "\nExiting Issue Orders Phase\n" << endl;
 }
 void GameEngine::executeOrdersPhase() {
     cout << "\nEntering Execute Orders Phase" << endl;
     for (auto p : allPlayers) {
-        vector <Order*> orders= p->getOrders()->getOrders();
-        for (int i = 0; i < orders.size(); i++) {
-            if (orders[i]->validate()) {
-                cout << "Executing order: \n" << orders[i] << endl;
-                orders[i]->execute();
-            }
-            else {
-                cout << *orders[i] << " has failed and will now be removed from orderList" << endl;
-            }
-            p->getOrders()->getOrders().erase(p->getOrders()->getOrders().begin() + i);
+        
+       while(p->getOrders()->getOrders().size() > 0)  {
+            cout << "\n-----------------------\nExecuting order: \n" << *p->getOrders()->getOrders()[0] << endl;
+            p->getOrders()->getOrders()[0]->execute();
         }
+    }
 
+    for (int i = 0; i < allPlayers.size(); i++) {
+        if (allPlayers[i]->getTerritories().size() == 0) {
+            cout << "\nPlayer : " << allPlayers[i]->getName() << " occupies 0 territory " << endl;
+            cout << "Player : " << allPlayers[i]->getName() << " is now eliminated from the game " << endl;
+            allPlayers.erase(allPlayers.begin()+i);       // eliminate player if they do not possess any territory
+        }
     }
     cout << "Exiting Execute Orders Phase\n" << endl;
 }
@@ -476,5 +480,6 @@ void GameEngine::mainGameLoop()
     }
     cout << allPlayers[0]->getName() << " has won" << endl;
     cout << "End of game! BYE!" << endl;
+    exit(1);
 
 }

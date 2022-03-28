@@ -19,8 +19,8 @@ Order::Order(const Order& order){ // Parameter Constructor
 }
 Order::~Order(){
     cout << "Order Destructor called" << endl;
-    delete this->player;
-    this->player = nullptr;
+    //delete this->player;
+    //this->player = nullptr;
 }                // Destructor
 Order& Order::operator=(const Order& o){ // Assignment Operator
     this->name = o.name;
@@ -105,6 +105,7 @@ bool DeployOrder::execute(){    // Triggers validate
                         + this->destination->getTerritoryName() + " by " + this->player->getName();
         this->destination->setNumberOfArmies(this->destination->getNumberOfArmies()+this->armies);
         this->player->removeSolders(this->armies);
+        cout << "\nDeploy Order executed\n" << endl;
         Notify(this);
         return true;
     }
@@ -227,7 +228,7 @@ void AdvanceOrder::attack(){
         this->source->setNumberOfArmies(this->source->getNumberOfArmies() - defended);
         return;
     }
-    cout << this->destination->getOwnerOfTerritory()->getName() << " deffended his territory" << endl;
+    cout << this->destination->getOwnerOfTerritory()->getName() << " defended their territory" << endl;
     this->destination->setNumberOfArmies(this->destination->getNumberOfArmies() - conquered);
     this->source->setNumberOfArmies(this->source->getNumberOfArmies() - defended);
 

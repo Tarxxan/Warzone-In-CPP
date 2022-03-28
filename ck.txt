@@ -1,0 +1,5 @@
+loadmap brasil.map
+validatemap
+addplayer Kim
+addplayer William
+gamestart
