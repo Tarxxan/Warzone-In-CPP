@@ -16,6 +16,7 @@ Subject::Subject()          //Default Constructor and Destructor for the base Su
 Subject::~Subject()
 {
     delete observers;
+    observers = nullptr;
 }
 
 void Subject::Attach(Observer *observer)             //methods to attach or detach an observer from the list of observers

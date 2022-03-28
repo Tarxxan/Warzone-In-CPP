@@ -8,11 +8,11 @@ class ILoggable;
 class Observer
 {
 public:
-    virtual ~Observer();                            //Interface destructor
-    virtual void Update(ILoggable *s) = 0;          //Interface Update method
+    virtual ~Observer();                            //Destructor
+    virtual void Update(ILoggable *s) = 0;          // Update method to be overridden
 
 protected:
-    Observer();                                    //Interface Constructor
+    Observer();                                    //Constructor
 };
 
 class Subject
@@ -31,7 +31,7 @@ private:
 class ILoggable                                   
 {
 public:
-    virtual string stringToLog() = 0;             //method to be overrridden 
+    virtual string stringToLog() = 0;             //method to be overridden 
 
 };
 
