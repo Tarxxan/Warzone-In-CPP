@@ -60,7 +60,7 @@ int main() {
     cout << *t1 << endl;
     // Testing deploy order when use does not have enough army
     deploy = new DeployOrder(p1, 6, t1);
-    cout << "Testing deploy order when the territory doesnt belong to user: \nAfter creation:\n";
+    cout << "Testing deploy order when use does not have enough army: \nAfter creation:\n";
     cout << *deploy << endl;
     cout << "The territory before deploy of 1 extra solder\n";
     cout << *t1 << endl;
