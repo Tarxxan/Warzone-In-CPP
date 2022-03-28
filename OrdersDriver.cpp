@@ -34,8 +34,8 @@ int main() {
     p2->addTerritory(t2);
     p2->addTerritory(t3);
     // Add players army
-    p1->computeAvailableArmies();
-    p2->computeAvailableArmies();
+    p1->computeReinforcementPool();
+    p2->computeReinforcementPool();
 
 
     // Testing valid deploy order
@@ -68,10 +68,8 @@ int main() {
     deploy->execute();
     cout << "Printing the territory\n";
     cout << *t1 << endl;
-    delete deploy;
-    deploy = nullptr;
-
-    // Testing valid advance attack order
+    
+    cout << "after null" << endl;    // Testing valid advance attack order
     t1->setNumberOfArmies(2);
     t2->setNumberOfArmies(8);
     AdvanceOrder* advance = new AdvanceOrder(p1, 2, t1, t2);
@@ -159,8 +157,7 @@ int main() {
     cout << *t1 << endl;
     cout << "The destination territory\n";
     cout << *t4 << endl;
-    delete advance;
-    advance = nullptr;
+
     
     // Testing valid airilift order on adjacent
     AirliftOrder* air = new AirliftOrder(p1, 1, t1, t2);
@@ -233,8 +230,7 @@ int main() {
     cout << *t1 << endl;
     cout << "The destination territory\n";
     cout << *t4 << endl;
-    delete air;
-    air = nullptr;
+   
 
     t1->setNumberOfArmies(6);
     // Testing valid bomb order
@@ -267,8 +263,7 @@ int main() {
     bomb->execute();
     cout << "Printing the territory\n";
     cout << *t1 << endl;
-    delete bomb;
-    bomb = nullptr;
+
 
     // Testing valid blockade order
     BlockadeOrder* block = new BlockadeOrder(p1, t1);
@@ -277,13 +272,13 @@ int main() {
     cout << "The territory before blockade\n";
     cout << *t1 << endl;
     cout << "Printing the player's territories before blockade\n";
-    p1->printTerritories();
+    p1->getTerritories();
     cout << "Will now use execute method which should validate and double the army and set the territory to neutral\n";
     block->execute();
     cout << "Printing the territory\n";
     cout << *t1 << endl;
     cout << "Printing the player's territories\n";
-    p1->printTerritories();
+    p1->getTerritories();
     // Testing blockade order with not player's territory
     t1->setOwnerOfTerritory(p2);
     block = new BlockadeOrder(p1, t1);
@@ -292,15 +287,14 @@ int main() {
     cout << "The territory before blockade\n";
     cout << *t1 << endl;
     cout << "Printing the player's territories before blockade\n";
-    p1->printTerritories();
+    p1->getTerritories();
     cout << "Will now use execute method which should validate and do nothing\n";
     block->execute();
     cout << "Printing the territory\n";
     cout << *t1 << endl;
     cout << "Printing the player's territories\n";
-    p1->printTerritories();
-    delete block;
-    block = nullptr;
+    p1->getTerritories();
+   
 
     // Testing invalid negotiate order (where both players are the same user)
     NegotiateOrder* neg = new NegotiateOrder(p1, p1);
@@ -343,10 +337,7 @@ int main() {
     cout << "The destination territory\n";
     cout << *t2 << endl;
 
-    delete newAdv;
-    delete neg;
-    newAdv = nullptr;
-    neg = nullptr;
+   
 
     cout << "Desctructing players and territories\n";
     delete p1;
@@ -361,6 +352,22 @@ int main() {
     t3 = nullptr;
     delete t4;
     t4 = nullptr;
+    delete deploy;
+    deploy = nullptr;
+    delete advance;
+    advance = nullptr;
+    delete air;
+    air = nullptr;
+    delete bomb;
+    bomb = nullptr;
+    delete block;
+    block = nullptr;
+    delete block;
+    block = nullptr;
+    delete newAdv;
+    delete neg;
+    newAdv = nullptr;
+    neg = nullptr;
     system("pause");
     
 }

@@ -36,7 +36,6 @@ Player::~Player()   //Destructor
     delete playerHand;
     playerHand = nullptr;
     for (int i = 0; i < territories.size(); i++) {
-        delete territories[i];
         territories[i] = nullptr;
     }
     cout << "~Player destructed" << endl;
