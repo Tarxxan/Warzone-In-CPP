@@ -1,0 +1,1 @@
+tournament -M map,part,works -P player,part,works -G 4 -D 37

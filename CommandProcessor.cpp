@@ -2,6 +2,7 @@
 #include <iostream>
 #include <fstream>
 #include <string>
+#include <sstream>
 
 using namespace std;
 class ILoggable;
@@ -53,17 +54,19 @@ string Command::checkCommand(string command, bool isValid)
     string effect = "";
     if (!isValid)
         return effect = "invalid Command, no effect will occur.";
-    if (command.compare("quit") == 0)
+    if (command.find("tournament") != string::npos && command.length() > 8)
+        return "The tournament will now begin";
+    else if (command.compare("quit") == 0)
         return effect = "The game has ended, No new games will be played";
     else if (command.compare("replay") == 0)
         return effect = " A new game of Warzone will follow.";
     else if (command.compare("gamestart") == 0)
         return effect = "Game has been initializaed. It will now begin";
-    else if (command.find("loadmap") != string::npos && command.length()>8)
+    else if (command.find("loadmap") != string::npos && command.length() > 8)
         return effect = command.substr(8) + " has been loaded";
     else if (command.find("validatemap") != string::npos)
         return effect = "The map has been validated";
-    else if (command.find("addplayer") != string::npos && command.length()>10)
+    else if (command.find("addplayer") != string::npos && command.length() > 10)
         return effect = command.substr(10) + " has been added to the game";
     else if (command.compare("gamestart") == 0)
         return effect = "Players have been added and the game will now begin";
@@ -177,16 +180,22 @@ Command *CommandProcessor::readCommand()
 // Validates the Command given the current Gamestate
 bool CommandProcessor::validate(Command *c, string gameState)
 {
-    //Check the command length so we could confirm whether
-    if (c->command.find("loadmap") != string::npos && (gameState == "start" || gameState == "maploaded") && c->command.length()>8)
+
+    if (c->command.find("loadmap") != string::npos && (gameState == "start" || gameState == "maploaded") && c->command.length() > 8)
     {
+        return true;
+    }
+    else if (c->command.find("tournament") != string::npos && (gameState == "start"))
+    {
+        cout << "about to validate tourny" << endl;
+        validateTournament(c);
         return true;
     }
 
     else if (c->command == "validatemap" && gameState == "maploaded")
         return true;
 
-    else if (c->command.find("addplayer") != string::npos && (gameState == "mapvalidated" || gameState == "playersadded") &&c->command.length()>10)
+    else if (c->command.find("addplayer") != string::npos && (gameState == "mapvalidated" || gameState == "playersadded") && c->command.length() > 10)
         return true;
 
     else if (c->command == "gamestart" && gameState == "playersadded")
@@ -196,6 +205,55 @@ bool CommandProcessor::validate(Command *c, string gameState)
         return true;
 
     return false;
+}
+
+bool CommandProcessor::validateTournament(Command *c)
+{
+    int mapStart = c->command.find("-M ") + 3;
+    int mapEnd = c->command.substr(mapStart).find(" ");
+    string mapFiles = c->command.substr(mapStart, mapEnd);
+
+    while (mapFiles.find(",") != string::npos)
+    {
+        int delim = mapFiles.find(",");
+        string mapName = mapFiles.substr(0, delim);
+        mapFilesList.push_back(mapName);
+        mapFiles = mapFiles.substr(delim + 1);
+    }
+    mapFilesList.push_back(mapFiles);
+
+    for (auto i : mapFilesList)
+    {
+        cout << i + "\t" << endl;
+    }
+
+    int playerStart = c->command.find("-P ") + 3;
+    int playerEnd = c->command.substr(playerStart).find(" ");
+    string playerTypes = c->command.substr(playerStart, playerEnd);
+    while (playerTypes.find(",") != string::npos)
+    {
+        int delim = playerTypes.find(",");
+        string playerTypeName = playerTypes.substr(0, delim);
+        playersStrat.push_back(playerTypeName);
+        playerTypes = playerTypes.substr(delim + 1);
+    }
+    playersStrat.push_back(playerTypes);
+    cout << endl;
+
+    // Validate whether the commands are good in here in terms of number and type
+    for (auto i : playersStrat)
+    {
+        cout << i << endl;
+    }
+
+    int gameStart = c->command.find("-G ") + 3;
+    int gameEnd = c->command.substr(gameStart).find(" ");
+    gameRounds = stoi(c->command.substr(gameStart, gameEnd));
+
+    int turnsStart = c->command.find("-D ") + 3;
+    int turnsEnd = c->command.substr(turnsStart).find(" ");
+
+    turnsPerGame = stoi(c->command.substr(turnsStart, turnsEnd));
 }
 
 // Saves Command and then notifies Observers

@@ -5,7 +5,6 @@
 #include "LoggingObserver.h"
 #include "GameEngine.h"
 
-
 using namespace std;
 
 class ILoggable;
@@ -44,6 +43,10 @@ class CommandProcessor : public ILoggable, public Subject
 public:
     // list of commands IDK if we can use vectors so im just following picture format in A2 doc
     list<Command *> CommandList;
+    vector<string> mapFilesList;
+    vector<string> playersStrat;
+    int gameRounds;
+    int turnsPerGame;
 
     CommandProcessor();
     // Need to make it virtual since its base class
@@ -66,6 +69,8 @@ public:
 
     bool validate(Command *c, string gameState);
     // Method that saves command into a list of commands
+
+    bool validateTournament(Command *c);
 
 protected:
     void saveCommand(Command *c);
