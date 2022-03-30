@@ -87,6 +87,8 @@ string Command::stringToLog()
 
 CommandProcessor::CommandProcessor()
 {
+    gameRounds = 0;
+    turnsPerGame = 0;
     LogObserver *observer = new LogObserver(this);
 }
 
@@ -187,9 +189,7 @@ bool CommandProcessor::validate(Command *c, string gameState)
     }
     else if (c->command.find("tournament") != string::npos && (gameState == "start"))
     {
-        cout << "about to validate tourny" << endl;
-        validateTournament(c);
-        return true;
+        return validateTournament(c);
     }
 
     else if (c->command == "validatemap" && gameState == "maploaded")
@@ -222,11 +222,6 @@ bool CommandProcessor::validateTournament(Command *c)
     }
     mapFilesList.push_back(mapFiles);
 
-    for (auto i : mapFilesList)
-    {
-        cout << i + "\t" << endl;
-    }
-
     int playerStart = c->command.find("-P ") + 3;
     int playerEnd = c->command.substr(playerStart).find(" ");
     string playerTypes = c->command.substr(playerStart, playerEnd);
@@ -243,19 +238,39 @@ bool CommandProcessor::validateTournament(Command *c)
     // Validate whether the commands are good in here in terms of number and type
     for (auto i : playersStrat)
     {
-        cout << i << endl;
+        if (!validatePlayerStrat(i))
+        {
+            return false;
+        }
     }
 
     int gameStart = c->command.find("-G ") + 3;
     int gameEnd = c->command.substr(gameStart).find(" ");
-    gameRounds = stoi(c->command.substr(gameStart, gameEnd));
+    this->gameRounds = stoi(c->command.substr(gameStart, gameEnd));
+
+    if (gameRounds < 1 || gameRounds > 5)
+    {
+        cout << "Invalid amount of gameRounds" << endl;
+        return false;
+    }
 
     int turnsStart = c->command.find("-D ") + 3;
     int turnsEnd = c->command.substr(turnsStart).find(" ");
 
-    turnsPerGame = stoi(c->command.substr(turnsStart, turnsEnd));
+    this->turnsPerGame = stoi(c->command.substr(turnsStart, turnsEnd));
+    if (turnsPerGame < 10 || turnsPerGame > 50)
+    {
+        cout << "Invalid amount of Turns" << endl;
+        return false;
+    }
+
+    return true;
 }
 
+bool CommandProcessor::validatePlayerStrat(string strategy)
+{
+    return (strategy == "Neutral" || strategy == "Benevolent" || strategy == "Agressive" || strategy == "Human" || strategy == "Cheater");
+}
 // Saves Command and then notifies Observers
 void CommandProcessor::saveCommand(Command *c)
 {

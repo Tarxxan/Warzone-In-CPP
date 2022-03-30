@@ -72,6 +72,8 @@ public:
 
     bool validateTournament(Command *c);
 
+    bool validatePlayerStrat(string strat);
+
 protected:
     void saveCommand(Command *c);
 
