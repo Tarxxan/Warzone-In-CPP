@@ -6,49 +6,34 @@ using namespace std;
 // Waiting for gameEngine to be finished so i can try tetsing with the game Engine object
 int main()
 {
-    while(true){
-        string conOrFile="";
-        cout << "Please enter one of the following:" << endl
-             << " -console to enter commands from console" << endl
-             << " -file <file name> to read commands from a file" << endl;
-        getline(cin, conOrFile);
-        if (conOrFile == "-console")
-        {
-            CommandProcessor *commandProc = new CommandProcessor();
-            commandProc->getCommand("start");
-            commandProc->getCommand("maploaded");
-            commandProc->getCommand("mapvalidated");
-            commandProc->getCommand("playersadded");
-            commandProc->getCommand("win");
-            commandProc->getCommand("win");
-            cout << *commandProc;
 
-            delete commandProc;
-            commandProc = NULL;
-        }
+    string conOrFile = "";
+    cout << "Please enter one of the following:" << endl
+         << " -console to enter commands from console" << endl
+         << " -file <file name> to read commands from a file" << endl;
+    getline(cin, conOrFile);
+    if (conOrFile == "-console")
+    {
+        CommandProcessor *commandProc = new CommandProcessor();
+        commandProc->getCommand("start");
 
-        else if (conOrFile.find("-file")!=string::npos)
-        {
-            cout << endl;
-            CommandProcessor *FCommandProc = new FileCommandProcessorAdapter(conOrFile.substr(6));
-            FCommandProc->getCommand("start");
-            FCommandProc->getCommand("maploaded");
-            FCommandProc->getCommand("mapvalidated");
-            FCommandProc->getCommand("playersadded");
-            FCommandProc->getCommand("win");
-            FCommandProc->getCommand("win");
-            cout << *FCommandProc;
+        cout << " it is getting here" << endl;
+        cout << commandProc->gameRounds + "\t" + commandProc->turnsPerGame << endl;
 
-            delete FCommandProc;
-            FCommandProc = NULL;
-        }
-
-        string answer;
-        cout <<"Would you like to use a different format to get commands ? Y/N"<<endl;
-        cin >> answer;
-        if(answer=="N")
-            break;
-        cin.clear();
-        cin.ignore(10000, '\n');
+        delete commandProc;
+        commandProc = NULL;
     }
+
+    else if (conOrFile.find("-file") != string::npos)
+    {
+        cout << endl;
+        CommandProcessor *FCommandProc = new FileCommandProcessorAdapter(conOrFile.substr(6));
+        FCommandProc->getCommand("start");
+        cout << FCommandProc->gameRounds << endl;
+        cout << FCommandProc->turnsPerGame << endl;
+        delete FCommandProc;
+        FCommandProc = NULL;
+    }
+
+    return 0;
 }
