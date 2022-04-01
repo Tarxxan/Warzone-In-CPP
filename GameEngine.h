@@ -5,7 +5,13 @@
 #include "Map.h"
 #include "Player.h"
 #include "CommandProcessor.h"
+#include "PlayerStrategies.h"
 using namespace std;
+
+class PlayerStrategy;
+class CommandProcessor;
+
+
 
 class GameEngine : public ILoggable, public Subject
 {
@@ -39,4 +45,11 @@ public:
      void issueOrdersPhase();
      void executeOrdersPhase();
      void computeContinentControlValue(Player* p);
+
+
+
+     // Added for project 3
+     void tournamentMode(CommandProcessor* cp);
+     void gameSetup(CommandProcessor* cp);
+     void tournamentMainGameLoop(int turns);
 };
