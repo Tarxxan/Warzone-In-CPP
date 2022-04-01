@@ -38,6 +38,28 @@ Player::Player(string player_name, PlayerStrategy* strategy) {
     this->availableArmies = 0;
     this->strategy = strategy;
 }
+Player::Player(string player_name, string strategy) {
+    this->name = player_name;
+    this->playerHand = new Hand();
+    this->orders = new OrderList();
+    this->territories = vector<Territory*>();
+    this->availableArmies = 0;
+    if (strategy == "agressive"){
+        this->strategy = new AgressivePlayerStrategy(this);
+    }
+    else if (strategy == "benevolent"){
+        this->strategy = new BenevolentPlayerStrategy(this);
+    }
+    else if (strategy == "neutral"){
+        this->strategy = new NeutralPlayerStrategy(this);
+    }
+    else if (strategy == "cheater"){
+        this->strategy = new CheaterPlayerStrategy(this);
+    }
+    else{
+        this->strategy = new HumanPlayerStrategy(this);
+    }
+}
 
 Player::~Player()   //Destructor
 {   //  To avoid memory leak, delete all pointer objects and assign them to nullptr

@@ -31,6 +31,7 @@ public:
     Player(); 
     Player(string player_name);
     Player(string player_name, PlayerStrategy* strategy);
+    Player(string player_name, string strategy);
     ~Player();
     Player(const Player& p);
     Player& operator=(const Player& order);
