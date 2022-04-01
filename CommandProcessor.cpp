@@ -14,6 +14,7 @@ Command::Command()
     command = "";
     effect = "";
     isValid = true;
+    
 }
 
 Command::Command(string command)
@@ -90,6 +91,7 @@ CommandProcessor::CommandProcessor()
     gameRounds = 0;
     turnsPerGame = 0;
     LogObserver *observer = new LogObserver(this);
+    isTournament = false;
 }
 
 CommandProcessor::~CommandProcessor()
@@ -263,6 +265,10 @@ bool CommandProcessor::validateTournament(Command *c)
         cout << "Invalid amount of Turns" << endl;
         return false;
     }
+
+
+    this->isTournament = true;
+
 
     return true;
 }
