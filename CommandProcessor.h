@@ -47,6 +47,7 @@ public:
     vector<string> playersStrat;
     int gameRounds;
     int turnsPerGame;
+    bool isTournament;
 
     CommandProcessor();
     // Need to make it virtual since its base class
