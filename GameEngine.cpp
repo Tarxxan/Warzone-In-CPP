@@ -7,6 +7,8 @@
 
 #include "GameEngine.h"
 
+
+
 using namespace std;
 
 
@@ -125,7 +127,24 @@ void GameEngine::startupPhase()
     }
 
     
+    //-------------turnament mode-----------------------
     
+    Command* cmdObj = cp->getCommand(this);
+
+    
+    if (cp->isTournament) {
+
+        
+
+        tournamentMode(cp);
+
+        system("pause");
+        system("exit");
+
+    }
+    
+
+
 
     //-----------load map-------------- 
     // loop untill you load a Good map
@@ -431,6 +450,251 @@ void GameEngine::computeContinentControlValue(Player *p) {
     
 }
 
+
+// TODO :comment
+void GameEngine::tournamentMode(CommandProcessor* cp)
+{
+
+    int gRound = cp->gameRounds;
+    vector<string> mapList = cp->mapFilesList;
+    vector<string> playerList = cp->playersStrat;
+    int turns = cp->turnsPerGame;
+
+
+    for (  auto i : mapList) {
+
+        MapLoader* ml = new MapLoader(i);
+
+        this->mapL = ml;
+        if (!mapL->isbadFile) {
+
+            // state changed 
+            this->transition("maploaded");
+        }
+
+
+        
+
+        if (!this->mapL->map->validate()) {
+
+            cout << "Game ends." << endl;
+            system("pause");
+            system("exit");
+
+        }
+
+
+        this->transition("mapvalidated");
+
+        int count = 0;
+
+        for (auto playerName : playerList) {
+
+            count++;
+
+            playerName += count;
+
+            //create player object
+            Player* pl = new Player(playerName);
+
+            //PlayerStrategy* ps = new PlayerStrategy();
+
+            if (playerName == "Benevolent") {
+                BenevolentPlayerStrategy* bps = new BenevolentPlayerStrategy(pl);
+
+                //PlayerStrategy* bps = new BenevolentPlayerStrategy(pl);
+                pl->setStrategy(bps);
+            
+            }
+            else if (playerName == "Aggressive") {
+                AgressivePlayerStrategy* aps = new AgressivePlayerStrategy(pl);
+                pl->setStrategy(aps);
+            
+            }
+            else if (playerName == "Neutral") {
+                NeutralPlayerStrategy* nps = new NeutralPlayerStrategy(pl);
+                pl->setStrategy(nps);
+            }
+            else {
+                CheaterPlayerStrategy* cps = new CheaterPlayerStrategy(pl);
+                pl->setStrategy(cps);
+            }
+            
+
+
+
+            allPlayers.push_back(pl);
+            this->transition("playersadded");
+            
+        
+        }
+
+        
+
+        while (gRound>0) {
+
+            gameSetup(cp);
+
+            for (auto i : allPlayers) {
+
+                i->getPlayerHand()->getHand().clear();
+                //TODO : memory leaks??
+
+                i->getOrders()->getOrders().clear();
+
+                i->getTerritories().clear();
+
+                i->setAvailableArmies(0);
+
+                
+
+            }
+            gRound--;
+
+            
+        
+        }
+
+        // TODO: check if we are deleting player pointer after each game
+            //allPlayers.clear();
+
+
+        
+    }
+
+
+
+
+
+
+
+
+
+}
+
+void GameEngine::gameSetup(CommandProcessor* cp)
+{
+
+    // Setting all the player's opponents to be used in Negotiate Card
+    for (int i = 0; i < allPlayers.size(); i++) {
+        for (int j = 0; j < allPlayers.size(); j++) {
+            if (i == j) {
+                continue;
+            }
+            else {
+                allPlayers[i]->setOpponents(allPlayers[j]);
+            }
+        }
+    }
+    //------gamestart--------------------
+
+
+       
+            // a) fairly distribute all the territories to the players"
+        for (int i = 0; i < this->mapL->combinedTerritories.size();) {
+
+            for (int j = 0; j < allPlayers.size(); j++) {
+
+                allPlayers[j]->addTerritory(mapL->combinedTerritories[i]);
+                i++;
+            }
+        }
+
+      
+
+            
+        //b) determine randomly the order of play of the players in the game"
+        //randomly changes the order of players
+        unsigned seed = chrono::system_clock::now()
+            .time_since_epoch()
+            .count();
+        shuffle(allPlayers.begin(), allPlayers.end(), default_random_engine(seed));
+
+          
+        //c) give 50 initial armies to the players, which are placed in their respective
+
+        for (int i = 0; i < allPlayers.size(); i++) {
+            allPlayers[i]->setAvailableArmies(50);
+        }
+        
+          
+         
+        //d) let each player draw 2 initial cards from the deck using the decks draw() method"
+
+        Deck* deck = new Deck;
+        deck->initalizeDeck();
+
+        //each player draw 2 cards
+        for (int i = 0; i < allPlayers.size(); i++) {
+            deck->draw(allPlayers[i]);
+            deck->draw(allPlayers[i]);
+
+        }
+
+
+        //e) switch the game to the play phase
+
+        
+        //set state to assignreinforcement
+        this->transition("assignreinforcement");
+
+        // enter main game loop
+        if (this->getState() == "assignreinforcement") {
+
+
+
+            // enter main game loop
+            tournamentMainGameLoop(cp->turnsPerGame);
+
+
+            ////avoid memory leak
+            //delete cp;
+            //cp = nullptr;
+
+            //delete deck;
+            //deck = nullptr;
+
+
+
+        }
+       
+    
+
+
+}
+
+void GameEngine::tournamentMainGameLoop(int turns)
+{
+    
+
+    while (turns > 0 && allPlayers.size() != 1) {
+        /*reinforcementPhase();
+        issueOrdersPhase();
+        executeOrdersPhase();*/
+        
+        turns--;
+
+    }
+ 
+    cout << "anything" << endl;
+    //TODO : determine winner / draw output.......
+  
+    
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
 void GameEngine::reinforcementPhase() {
     cout << "\nEntering Reinforcement Phase" << endl;
     for (int i = 0; i < allPlayers.size(); i++) {
@@ -468,7 +732,7 @@ void GameEngine::executeOrdersPhase() {
 }
 
 
-//part 3
+//part 3 assigment 2
 void GameEngine::mainGameLoop()
 {
     cout << "in maingame loop" << endl;
