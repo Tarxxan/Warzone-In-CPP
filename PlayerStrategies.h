@@ -32,36 +32,43 @@ protected:
 class HumanPlayerStrategy: public PlayerStrategy{
     // Guys I didnt put here copy/assignment/print/constructors as they are avaibale in base class
     // let me know if you think I should include it 
-    HumanPlayerStrategy(Player* player);
-    vector <Territory*> toDefend();
-    vector <Territory*> toAttack();
-    void issueOrder();
+    public:
+        HumanPlayerStrategy(Player* player);
+        vector <Territory*> toDefend();
+        vector <Territory*> toAttack();
+        void issueOrder();
 };
 ///////////////////////////////////////////// AgressivePlayerStrategy //////////////////////////////////////////////
 class AgressivePlayerStrategy: public PlayerStrategy{
-    AgressivePlayerStrategy(Player* player);
-    vector <Territory*> toDefend();
-    vector <Territory*> toAttack();
-    void issueOrder();
+    public:
+        AgressivePlayerStrategy(Player* player);
+        vector <Territory*> toDefend();
+        vector <Territory*> toAttack();
+        void issueOrder();
 };
 ///////////////////////////////////////////// BenevolentPlayerStrategy //////////////////////////////////////////////
 class BenevolentPlayerStrategy: public PlayerStrategy{
-    BenevolentPlayerStrategy(Player* player);
-    vector <Territory*> toDefend();
-    vector <Territory*> toAttack();
-    void issueOrder();
+    public:
+        BenevolentPlayerStrategy(Player* player);
+        vector <Territory*> toDefend();
+        vector <Territory*> toAttack();
+        void issueOrder();
 };
 ///////////////////////////////////////////// NeutralPlayerStrategy //////////////////////////////////////////////
 class NeutralPlayerStrategy: public PlayerStrategy{
-    NeutralPlayerStrategy(Player* player);
-    vector <Territory*> toDefend();
-    vector <Territory*> toAttack();
-    void issueOrder();
+    public:
+        NeutralPlayerStrategy(Player* player);
+        NeutralPlayerStrategy(const NeutralPlayerStrategy&);
+        NeutralPlayerStrategy& operator =(const NeutralPlayerStrategy&);
+        vector <Territory*> toDefend();
+        vector <Territory*> toAttack();
+        void issueOrder();
 };
 ///////////////////////////////////////////// CheaterPlayerStrategy //////////////////////////////////////////////
 class CheaterPlayerStrategy: public PlayerStrategy{
-    CheaterPlayerStrategy(Player* player);
-    vector <Territory*> toDefend();
-    vector <Territory*> toAttack();
-    void issueOrder();
+    public:
+        CheaterPlayerStrategy(Player* player);
+        vector <Territory*> toDefend();
+        vector <Territory*> toAttack();
+        void issueOrder();
 };

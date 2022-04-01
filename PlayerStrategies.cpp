@@ -73,7 +73,11 @@ void BenevolentPlayerStrategy::issueOrder(){
 /////////////////////////////////////// Neutral Player ////////////////////////////////////////////
 NeutralPlayerStrategy::NeutralPlayerStrategy(Player* player){
     this->player = player;
-    this->strategyName = "benevolent";
+    this->strategyName = "neutral";
+}
+NeutralPlayerStrategy::NeutralPlayerStrategy(const NeutralPlayerStrategy& oldPlayer){
+    this->player = oldPlayer.player;
+    this->strategyName = oldPlayer.strategyName;
 }
 vector <Territory*> NeutralPlayerStrategy::toDefend(){
 
