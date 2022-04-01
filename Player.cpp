@@ -28,6 +28,15 @@ Player::Player(string player_name) {
     this->orders = new OrderList();
     this->territories = vector<Territory*>();
     this->availableArmies = 0;
+    this->strategy = new HumanPlayerStrategy(this); // Defaults to Human if no other was specified (can be set in setStrategy method)
+}
+Player::Player(string player_name, PlayerStrategy* strategy) {
+    this->name = player_name;
+    this->playerHand = new Hand();
+    this->orders = new OrderList();
+    this->territories = vector<Territory*>();
+    this->availableArmies = 0;
+    this->strategy = strategy;
 }
 
 Player::~Player()   //Destructor

@@ -30,6 +30,7 @@ public:
     //Constructors
     Player(); 
     Player(string player_name);
+    Player(string player_name, PlayerStrategy* strategy);
     ~Player();
     Player(const Player& p);
     Player& operator=(const Player& order);
