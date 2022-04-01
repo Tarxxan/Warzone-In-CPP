@@ -35,6 +35,8 @@ HumanPlayerStrategy::HumanPlayerStrategy(Player* player){
 }
 vector <Territory*> HumanPlayerStrategy::toDefend(){
 
+
+   
 }
 vector <Territory*> HumanPlayerStrategy::toAttack(){
 
@@ -62,13 +64,60 @@ BenevolentPlayerStrategy::BenevolentPlayerStrategy(Player* player){
     this->strategyName = "benevolent";
 }
 vector <Territory*> BenevolentPlayerStrategy::toDefend(){
-
+    std::sort(this->player->getTerritories().begin(),this->player->getTerritories().end(),[](Territory* a, Territory* b) {
+        return (a->getNumberOfArmies() < b->getNumberOfArmies());
+    });
+    return this->player->getTerritories();
 }
 vector <Territory*> BenevolentPlayerStrategy::toAttack(){
-
+    std::sort(this->player->getTerritories().begin(),this->player->getTerritories().end(),[](Territory* a, Territory* b) {
+        return (a->getNumberOfArmies() > b->getNumberOfArmies());
+    });
+    return this->player->getTerritories();
 }
 void BenevolentPlayerStrategy::issueOrder(){
     
+    cout << this->player->getName() << "'s turn to issue orders!" << endl;
+    cout << this->player->getName()<< " is issuing orders ..." << endl;
+    cout << "**---- Deploy Phase ----**" << endl;
+
+    //Deploys to weakest territories until the amount of available armies is exhausted
+
+    for(auto it = this->toDefend().begin(); it != this->toDefend().end(); it++){
+       
+        int armiesNeeded = it[1]->getNumberOfArmies() - it[0]->getNumberOfArmies();
+        int armies = this->player->getAvailableArmies();
+        cout << this->player->getName() << " has: " << armies << " available to use." << endl;
+
+        if(armies <= 0){
+            break;
+        }
+        if(armies >= armiesNeeded){
+            this->player->addOrder(new DeployOrder(this->player,armiesNeeded,it[0]));
+            this->player->setAvailableArmies(armies - armiesNeeded);
+        }else{
+            this->player->addOrder(new DeployOrder(this->player,armies,it[0]));
+            this->player->setAvailableArmies(0);
+        }
+
+
+    }
+    
+    cout << "**---- Advance Phase ----**" << endl;
+
+    //Advance armies from stronger territories to weaker territories
+
+    for(auto it = this->toAttack().begin(); it!= this->toAttack().end(); it++){
+        for(auto i = it[0]->getAdjacentTerritory().begin(); i != it[0]->getAdjacentTerritory().end(); i++){
+            int armyDifference = it[0]->getNumberOfArmies() - i[0]->getNumberOfArmies();
+            if(armyDifference > 1){
+                this->player->addOrder(new AdvanceOrder(this->player,armyDifference/2,it[0],i[0]));
+            }
+        }
+
+    }
+
+
 }
 /////////////////////////////////////// Neutral Player ////////////////////////////////////////////
 NeutralPlayerStrategy::NeutralPlayerStrategy(Player* player){
@@ -80,13 +129,31 @@ NeutralPlayerStrategy::NeutralPlayerStrategy(const NeutralPlayerStrategy& oldPla
     this->strategyName = oldPlayer.strategyName;
 }
 vector <Territory*> NeutralPlayerStrategy::toDefend(){
-
+     std::sort(this->player->getTerritories().begin(),this->player->getTerritories().end(),[](Territory* a, Territory* b) {
+        return (a->getNumberOfArmies() < b->getNumberOfArmies());
+    });
+    return this->player->getTerritories();
 }
 vector <Territory*> NeutralPlayerStrategy::toAttack(){
-
+    return vector<Territory*>();
 }
+
+//Neutral Player never issues or creates any orders
+
 void NeutralPlayerStrategy::issueOrder(){
-    
+
+    cout << this->player->getName() << "'s turn to issue orders!" << endl;
+    cout << this->player->getName()<< " is issuing orders ..." << endl;
+    cout << "**---- Deploy Phase ----**" << endl;
+    cout << this->player->getName() << " has: " << this->player->getAvailableArmies() << " available to use." << endl;
+    cout << this->player->getName() << " will not deploy any armies" << endl;
+
+    cout << "**---- Advance Phase ----**" << endl;
+    cout << this->player->getName() << " will not advance any armies" << endl;
+    cout << "**---- Card Phase ----**" << endl;
+    cout << this->player->getName() << " will not use any cards" << endl;
+    cout << "End of " << this->player->getName() << "'s turn!" << endl;
+ 
 }
 /////////////////////////////////////// Cheater Player ////////////////////////////////////////////
 CheaterPlayerStrategy::CheaterPlayerStrategy(Player* player){
