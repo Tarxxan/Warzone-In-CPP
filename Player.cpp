@@ -584,6 +584,9 @@ void Player::negotiatePlayer(Player* enemy) {
 void Player::setGameDeck(Deck* deck){
     this->gameDeck = deck;
 }
+Deck* Player::getGameDeck(){
+    return this->gameDeck;
+}
 bool Player::canAttack(Player* enemy) {
     for (Player* p : this->cannotAttack) {
         if (p == enemy) {

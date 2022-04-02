@@ -107,7 +107,7 @@ void BenevolentPlayerStrategy::issueOrder(){
 
     //Advance armies from stronger territories to weaker territories
 
-    for(auto it = this->toAttack().begin(); it!= this->toAttack().end(); it++){
+    for(auto it = this->toAttack().begin(); it!= this->toAttack().end() ; it++){
         for(auto i = it[0]->getAdjacentTerritory().begin(); i != it[0]->getAdjacentTerritory().end(); i++){
             if(i[0]->getOwnerOfTerritory() == this->player){
                 int armyDifference = it[0]->getNumberOfArmies() - i[0]->getNumberOfArmies();
@@ -126,26 +126,39 @@ void BenevolentPlayerStrategy::issueOrder(){
         for(int i = 0;i< playerHandSize; i++){
             string cardType = playerHand->getHand().at(i)->getType();
 
-            // if(cardType == "reinforcement"){
+            if(cardType == "reinforcement"){
                 
+                playerHand->getHand().at(i)->play(this->player->getGameDeck(),-1,nullptr,nullptr,nullptr);
+                break;
+            }else if(cardType == "blockade"){
 
-            //     playerHand->getHand().at(i)->play()
+                playerHand->getHand().at(i)->play(this->player->getGameDeck(),-1,toDefend().at(0),nullptr,nullptr);
+                break;
+            }else if(cardType == "airlift"){
+                if(toDefend().size() > 1){
+                    playerHand->getHand().at(i)->play(this->player->getGameDeck(),toDefend().at(1)->getNumberOfArmies(),toDefend().at(0),toDefend().at(1),nullptr);
+                    break;
+                }
+            } else if(cardType == "diplomacy"){
+                    Player* opponent;
+                    for(auto it = this->toDefend().begin(); it != this->toDefend().end(); it++){
+                        for(auto i = it[0]->getAdjacentTerritory().begin(); i != it[0]->getAdjacentTerritory().end(); i++){
+                            if(i[0]->getOwnerOfTerritory() != this->player){
+                                opponent = i[0]->getOwnerOfTerritory();
+                                break;
+                            }
+                        }
 
-            // }else if(cardType == "blockade"){
-
-            //     playerHand->getHand().at(i)->play()
-            // }else if(cardType == "airlift"){
-
-
-            //     playerHand->getHand().at(i)->play()
-            // } else if("diplomacy"){
-
-
-
-            //     playerHand->getHand().at(i)->play()
-            // }else{
-            //     break;
-            // }
+                        if(opponent){
+                            break;
+                        }
+                    }
+                playerHand->getHand().at(i)->play(this->player->getGameDeck(),-1,nullptr,nullptr,opponent);
+                break;
+            }else{
+                cout << "Benevolent Player will not use a Bomb Card!" << endl;
+                break;
+            }
         }
 
 

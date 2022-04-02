@@ -68,6 +68,7 @@ public:
     void deleteNegotiate(Player* enemy);
     bool canAttack(Player* enemy);
     void setGameDeck(Deck* deck);
+    Deck* getGameDeck();
     PlayerStrategy* getStrategy();
     void setStrategy(PlayerStrategy* strategy);
 private:
