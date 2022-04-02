@@ -295,7 +295,7 @@ void Player::advance() {
         }
     }
     cout << "----------------------" << endl;
-    vector <Territory*> territoriesToAttack = toAttack();
+    vector <Territory*> territoriesToAttack = this->getStrategy()->toAttack();
     for (int i = 0; i < territoriesToAttack.size(); i++) {
         cout << i << *territoriesToAttack[i] << endl;
     }
@@ -413,6 +413,7 @@ void Player::useCard() {
                 break;
             }
         }
+       
         BombOrder* o = new BombOrder(this, territoriesToBomb[target]);
         orders->push(o);
         cout << "Bomb order at " << *territoriesToBomb[target] << endl;
@@ -519,7 +520,10 @@ void Player::useCard() {
         
         cout << "removing " << playerHand->getHand()[cardChoice]->getType() << " card from player's hand " << endl;
         //playerHand.remove(playerHand->getHand()[i]);
+        playerHand->getHand()[cardChoice]->setPlayer(nullptr);
+        gameDeck->push( playerHand->getHand()[cardChoice]);
         playerHand->remove(playerHand->getHand()[cardChoice]);
+
               
     }
 

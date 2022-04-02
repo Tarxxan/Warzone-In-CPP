@@ -34,15 +34,103 @@ HumanPlayerStrategy::HumanPlayerStrategy(Player* player){
     this->strategyName = "human";
 }
 vector <Territory*> HumanPlayerStrategy::toDefend(){
-
-
-   
+    return this->player->getTerritories();
 }
 vector <Territory*> HumanPlayerStrategy::toAttack(){
+    cout << "The following territories are available to attack..." << endl;
+    vector <Territory*> adjacentTerritoriesNonDup;
+    // looping through all player's owned territories and get all their adjacent territories
+    for (auto territory : this->player->getTerritories()) {
+        vector <Territory*> adjacentTerritories = territory->getAdjacentTerritory();
+        for (auto t : adjacentTerritories)
+            // looping through each adjacent territory, if it hasn't been added to the adjacentTerritories vector
+            // then add it, this way it prevents duplicates.
+            if (find(adjacentTerritoriesNonDup.begin(), adjacentTerritoriesNonDup.end(), t) != adjacentTerritoriesNonDup.end() == 0)
+            {
+                adjacentTerritoriesNonDup.push_back(t);
+            }
+    }
 
+    // remove all territories belonging to the player
+    vector <Territory*> territoriesToAttack;
+    for (auto territory : adjacentTerritoriesNonDup) {
+        if (find(this->player->getTerritories().begin(), this->player->getTerritories().end(), territory) != this->player->getTerritories().end() == 0)
+        {
+            territoriesToAttack.push_back(territory);
+        }
+    }
+
+    return territoriesToAttack;
 }
 void HumanPlayerStrategy::issueOrder(){
+    std::cout << this->getName() << " is issuing orders ..." << endl;
+    std::cout << this->getName() << ", are you ready?" << endl;;
+    string ready = "";
+    std::cin >> ready;
+    // issuing deploy order
+    int dummy_availableArmies = this->player->getAvailableArmies();        // creating a dummy available armies since the value of availableArmies
+                                                        // will not decrease until the deploy order is executed
+    int initial_val_availableArmies = this->player->getAvailableArmies();
 
+    while (true) {
+        while (dummy_availableArmies > 0) {
+            std::cout << "Deploying Order... you have " << dummy_availableArmies << " armies to deploy" << endl;
+            std::cout << "These are the territories that are available to deploy your soliders"
+                << "\n\n ------Please choose one of the following index to deploy armies ------" << endl;
+            this->player->printOwnedTerritories();
+            int choice = 0;
+            int numberOfArmies = 0;
+            while (true) {
+                std::cout << " ------Please choose one of the following index to deploy armies ------(" << dummy_availableArmies << ") remaining" << endl;
+                std::cin >> choice;
+                if (choice < 0 || choice >= this->player->getTerritories().size()) {
+                    std::cout << "Invalid input.. Please try again" << endl;
+                }
+                else {
+                    break;
+                }
+            }
+            while (true) {
+                std::cout << "How many armies would you like to deploy ? You have " << dummy_availableArmies << " remaining" << endl;
+                std::cin >> numberOfArmies;
+                if (numberOfArmies > 0 && numberOfArmies <= dummy_availableArmies) {
+                    break;
+                }
+                else {
+                    std::cout << "Invalid input.. Please try again" << endl;
+                }
+            }
+
+            std::cout << "Deploy Order " << numberOfArmies << " solders to \n" << this->player->getTerritories().at(choice) << endl;
+            DeployOrder* d = new DeployOrder(this->player, numberOfArmies, this->player->getTerritories().at(choice));
+            dummy_availableArmies -= numberOfArmies;
+            this->player->addOrder(d);
+        }
+
+        // ---------------------------issuing attack / defend / useCard  order------------------------------------
+        int decision = -1;
+        std::cout << "Please enter \n1 : to attack\n2 : to defend\n3 : to use card\n0 : to finish issuing orders " << endl;
+        std::cin >> decision;
+        int sourceIndex = 0;
+        int targetIndex = 0;
+        if (decision == 1) {
+            this->player->advance();
+        }
+        else if (decision == 2) {
+            this->player-> defend();
+        }
+        else if (decision == 3) {
+            this->player->useCard();
+            // check if the value of availableArmies has changed due to reinforcementCard, therefore modify dummyAvailabeArmies value
+            if (this->player->getAvailableArmies() != initial_val_availableArmies) {
+                dummy_availableArmies += (this->player->getAvailableArmies() - initial_val_availableArmies);
+            }
+        }
+        else {
+            std::cout << this->player->getName() << "'s turn is finished" << endl;
+            break;
+        }
+    }
 }
 /////////////////////////////////////// Aggressive Player /////////////////////////////////////////
 AgressivePlayerStrategy::AgressivePlayerStrategy(Player* player){
@@ -122,6 +210,7 @@ void BenevolentPlayerStrategy::issueOrder(){
 
     Hand* playerHand = this->player->getPlayerHand();
     int playerHandSize = playerHand->getHand().size();
+
     if(playerHandSize > 0){
         for(int i = 0;i< playerHandSize; i++){
             string cardType = playerHand->getHand().at(i)->getType();
@@ -162,6 +251,8 @@ void BenevolentPlayerStrategy::issueOrder(){
         }
 
 
+    }else{
+        cout << this->player->getName() << " has no Cards to play!"<< endl;
     }
 
 
