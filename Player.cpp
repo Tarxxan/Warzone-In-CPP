@@ -581,7 +581,9 @@ void Player::drawCard() {};
 void Player::negotiatePlayer(Player* enemy) {
     this->cannotAttack.push_back(enemy);
 }
-
+void Player::setGameDeck(Deck* deck){
+    this->gameDeck = deck;
+}
 bool Player::canAttack(Player* enemy) {
     for (Player* p : this->cannotAttack) {
         if (p == enemy) {

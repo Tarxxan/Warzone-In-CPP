@@ -26,7 +26,7 @@ public:
     Card(const Card &card);                                  //copy constructor
     ~Card();                                                 // deconstructor
     Card &operator=(const Card &card);                       //assignment operator
-    void play(Deck *deck);                                   //executes the current card
+    void play(Deck *deck, int armies,Territory* dest, Territory* src,Player* opp);                                   //executes the current card
     void setPlayer(Player *player);                          //sets the player that owns the card
     string getType();                                        //returns the type of card
     string getPlayerName();                                  //returns the name of the owner

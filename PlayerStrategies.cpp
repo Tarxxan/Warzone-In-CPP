@@ -109,11 +109,45 @@ void BenevolentPlayerStrategy::issueOrder(){
 
     for(auto it = this->toAttack().begin(); it!= this->toAttack().end(); it++){
         for(auto i = it[0]->getAdjacentTerritory().begin(); i != it[0]->getAdjacentTerritory().end(); i++){
-            int armyDifference = it[0]->getNumberOfArmies() - i[0]->getNumberOfArmies();
-            if(armyDifference > 1){
-                this->player->addOrder(new AdvanceOrder(this->player,armyDifference/2,it[0],i[0]));
+            if(i[0]->getOwnerOfTerritory() == this->player){
+                int armyDifference = it[0]->getNumberOfArmies() - i[0]->getNumberOfArmies();
+                if(armyDifference > 1){
+                    this->player->addOrder(new AdvanceOrder(this->player,armyDifference/2,it[0],i[0]));
+                }
             }
+            
         }
+
+    }
+
+    Hand* playerHand = this->player->getPlayerHand();
+    int playerHandSize = playerHand->getHand().size();
+    if(playerHandSize > 0){
+        for(int i = 0;i< playerHandSize; i++){
+            string cardType = playerHand->getHand().at(i)->getType();
+
+            // if(cardType == "reinforcement"){
+                
+
+            //     playerHand->getHand().at(i)->play()
+
+            // }else if(cardType == "blockade"){
+
+            //     playerHand->getHand().at(i)->play()
+            // }else if(cardType == "airlift"){
+
+
+            //     playerHand->getHand().at(i)->play()
+            // } else if("diplomacy"){
+
+
+
+            //     playerHand->getHand().at(i)->play()
+            // }else{
+            //     break;
+            // }
+        }
+
 
     }
 

@@ -30,9 +30,52 @@ void Card::setPlayer(Player *player) //assign player to Card
 {
     this->player = player;
 }
-void Card::play(Deck *deck) //play the current card by creating a new order, adding the order to the players orderlist.
-                            // remove the current card from the players hand and add it back to the deck;
+void Card::play(Deck* deck, int armies,Territory* dest,Territory* src,Player* opp) //play the current card by creating a new order, adding the order to the players orderlist.                           // remove the current card from the players hand and add it back to the deck;
 {
+
+    
+    if(this->type == "reinforcement"){
+        this->player->getPlayerHand()->remove(this);
+        cout << this->type << " Card played!\n";
+        this->player->addAvailableArmies(5);
+        this->player = nullptr;
+        deck->push(this);
+
+    }else if(this->type == "blockade"){
+        this->player->getPlayerHand()->remove(this);
+        cout << this->type << " Card played!\n";
+        BlockadeOrder* o = new BlockadeOrder(this->player,dest);
+        cout << "Blockade order at " << dest->getTerritoryName() << endl;
+        this->player->addOrder(o);
+        this->player = nullptr;
+        deck->push(this);
+    }else if(this->type == "airlift"){
+        this->player->getPlayerHand()->remove(this);
+        cout << this->type << " Card played!\n";
+        AirliftOrder* a = new AirliftOrder(this->player,armies,src,dest);
+        cout << "Airlift order " << armies << " soldiers from \n" << src->getTerritoryName() << " to \n" << dest->getTerritoryName() << endl;
+        this->player->addOrder(a);
+        this->player = nullptr;
+        deck->push(this);
+    }else if(this->type == "diplomacy"){
+        this->player->getPlayerHand()->remove(this);
+        cout << this->type << " Card played!\n";
+        this->player->negotiatePlayer(opp);
+        NegotiateOrder* n = new NegotiateOrder(this->player, opp);
+        this->player->addOrder(n);
+        this->player = nullptr;
+        deck->push(this);
+    }else{
+        this->player->getPlayerHand()->remove(this);
+        cout << this->type << " Card played!\n";
+        BombOrder* b = new BombOrder(this->player,dest);
+        this->player->addOrder(b);
+        this->player = nullptr;
+        deck->push(this);
+    }   
+
+
+
     // this->player->hand->remove(this);
     // cout << this->type << " Card played!\n";
     // Order *newOrder = new Order(this->type*);
@@ -99,14 +142,14 @@ vector<Card *> Hand::getHand()
 
 void Hand::chooseCard(string orderType, Deck *deck) //select card and play it by inputing the type
 {
-    for (Card *card : hand)
-    {
-        if (card->getType() == orderType)
-        {
-            card->play(deck);
-            return;
-        }
-    }
+    // for (Card *card : hand)
+    // {
+    //     if (card->getType() == orderType)
+    //     {
+    //         card->play(deck);
+    //         return;
+    //     }
+    // }
     cout << "ORDER TYPE NOT FOUND\n";
 }
 
@@ -149,11 +192,6 @@ void Deck::initalizeDeck() //populate the entire deck with 6 cards of each type;
     for (int i = 0; i < 6; i++)
     {
         Card *tempCard = new Card("reinforcement");
-        this->deck.push_back(tempCard);
-    }
-    for (int i = 0; i < 6; i++)
-    {
-        Card *tempCard = new Card("blockade");
         this->deck.push_back(tempCard);
     }
     for (int i = 0; i < 6; i++)

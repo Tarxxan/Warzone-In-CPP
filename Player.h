@@ -67,13 +67,14 @@ public:
     void negotiatePlayer(Player* enemy);
     void deleteNegotiate(Player* enemy);
     bool canAttack(Player* enemy);
-
+    void setGameDeck(Deck* deck);
     PlayerStrategy* getStrategy();
     void setStrategy(PlayerStrategy* strategy);
 private:
     OrderList* orders;
     vector <Territory*> territories;
     Hand* playerHand;
+    Deck* gameDeck;
     string name;
     int availableArmies;
     vector <Player*> cannotAttack;
