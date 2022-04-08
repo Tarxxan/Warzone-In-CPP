@@ -44,16 +44,16 @@ Player::Player(string player_name, string strategy) {
     this->orders = new OrderList();
     this->territories = vector<Territory*>();
     this->availableArmies = 0;
-    if (strategy == "agressive"){
-        this->strategy = new AgressivePlayerStrategy(this);
+    if (strategy == "Agressive"){
+        this->strategy = new AggressivePlayerStrategy(this);
     }
-    else if (strategy == "benevolent"){
+    else if (strategy == "Benevolent"){
         this->strategy = new BenevolentPlayerStrategy(this);
     }
-    else if (strategy == "neutral"){
+    else if (strategy == "Neutral"){
         this->strategy = new NeutralPlayerStrategy(this);
     }
-    else if (strategy == "cheater"){
+    else if (strategy == "Cheater"){
         this->strategy = new CheaterPlayerStrategy(this);
     }
     else{
@@ -82,8 +82,7 @@ Player& Player::operator=(const Player& p) {
     this->playerHand = p.playerHand;
     this->orders = p.orders;
     this->territories = p.territories;
-
-    this->strategy = strategy;
+    this->strategy = p.strategy;
     return *this;
 }
 

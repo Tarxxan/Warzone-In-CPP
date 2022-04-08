@@ -38,10 +38,10 @@ class HumanPlayerStrategy: public PlayerStrategy{
         vector <Territory*> toAttack();
         void issueOrder();
 };
-///////////////////////////////////////////// AgressivePlayerStrategy //////////////////////////////////////////////
-class AgressivePlayerStrategy: public PlayerStrategy{
+///////////////////////////////////////////// AggressivePlayerStrategy //////////////////////////////////////////////
+class AggressivePlayerStrategy: public PlayerStrategy{
     public:
-        AgressivePlayerStrategy(Player* player);
+        AggressivePlayerStrategy(Player* player);
         vector <Territory*> toDefend();
         vector <Territory*> toAttack();
         void issueOrder();

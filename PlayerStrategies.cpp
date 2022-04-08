@@ -133,17 +133,17 @@ void HumanPlayerStrategy::issueOrder(){
     }
 }
 /////////////////////////////////////// Aggressive Player /////////////////////////////////////////
-AgressivePlayerStrategy::AgressivePlayerStrategy(Player* player){
+AggressivePlayerStrategy::AggressivePlayerStrategy(Player* player){
     this->player = player;
     this->strategyName = "agressive";
 }
-vector <Territory*> AgressivePlayerStrategy::toDefend(){
-
+vector <Territory*> AggressivePlayerStrategy::toDefend(){
+    return this->player->getTerritories();
 }
-vector <Territory*> AgressivePlayerStrategy::toAttack(){
-
+vector <Territory*> AggressivePlayerStrategy::toAttack(){
+    return this->player->getTerritories();
 }
-void AgressivePlayerStrategy::issueOrder(){
+void AggressivePlayerStrategy::issueOrder(){
     
 }
 ////////////////////////////////////// Benevolent Player //////////////////////////////////////////
@@ -299,11 +299,11 @@ CheaterPlayerStrategy::CheaterPlayerStrategy(Player* player){
     this->strategyName = "benevolent";
 }
 vector <Territory*> CheaterPlayerStrategy::toDefend(){
-
+    return this->player->getTerritories();
 }
 vector <Territory*> CheaterPlayerStrategy::toAttack(){
-
+    return this->player->getTerritories();
 }
 void CheaterPlayerStrategy::issueOrder(){
-    
+    cout << "IM HERE!" << endl;
 }
