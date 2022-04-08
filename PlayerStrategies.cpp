@@ -135,16 +135,62 @@ void HumanPlayerStrategy::issueOrder(){
 /////////////////////////////////////// Aggressive Player /////////////////////////////////////////
 AggressivePlayerStrategy::AggressivePlayerStrategy(Player* player){
     this->player = player;
-    this->strategyName = "agressive";
+    this->strategyName = "aggressive";
 }
 vector <Territory*> AggressivePlayerStrategy::toDefend(){
     return this->player->getTerritories();
 }
-vector <Territory*> AggressivePlayerStrategy::toAttack(){
-    return this->player->getTerritories();
+vector <Territory*> AggressivePlayerStrategy::toAttack() {
+    vector <Territory*> adjacentTerritoriesNonDup;
+    // looping through all player's owned territories and get all their adjacent territories
+    for (auto territory : this->player->getTerritories()) {
+        vector <Territory*> adjacentTerritories = territory->getAdjacentTerritory();
+        for (auto t : adjacentTerritories)
+            // looping through each adjacent territory, if it hasn't been added to the adjacentTerritories vector
+            // then add it, this way it prevents duplicates.
+            if (find(adjacentTerritoriesNonDup.begin(), adjacentTerritoriesNonDup.end(), t) != adjacentTerritoriesNonDup.end() == 0)
+            {
+                adjacentTerritoriesNonDup.push_back(t);
+            }
+    }
+    // filter out all territories belonging to the player
+    vector <Territory*> territoriesToAttack;
+    for (auto territory : adjacentTerritoriesNonDup) {
+        if (find(this->player->getTerritories().begin(), this->player->getTerritories().end(), territory) != this->player->getTerritories().end() == 0)
+        {
+            territoriesToAttack.push_back(territory);
+        }
+    }
+    return territoriesToAttack;
 }
 void AggressivePlayerStrategy::issueOrder(){
+    cout << "I am aggressive !" << endl;
+    cout << this->player->getName() << " is issuing orders ..." << endl;
+    int strongestTerritoryIndex = 0;
     
+    // assign strongest territory index to the one with biggest number of armies
+    for (int i = 0; i < this->player->getTerritories().size(); i++) {
+        if (this->player->getTerritories()[i]->getNumberOfArmies() > this->player->getTerritories()[strongestTerritoryIndex]->getNumberOfArmies()) {
+            strongestTerritoryIndex = i;
+        }
+    }
+    vector <Territory*> territoriesToAttack = this->toAttack();
+    // deploy all available solders to the strongest territory
+    DeployOrder* d = new DeployOrder(this->player, this->player->getAvailableArmies(), this->player->getTerritories()[strongestTerritoryIndex]);
+    this->player->addOrder(d);
+   
+    for(auto t: this->player->getTerritories()[strongestTerritoryIndex]->getAdjacentTerritory()){
+        if (find(territoriesToAttack.begin(), territoriesToAttack.end(), t) != territoriesToAttack.end() == 0)
+        {
+            AdvanceOrder* a = new AdvanceOrder(this->player, this->player->getTerritories()[strongestTerritoryIndex]->getNumberOfArmies(), this->player->getTerritories()[strongestTerritoryIndex], t);
+            this->player->addOrder(a);
+            return;
+        }
+    }
+
+    int randTargetIndex = rand() % this->player->getTerritories()[strongestTerritoryIndex]->getAdjacentTerritory().size();
+    AdvanceOrder* a = new AdvanceOrder(this->player, this->player->getTerritories()[strongestTerritoryIndex]->getNumberOfArmies(), this->player->getTerritories()[strongestTerritoryIndex], this->player->getTerritories()[strongestTerritoryIndex]->getAdjacentTerritory()[randTargetIndex]);
+    this->player->addOrder(a);
 }
 ////////////////////////////////////// Benevolent Player //////////////////////////////////////////
 BenevolentPlayerStrategy::BenevolentPlayerStrategy(Player* player){
@@ -294,16 +340,33 @@ void NeutralPlayerStrategy::issueOrder(){
  
 }
 /////////////////////////////////////// Cheater Player ////////////////////////////////////////////
-CheaterPlayerStrategy::CheaterPlayerStrategy(Player* player){
+CheaterPlayerStrategy::CheaterPlayerStrategy(Player* player) {
     this->player = player;
-    this->strategyName = "benevolent";
+    this->strategyName = "cheater";
 }
-vector <Territory*> CheaterPlayerStrategy::toDefend(){
+vector <Territory*> CheaterPlayerStrategy::toDefend() {
     return this->player->getTerritories();
 }
-vector <Territory*> CheaterPlayerStrategy::toAttack(){
+vector <Territory*> CheaterPlayerStrategy::toAttack() {
     return this->player->getTerritories();
 }
-void CheaterPlayerStrategy::issueOrder(){
-    cout << "IM HERE!" << endl;
+void CheaterPlayerStrategy::issueOrder() {
+    cout << "I am cheating !" << endl;
+    cout << this->player->getName() << " is issuing orders ..." << endl;
+    int randomTerritoryIndex = 0;
+    if(this->player->getAvailableArmies() > 0){
+        randomTerritoryIndex = rand() % this->player->getTerritories().size();
+    }
+    // deploy all available solders to a random territory
+    DeployOrder* d = new DeployOrder(this->player, this->player->getAvailableArmies(), this->player->getTerritories()[randomTerritoryIndex]);
+    this->player->addOrder(d);
+    cout << "Cheater will now cheat and automatically conquer all territories that are adjacent to its own territories" << endl;
+    for (auto territory : this->player->getTerritories()) {
+        for (auto adj : territory->getAdjacentTerritory()) {
+            cout << "--------------\n" << *adj << " now belongs to " << player->getName() << "\n" << endl;
+            adj->getOwnerOfTerritory()->removeTerritory(adj);       // remove from previous owner's territories list
+            adj->setOwnerOfTerritory(this->player);                 // set ownership of territory to current player               
+            this->player->addTerritory(adj);                        // add this territory into territories list
+        }
+    }
 }
