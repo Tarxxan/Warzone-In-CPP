@@ -4,39 +4,39 @@ using namespace std;
 
 class Territory;
 ////////////////////////////////////////////// Virtual Base Class /////////////////////////////////////
-PlayerStrategy::PlayerStrategy(){}
-PlayerStrategy::PlayerStrategy(Player* player){
+PlayerStrategy::PlayerStrategy() {}
+PlayerStrategy::PlayerStrategy(Player* player) {
     this->player = player;
 }
-PlayerStrategy::~PlayerStrategy(){
+PlayerStrategy::~PlayerStrategy() {
     delete this->player;
     this->player = nullptr;
 }
-PlayerStrategy::PlayerStrategy(const PlayerStrategy& ps){
+PlayerStrategy::PlayerStrategy(const PlayerStrategy& ps) {
     this->player = ps.player;
 }
-PlayerStrategy& PlayerStrategy::operator=(const PlayerStrategy& playerStrategy){
+PlayerStrategy& PlayerStrategy::operator=(const PlayerStrategy& playerStrategy) {
     this->player = playerStrategy.player;
     return *this;
 }
-std::ostream& operator<<(ostream& out, const PlayerStrategy& playerStrategy){
+std::ostream& operator<<(ostream& out, const PlayerStrategy& playerStrategy) {
     return out << playerStrategy.player << endl;
 }
-Player* PlayerStrategy::getPlayer(){
+Player* PlayerStrategy::getPlayer() {
     return this->player;
 }
-string PlayerStrategy::getName(){
+string PlayerStrategy::getName() {
     return this->strategyName;
 }
 /////////////////////////////////////////// Human Player //////////////////////////////////////////
-HumanPlayerStrategy::HumanPlayerStrategy(Player* player){
+HumanPlayerStrategy::HumanPlayerStrategy(Player* player) {
     this->player = player;
     this->strategyName = "human";
 }
-vector <Territory*> HumanPlayerStrategy::toDefend(){
+vector <Territory*> HumanPlayerStrategy::toDefend() {
     return this->player->getTerritories();
 }
-vector <Territory*> HumanPlayerStrategy::toAttack(){
+vector <Territory*> HumanPlayerStrategy::toAttack() {
     cout << "The following territories are available to attack..." << endl;
     vector <Territory*> adjacentTerritoriesNonDup;
     // looping through all player's owned territories and get all their adjacent territories
@@ -62,7 +62,7 @@ vector <Territory*> HumanPlayerStrategy::toAttack(){
 
     return territoriesToAttack;
 }
-void HumanPlayerStrategy::issueOrder(){
+void HumanPlayerStrategy::issueOrder() {
     std::cout << this->getName() << " is issuing orders ..." << endl;
     std::cout << this->getName() << ", are you ready?" << endl;;
     string ready = "";
@@ -117,7 +117,7 @@ void HumanPlayerStrategy::issueOrder(){
             this->player->advance();
         }
         else if (decision == 2) {
-            this->player-> defend();
+            this->player->defend();
         }
         else if (decision == 3) {
             this->player->useCard();
@@ -133,11 +133,11 @@ void HumanPlayerStrategy::issueOrder(){
     }
 }
 /////////////////////////////////////// Aggressive Player /////////////////////////////////////////
-AggressivePlayerStrategy::AggressivePlayerStrategy(Player* player){
+AggressivePlayerStrategy::AggressivePlayerStrategy(Player* player) {
     this->player = player;
     this->strategyName = "aggressive";
 }
-vector <Territory*> AggressivePlayerStrategy::toDefend(){
+vector <Territory*> AggressivePlayerStrategy::toDefend() {
     return this->player->getTerritories();
 }
 vector <Territory*> AggressivePlayerStrategy::toAttack() {
@@ -163,93 +163,97 @@ vector <Territory*> AggressivePlayerStrategy::toAttack() {
     }
     return territoriesToAttack;
 }
-void AggressivePlayerStrategy::issueOrder(){
+void AggressivePlayerStrategy::issueOrder() {
     cout << "I am aggressive !" << endl;
     cout << this->player->getName() << " is issuing orders ..." << endl;
-    int strongestTerritoryIndex = 0;
-    
-    // assign strongest territory index to the one with biggest number of armies
-    for (int i = 0; i < this->player->getTerritories().size(); i++) {
-        if (this->player->getTerritories()[i]->getNumberOfArmies() > this->player->getTerritories()[strongestTerritoryIndex]->getNumberOfArmies()) {
-            strongestTerritoryIndex = i;
-        }
-    }
-    vector <Territory*> territoriesToAttack = this->toAttack();
-    // deploy all available solders to the strongest territory
-    DeployOrder* d = new DeployOrder(this->player, this->player->getAvailableArmies(), this->player->getTerritories()[strongestTerritoryIndex]);
-    this->player->addOrder(d);
-   
-    for(auto t: this->player->getTerritories()[strongestTerritoryIndex]->getAdjacentTerritory()){
-        if (find(territoriesToAttack.begin(), territoriesToAttack.end(), t) != territoriesToAttack.end() == 0)
-        {
-            AdvanceOrder* a = new AdvanceOrder(this->player, this->player->getTerritories()[strongestTerritoryIndex]->getNumberOfArmies(), this->player->getTerritories()[strongestTerritoryIndex], t);
-            this->player->addOrder(a);
-            return;
-        }
-    }
+    //int strongestTerritoryIndex = 0;
 
-    int randTargetIndex = rand() % this->player->getTerritories()[strongestTerritoryIndex]->getAdjacentTerritory().size();
-    AdvanceOrder* a = new AdvanceOrder(this->player, this->player->getTerritories()[strongestTerritoryIndex]->getNumberOfArmies(), this->player->getTerritories()[strongestTerritoryIndex], this->player->getTerritories()[strongestTerritoryIndex]->getAdjacentTerritory()[randTargetIndex]);
-    this->player->addOrder(a);
+    //// assign strongest territory index to the one with biggest number of armies
+    //for (int i = 0; i < this->player->getTerritories().size(); i++) {
+    //    if (this->player->getTerritories()[i]->getNumberOfArmies() > this->player->getTerritories()[strongestTerritoryIndex]->getNumberOfArmies()) {
+    //        strongestTerritoryIndex = i;
+    //    }
+    //}
+    //vector <Territory*> territoriesToAttack = this->toAttack();
+    //// deploy all available solders to the strongest territory
+    //DeployOrder* d = new DeployOrder(this->player, this->player->getAvailableArmies(), this->player->getTerritories()[strongestTerritoryIndex]);
+    //this->player->addOrder(d);
+
+    //for (auto t : this->player->getTerritories()[strongestTerritoryIndex]->getAdjacentTerritory()) {
+    //    if (find(territoriesToAttack.begin(), territoriesToAttack.end(), t) != territoriesToAttack.end() == 0)
+    //    {
+    //        AdvanceOrder* a = new AdvanceOrder(this->player, this->player->getTerritories()[strongestTerritoryIndex]->getNumberOfArmies(), this->player->getTerritories()[strongestTerritoryIndex], t);
+    //        this->player->addOrder(a);
+    //        return;
+    //    }
+    //}
+
+    //int randTargetIndex = rand() % this->player->getTerritories()[strongestTerritoryIndex]->getAdjacentTerritory().size();
+    //AdvanceOrder* a = new AdvanceOrder(this->player, this->player->getTerritories()[strongestTerritoryIndex]->getNumberOfArmies(), this->player->getTerritories()[strongestTerritoryIndex], this->player->getTerritories()[strongestTerritoryIndex]->getAdjacentTerritory()[randTargetIndex]);
+    //this->player->addOrder(a);
 }
 ////////////////////////////////////// Benevolent Player //////////////////////////////////////////
-BenevolentPlayerStrategy::BenevolentPlayerStrategy(Player* player){
+BenevolentPlayerStrategy::BenevolentPlayerStrategy(Player* player) {
     this->player = player;
     this->strategyName = "benevolent";
 }
-vector <Territory*> BenevolentPlayerStrategy::toDefend(){
-    std::sort(this->player->getTerritories().begin(),this->player->getTerritories().end(),[](Territory* a, Territory* b) {
+vector <Territory*> BenevolentPlayerStrategy::toDefend() {
+    std::sort(this->player->getTerritories().begin(), this->player->getTerritories().end(), [](Territory* a, Territory* b) {
         return (a->getNumberOfArmies() < b->getNumberOfArmies());
-    });
+        });
+
     return this->player->getTerritories();
 }
-vector <Territory*> BenevolentPlayerStrategy::toAttack(){
-    std::sort(this->player->getTerritories().begin(),this->player->getTerritories().end(),[](Territory* a, Territory* b) {
+vector <Territory*> BenevolentPlayerStrategy::toAttack() {
+    std::sort(this->player->getTerritories().begin(), this->player->getTerritories().end(), [](Territory* a, Territory* b) {
         return (a->getNumberOfArmies() > b->getNumberOfArmies());
-    });
+        });
     return this->player->getTerritories();
 }
-void BenevolentPlayerStrategy::issueOrder(){
-    
+void BenevolentPlayerStrategy::issueOrder() {
+
     cout << this->player->getName() << "'s turn to issue orders!" << endl;
-    cout << this->player->getName()<< " is issuing orders ..." << endl;
+    cout << this->player->getName() << " is issuing orders ..." << endl;
     cout << "**---- Deploy Phase ----**" << endl;
 
     //Deploys to weakest territories until the amount of available armies is exhausted
+   for (auto it = this->toDefend().begin(); it != this->toDefend().end(); it++) {
+    
 
-    for(auto it = this->toDefend().begin(); it != this->toDefend().end(); it++){
-       
+        
+
         int armiesNeeded = it[1]->getNumberOfArmies() - it[0]->getNumberOfArmies();
         int armies = this->player->getAvailableArmies();
         cout << this->player->getName() << " has: " << armies << " available to use." << endl;
 
-        if(armies <= 0){
+        if (armies <= 0) {
             break;
         }
-        if(armies >= armiesNeeded){
-            this->player->addOrder(new DeployOrder(this->player,armiesNeeded,it[0]));
+        if (armies >= armiesNeeded) {
+            this->player->addOrder(new DeployOrder(this->player, armiesNeeded, it[0]));
             this->player->setAvailableArmies(armies - armiesNeeded);
-        }else{
-            this->player->addOrder(new DeployOrder(this->player,armies,it[0]));
+        }
+        else {
+            this->player->addOrder(new DeployOrder(this->player, armies, it[0]));
             this->player->setAvailableArmies(0);
         }
 
 
     }
-    
+
     cout << "**---- Advance Phase ----**" << endl;
 
     //Advance armies from stronger territories to weaker territories
 
-    for(auto it = this->toAttack().begin(); it!= this->toAttack().end() ; it++){
-        for(auto i = it[0]->getAdjacentTerritory().begin(); i != it[0]->getAdjacentTerritory().end(); i++){
-            if(i[0]->getOwnerOfTerritory() == this->player){
+    for (auto it = this->toAttack().begin(); it != this->toAttack().end(); it++) {
+        for (auto i = it[0]->getAdjacentTerritory().begin(); i != it[0]->getAdjacentTerritory().end(); i++) {
+            if (i[0]->getOwnerOfTerritory() == this->player) {
                 int armyDifference = it[0]->getNumberOfArmies() - i[0]->getNumberOfArmies();
-                if(armyDifference > 1){
-                    this->player->addOrder(new AdvanceOrder(this->player,armyDifference/2,it[0],i[0]));
+                if (armyDifference > 1) {
+                    this->player->addOrder(new AdvanceOrder(this->player, armyDifference / 2, it[0], i[0]));
                 }
             }
-            
+
         }
 
     }
@@ -257,77 +261,82 @@ void BenevolentPlayerStrategy::issueOrder(){
     Hand* playerHand = this->player->getPlayerHand();
     int playerHandSize = playerHand->getHand().size();
 
-    if(playerHandSize > 0){
-        for(int i = 0;i< playerHandSize; i++){
+    if (playerHandSize > 0) {
+        for (int i = 0; i < playerHandSize; i++) {
             string cardType = playerHand->getHand().at(i)->getType();
 
-            if(cardType == "reinforcement"){
-                
-                playerHand->getHand().at(i)->play(this->player->getGameDeck(),-1,nullptr,nullptr,nullptr);
-                break;
-            }else if(cardType == "blockade"){
+            if (cardType == "reinforcement") {
 
-                playerHand->getHand().at(i)->play(this->player->getGameDeck(),-1,toDefend().at(0),nullptr,nullptr);
+                playerHand->getHand().at(i)->play(this->player->getGameDeck(), -1, nullptr, nullptr, nullptr);
                 break;
-            }else if(cardType == "airlift"){
-                if(toDefend().size() > 1){
-                    playerHand->getHand().at(i)->play(this->player->getGameDeck(),toDefend().at(1)->getNumberOfArmies(),toDefend().at(0),toDefend().at(1),nullptr);
+            }
+            else if (cardType == "blockade") {
+
+                playerHand->getHand().at(i)->play(this->player->getGameDeck(), -1, toDefend().at(0), nullptr, nullptr);
+                break;
+            }
+            else if (cardType == "airlift") {
+                if (toDefend().size() > 1) {
+                    playerHand->getHand().at(i)->play(this->player->getGameDeck(), toDefend().at(1)->getNumberOfArmies(), toDefend().at(0), toDefend().at(1), nullptr);
                     break;
                 }
-            } else if(cardType == "diplomacy"){
-                    Player* opponent;
-                    for(auto it = this->toDefend().begin(); it != this->toDefend().end(); it++){
-                        for(auto i = it[0]->getAdjacentTerritory().begin(); i != it[0]->getAdjacentTerritory().end(); i++){
-                            if(i[0]->getOwnerOfTerritory() != this->player){
-                                opponent = i[0]->getOwnerOfTerritory();
-                                break;
-                            }
-                        }
-
-                        if(opponent){
+            }
+            else if (cardType == "diplomacy") {
+                Player* opponent;
+                for (auto it = this->toDefend().begin(); it != this->toDefend().end(); it++) {
+                    for (auto i = it[0]->getAdjacentTerritory().begin(); i != it[0]->getAdjacentTerritory().end(); i++) {
+                        if (i[0]->getOwnerOfTerritory() != this->player) {
+                            opponent = i[0]->getOwnerOfTerritory();
                             break;
                         }
                     }
-                playerHand->getHand().at(i)->play(this->player->getGameDeck(),-1,nullptr,nullptr,opponent);
+
+                    if (opponent) {
+                        break;
+                    }
+                }
+                playerHand->getHand().at(i)->play(this->player->getGameDeck(), -1, nullptr, nullptr, opponent);
                 break;
-            }else{
+            }
+            else {
                 cout << "Benevolent Player will not use a Bomb Card!" << endl;
                 break;
             }
         }
 
 
-    }else{
-        cout << this->player->getName() << " has no Cards to play!"<< endl;
+    }
+    else {
+        cout << this->player->getName() << " has no Cards to play!" << endl;
     }
 
 
 }
 /////////////////////////////////////// Neutral Player ////////////////////////////////////////////
-NeutralPlayerStrategy::NeutralPlayerStrategy(Player* player){
+NeutralPlayerStrategy::NeutralPlayerStrategy(Player* player) {
     this->player = player;
     this->strategyName = "neutral";
 }
-NeutralPlayerStrategy::NeutralPlayerStrategy(const NeutralPlayerStrategy& oldPlayer){
+NeutralPlayerStrategy::NeutralPlayerStrategy(const NeutralPlayerStrategy& oldPlayer) {
     this->player = oldPlayer.player;
     this->strategyName = oldPlayer.strategyName;
 }
-vector <Territory*> NeutralPlayerStrategy::toDefend(){
-     std::sort(this->player->getTerritories().begin(),this->player->getTerritories().end(),[](Territory* a, Territory* b) {
+vector <Territory*> NeutralPlayerStrategy::toDefend() {
+    std::sort(this->player->getTerritories().begin(), this->player->getTerritories().end(), [](Territory* a, Territory* b) {
         return (a->getNumberOfArmies() < b->getNumberOfArmies());
-    });
+        });
     return this->player->getTerritories();
 }
-vector <Territory*> NeutralPlayerStrategy::toAttack(){
+vector <Territory*> NeutralPlayerStrategy::toAttack() {
     return vector<Territory*>();
 }
 
 //Neutral Player never issues or creates any orders
 
-void NeutralPlayerStrategy::issueOrder(){
+void NeutralPlayerStrategy::issueOrder() {
 
     cout << this->player->getName() << "'s turn to issue orders!" << endl;
-    cout << this->player->getName()<< " is issuing orders ..." << endl;
+    cout << this->player->getName() << " is issuing orders ..." << endl;
     cout << "**---- Deploy Phase ----**" << endl;
     cout << this->player->getName() << " has: " << this->player->getAvailableArmies() << " available to use." << endl;
     cout << this->player->getName() << " will not deploy any armies" << endl;
@@ -337,7 +346,7 @@ void NeutralPlayerStrategy::issueOrder(){
     cout << "**---- Card Phase ----**" << endl;
     cout << this->player->getName() << " will not use any cards" << endl;
     cout << "End of " << this->player->getName() << "'s turn!" << endl;
- 
+
 }
 /////////////////////////////////////// Cheater Player ////////////////////////////////////////////
 CheaterPlayerStrategy::CheaterPlayerStrategy(Player* player) {
@@ -354,16 +363,21 @@ void CheaterPlayerStrategy::issueOrder() {
     cout << "I am cheating !" << endl;
     cout << this->player->getName() << " is issuing orders ..." << endl;
     int randomTerritoryIndex = 0;
-    if(this->player->getAvailableArmies() > 0){
+    if (this->player->getAvailableArmies() > 0  && this->player->getTerritories().size()!=0) {
         randomTerritoryIndex = rand() % this->player->getTerritories().size();
     }
+
+    
+
     // deploy all available solders to a random territory
     DeployOrder* d = new DeployOrder(this->player, this->player->getAvailableArmies(), this->player->getTerritories()[randomTerritoryIndex]);
+    
+
     this->player->addOrder(d);
     cout << "Cheater will now cheat and automatically conquer all territories that are adjacent to its own territories" << endl;
     for (auto territory : this->player->getTerritories()) {
         for (auto adj : territory->getAdjacentTerritory()) {
-            cout << "--------------\n" << *adj << " now belongs to " << player->getName() << "\n" << endl;
+         /*   cout << "--------------\n" << *adj << " now belongs to " << player->getName() << "\n" << endl;*/
             adj->getOwnerOfTerritory()->removeTerritory(adj);       // remove from previous owner's territories list
             adj->setOwnerOfTerritory(this->player);                 // set ownership of territory to current player               
             this->player->addTerritory(adj);                        // add this territory into territories list
