@@ -253,6 +253,9 @@ bool CommandProcessor::validateTournament(Command *c)
     if (gameRounds < 1 || gameRounds > 5)
     {
         cout << "Invalid amount of gameRounds" << endl;
+        cout << "Invalid tournament command. Exits the program. Bye!" << endl;
+        system("pause");
+        exit(0);
         return false;
     }
 
@@ -263,6 +266,9 @@ bool CommandProcessor::validateTournament(Command *c)
     if (turnsPerGame < 10 || turnsPerGame > 50)
     {
         cout << "Invalid amount of Turns" << endl;
+        cout << "Invalid tournament command. Exits the program. Bye!" << endl;
+        system("pause");
+        exit(0);
         return false;
     }
 
@@ -275,7 +281,7 @@ bool CommandProcessor::validateTournament(Command *c)
 
 bool CommandProcessor::validatePlayerStrat(string strategy)
 {
-    return (strategy == "Neutral" || strategy == "Benevolent" || strategy == "Agressive" || strategy == "Human" || strategy == "Cheater");
+    return (strategy == "Neutral" || strategy == "Benevolent" || strategy == "Aggressive" || strategy == "Human" || strategy == "Cheater");
 }
 // Saves Command and then notifies Observers
 void CommandProcessor::saveCommand(Command *c)
