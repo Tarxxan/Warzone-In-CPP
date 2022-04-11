@@ -22,6 +22,7 @@ private:
      int numPlayers;
      MapLoader* mapL;
      vector<Player*> allPlayers;
+     vector<string> winners;
      
 
 
@@ -49,7 +50,8 @@ public:
 
 
      // Added for project 3
-     void tournamentMode(CommandProcessor* cp);
+     void tournamentMode(CommandProcessor* cp); 
      void gameSetup(CommandProcessor* cp);
      void tournamentMainGameLoop(int turns);
+     void finalResult(CommandProcessor* cp);
 };
