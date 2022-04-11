@@ -44,19 +44,19 @@ Player::Player(string player_name, string strategy) {
     this->orders = new OrderList();
     this->territories = vector<Territory*>();
     this->availableArmies = 0;
-    if (strategy == "Agressive"){
+    if (strategy == "Aggressive") {
         this->strategy = new AggressivePlayerStrategy(this);
     }
-    else if (strategy == "Benevolent"){
+    else if (strategy == "Benevolent") {
         this->strategy = new BenevolentPlayerStrategy(this);
     }
-    else if (strategy == "Neutral"){
+    else if (strategy == "Neutral") {
         this->strategy = new NeutralPlayerStrategy(this);
     }
-    else if (strategy == "Cheater"){
+    else if (strategy == "Cheater") {
         this->strategy = new CheaterPlayerStrategy(this);
     }
-    else{
+    else {
         this->strategy = new HumanPlayerStrategy(this);
     }
 }
@@ -115,6 +115,11 @@ ostream& operator<<(ostream& out, const Player& p)
     out << p.name << " has " << p.orders->getOrders().size() << " orders" << endl;
     cout << "Player is using " << p.strategy->getName() << " strategy" << endl;
     cout << "-----------------------------------------------------" << endl;
+
+
+    cout << "test- " << p.territories.size() << endl;
+
+
     return out;
 }
 
@@ -165,9 +170,7 @@ void Player::addOrder(Order* order) {
 
 // every round, user's number of reinforcementPoll armies is determined by the number of territories user possesses
 void Player::computeReinforcementPool() {
-    cout << name << ", are you ready?" << endl;
-    string ready = "";
-    cin >> ready;
+   
     cout << name << " has " << territories.size() << " territories" << endl;
     // assign the number of armies
     int armiesToAdd = int(floor(territories.size() / 3));
@@ -201,74 +204,6 @@ void Player::printOwnedTerritories() {
 // user issues order and add all the orders into order list. All decision-makings are done here
 void Player::issueOrder() {
     this->strategy->issueOrder();
-    // cout << name << " is issuing orders ..." << endl;
-    // cout << name << ", are you ready?" << endl;;
-    // string ready = "";
-    // cin >> ready;
-    // // issuing deploy order
-    // int dummy_availableArmies = availableArmies;        // creating a dummy available armies since the value of availableArmies
-    //                                                     // will not decrease until the deploy order is executed
-    // int initial_val_availableArmies = availableArmies;
-
-    // while (true) {
-    //     while (dummy_availableArmies > 0) {
-    //         cout << "Deploying Order... you have " << dummy_availableArmies << " armies to deploy" << endl;
-    //         cout << "These are the territories that are available to deploy your soliders"
-    //             << "\n\n ------Please choose one of the following index to deploy armies ------" << endl;
-    //         printOwnedTerritories();
-    //         int choice = 0;
-    //         int numberOfArmies = 0;
-    //         while (true) {
-    //             cout << " ------Please choose one of the following index to deploy armies ------(" << dummy_availableArmies << ") remaining" << endl;
-    //             cin >> choice;
-    //             if (choice < 0 || choice >= territories.size()) {
-    //                 cout << "Invalid input.. Please try again" << endl;
-    //             }
-    //             else {
-    //                 break;
-    //             }
-    //         }
-    //         while (true) {
-    //             cout << "How many armies would you like to deploy ? You have " << dummy_availableArmies << " remaining" << endl;
-    //             cin >> numberOfArmies;
-    //             if (numberOfArmies > 0 && numberOfArmies <= dummy_availableArmies) {
-    //                 break;
-    //             }
-    //             else {
-    //                 cout << "Invalid input.. Please try again" << endl;
-    //             }
-    //         }
-
-    //         cout << "Deploy Order " << numberOfArmies << " solders to \n" << *territories[choice] << endl;
-    //         DeployOrder* d = new DeployOrder(this, numberOfArmies, territories[choice]);
-    //         dummy_availableArmies -= numberOfArmies;
-    //         orders->push(d);
-    //     }
-
-    //     // ---------------------------issuing attack / defend / useCard  order------------------------------------
-    //     int decision = -1;
-    //     cout << "Please enter \n1 : to attack\n2 : to defend\n3 : to use card\n0 : to finish issuing orders " << endl;
-    //     cin >> decision;
-    //     int sourceIndex = 0;
-    //     int targetIndex = 0;
-    //     if (decision == 1) {
-    //         advance();
-    //     }
-    //     else if (decision == 2) {
-    //         defend();
-    //     }
-    //     else if (decision == 3) {
-    //         useCard();
-    //         // check if the value of availableArmies has changed due to reinforcementCard, therefore modify dummyAvailabeArmies value
-    //         if (availableArmies != initial_val_availableArmies) {
-    //             dummy_availableArmies += (availableArmies - initial_val_availableArmies);
-    //         }
-    //     }
-    //     else {
-    //         cout << name << "'s turn is finished" << endl;
-    //         break;
-    //     }
-    // }
 }
 
 void Player::addCard(Card* card) {
@@ -310,7 +245,6 @@ void Player::advance() {
         }
     }
     // prompt user to enter how many armies to advance
-    //AdvanceOrder* a = new AdvanceOrder(this, territories[sourceIndex]->getNumberOfArmies(), territories[sourceIndex], territoriesToAttack[targetIndex]);
     int armiesToSend = 0;
     while (true) {
         cout << "\nPlease choose how many armies you would like to send to attack (" << territories[sourceIndex]->getNumberOfArmies() << ")" << endl;
@@ -412,7 +346,7 @@ void Player::useCard() {
                 break;
             }
         }
-       
+
         BombOrder* o = new BombOrder(this, territoriesToBomb[target]);
         orders->push(o);
         cout << "Bomb order at " << *territoriesToBomb[target] << endl;
@@ -452,7 +386,7 @@ void Player::useCard() {
         int sourceIndex = 0;
         int targetIndex = 0;
         int n_solders = 0;
-        // need validating the inputs
+        
 
         while (true) {
             cout << "Please select the source territory to airlift solders?" << endl;
@@ -516,14 +450,14 @@ void Player::useCard() {
     }
     // removing card from hand
     if (cardChoice != -1) {
-        
+
         cout << "removing " << playerHand->getHand()[cardChoice]->getType() << " card from player's hand " << endl;
         //playerHand.remove(playerHand->getHand()[i]);
         playerHand->getHand()[cardChoice]->setPlayer(nullptr);
-        gameDeck->push( playerHand->getHand()[cardChoice]);
+        gameDeck->push(playerHand->getHand()[cardChoice]);
         playerHand->remove(playerHand->getHand()[cardChoice]);
 
-              
+
     }
 
 
@@ -584,10 +518,10 @@ void Player::drawCard() {};
 void Player::negotiatePlayer(Player* enemy) {
     this->cannotAttack.push_back(enemy);
 }
-void Player::setGameDeck(Deck* deck){
+void Player::setGameDeck(Deck* deck) {
     this->gameDeck = deck;
 }
-Deck* Player::getGameDeck(){
+Deck* Player::getGameDeck() {
     return this->gameDeck;
 }
 bool Player::canAttack(Player* enemy) {
@@ -610,9 +544,9 @@ void Player::deleteNegotiate(Player* enemy) {
     }
 }
 
-PlayerStrategy* Player::getStrategy(){
+PlayerStrategy* Player::getStrategy() {
     return this->strategy;
 }
-void Player::setStrategy(PlayerStrategy* strategy){
+void Player::setStrategy(PlayerStrategy* strategy) {
     this->strategy = strategy;
 }
