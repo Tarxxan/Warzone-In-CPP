@@ -70,7 +70,7 @@ Player::~Player()   //Destructor
     for (int i = 0; i < territories.size(); i++) {
         territories[i] = nullptr;
     }
-    delete strategy;
+    
     strategy = nullptr;
     cout << "~Player destructed" << endl;
 };
