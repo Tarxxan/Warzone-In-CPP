@@ -58,8 +58,6 @@ class BenevolentPlayerStrategy: public PlayerStrategy{
 class NeutralPlayerStrategy: public PlayerStrategy{
     public:
         NeutralPlayerStrategy(Player* player);
-        NeutralPlayerStrategy(const NeutralPlayerStrategy&);
-        NeutralPlayerStrategy& operator =(const NeutralPlayerStrategy&);
         vector <Territory*> toDefend();
         vector <Territory*> toAttack();
         void issueOrder();

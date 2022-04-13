@@ -4,38 +4,91 @@ using namespace std;
 
 class Territory;
 ////////////////////////////////////////////// Virtual Base Class /////////////////////////////////////
+/**
+ * PlayerStrategy (Base class) empty constructor
+ * 
+ */
 PlayerStrategy::PlayerStrategy() {}
+/**
+ * PlayerStrategy  (Base class) Constructor with assigning player
+ * 
+ * @param  {Player*} player : 
+ */
 PlayerStrategy::PlayerStrategy(Player* player) {
     this->player = player;
 }
+/**
+ * ~PlayerStrategy  (Base class) destructor
+ * 
+ */
 PlayerStrategy::~PlayerStrategy() {
     delete this->player;
     this->player = nullptr;
 }
+/**
+ * PlayerStrategy  (Base class) Copy
+ * 
+ * @param  {PlayerStrategy} ps : the copy
+ */
 PlayerStrategy::PlayerStrategy(const PlayerStrategy& ps) {
     this->player = ps.player;
 }
+/**
+ * PlayerStrategy  (Base class) Assignment operator
+ * 
+ * @param  {PlayerStrategy} playerStrategy : the object to copy
+ * @return {PlayerStrategy}                : the copied object
+ */
 PlayerStrategy& PlayerStrategy::operator=(const PlayerStrategy& playerStrategy) {
     this->player = playerStrategy.player;
     return *this;
 }
+/**
+ * Necessary for proper printing
+ * @param  {ostream} out                   : the stream to use
+ * @param  {PlayerStrategy} playerStrategy : the object to print
+ * @return {std::ostream}                  : the stream with description of player
+ */
 std::ostream& operator<<(ostream& out, const PlayerStrategy& playerStrategy) {
     return out << playerStrategy.player << endl;
 }
+/**
+ * PlayerStrategy player getter
+ * 
+ * @return {Player*}  : player assigned to the object
+ */
 Player* PlayerStrategy::getPlayer() {
     return this->player;
 }
+/**
+ * PlayerStrategy name getter
+ * 
+ * @return {string}  : the name assigned to the strategy
+ */
 string PlayerStrategy::getName() {
     return this->strategyName;
 }
 /////////////////////////////////////////// Human Player //////////////////////////////////////////
+/**
+ * HumanPlayerStrategy constructor with player
+ * 
+ * @param  {Player*} player : the player to be assigned to the strategy
+ */
 HumanPlayerStrategy::HumanPlayerStrategy(Player* player) {
     this->player = player;
     this->strategyName = "human";
 }
+/**
+ * virtual method from base class toDefend
+ * @return {vector*}  : list of territories owned by the player
+ */
 vector <Territory*> HumanPlayerStrategy::toDefend() {
     return this->player->getTerritories();
 }
+/**
+ * virtual method from base class toAttack
+ * @return {vector*}  : list of territories player can attack
+ */
 vector <Territory*> HumanPlayerStrategy::toAttack() {
     cout << "The following territories are available to attack..." << endl;
     vector <Territory*> adjacentTerritoriesNonDup;
@@ -62,6 +115,11 @@ vector <Territory*> HumanPlayerStrategy::toAttack() {
 
     return territoriesToAttack;
 }
+/**
+ * HumanPlayerStrategy virtual method from base class issueOrder
+ * Deploy phase -> Attack/deffend/card phase
+ * 
+ */
 void HumanPlayerStrategy::issueOrder() {
     std::cout << this->getName() << " is issuing orders ..." << endl;
     std::cout << this->getName() << ", are you ready?" << endl;;
@@ -133,13 +191,26 @@ void HumanPlayerStrategy::issueOrder() {
     }
 }
 /////////////////////////////////////// Aggressive Player /////////////////////////////////////////
+/**
+ * AggressivePlayerStrategy constructor to assign player
+ * 
+ * @param  {Player*} player : player to assign to the strategy
+ */
 AggressivePlayerStrategy::AggressivePlayerStrategy(Player* player) {
     this->player = player;
     this->strategyName = "aggressive";
 }
+/**
+ * virtual method from base class toDefend()
+ * @return {vector*}  : list of player's territories
+ */
 vector <Territory*> AggressivePlayerStrategy::toDefend() {
     return this->player->getTerritories();
 }
+/**
+ * virtual method from base class toAttack
+ * @return {vector*}  : list of territories that can be attacked
+ */
 vector <Territory*> AggressivePlayerStrategy::toAttack() {
     vector <Territory*> adjacentTerritoriesNonDup;
     // looping through all player's owned territories and get all their adjacent territories
@@ -163,6 +234,11 @@ vector <Territory*> AggressivePlayerStrategy::toAttack() {
     }
     return territoriesToAttack;
 }
+/**
+ * virtual method from base class issueOrder
+ * deploy -> attack orders
+ * 
+ */
 void AggressivePlayerStrategy::issueOrder() {
     cout << "I am aggressive !" << endl;
     cout << this->player->getName() << " is issuing orders ..." << endl;
@@ -193,10 +269,19 @@ void AggressivePlayerStrategy::issueOrder() {
     //this->player->addOrder(a);
 }
 ////////////////////////////////////// Benevolent Player //////////////////////////////////////////
+/**
+ * BenevolentPlayerStrategy constructor to assign player
+ * 
+ * @param  {Player*} player : player to be assigned to the strategy
+ */
 BenevolentPlayerStrategy::BenevolentPlayerStrategy(Player* player) {
     this->player = player;
     this->strategyName = "benevolent";
 }
+/**
+ * virtual method from base class toDefend
+ * @return {vector*}  : list of player's territories
+ */
 vector <Territory*> BenevolentPlayerStrategy::toDefend() {
     std::sort(this->player->getTerritories().begin(), this->player->getTerritories().end(), [](Territory* a, Territory* b) {
         return (a->getNumberOfArmies() < b->getNumberOfArmies());
@@ -204,12 +289,21 @@ vector <Territory*> BenevolentPlayerStrategy::toDefend() {
 
     return this->player->getTerritories();
 }
+/**
+ * virtual method from base class toAttack
+ * @return {vector*}  : list of territories that can be attacked
+ */
 vector <Territory*> BenevolentPlayerStrategy::toAttack() {
     std::sort(this->player->getTerritories().begin(), this->player->getTerritories().end(), [](Territory* a, Territory* b) {
         return (a->getNumberOfArmies() > b->getNumberOfArmies());
         });
     return this->player->getTerritories();
 }
+/**
+ * virtual method from base class issueOrder
+ * Deploy order -> never attacks but moves army from strongest to weakest
+ * 
+ */
 void BenevolentPlayerStrategy::issueOrder() {
 
     cout << this->player->getName() << "'s turn to issue orders!" << endl;
@@ -313,26 +407,39 @@ void BenevolentPlayerStrategy::issueOrder() {
 
 }
 /////////////////////////////////////// Neutral Player ////////////////////////////////////////////
+/**
+ * NeutralPlayerStrategy constructor to assign player
+ * 
+ * @param  {Player*} player : player to be assigned to the strategy
+ */
 NeutralPlayerStrategy::NeutralPlayerStrategy(Player* player) {
     this->player = player;
     this->strategyName = "neutral";
 }
-NeutralPlayerStrategy::NeutralPlayerStrategy(const NeutralPlayerStrategy& oldPlayer) {
-    this->player = oldPlayer.player;
-    this->strategyName = oldPlayer.strategyName;
-}
+/**
+ * virtual method from base class toDefend
+ * @return {vector*}  : list of player's territories
+ */
 vector <Territory*> NeutralPlayerStrategy::toDefend() {
     std::sort(this->player->getTerritories().begin(), this->player->getTerritories().end(), [](Territory* a, Territory* b) {
         return (a->getNumberOfArmies() < b->getNumberOfArmies());
         });
     return this->player->getTerritories();
 }
+/**
+ * virtual method from base class toAttack 
+ * @return {vector*}  : the list of terries that can be attacked
+ */
 vector <Territory*> NeutralPlayerStrategy::toAttack() {
     return vector<Territory*>();
 }
 
 //Neutral Player never issues or creates any orders
-
+/**
+ * virtual method from base class issueOrder
+ * this strategy doesnt do any orders
+ * 
+ */
 void NeutralPlayerStrategy::issueOrder() {
 
     cout << this->player->getName() << "'s turn to issue orders!" << endl;
@@ -349,16 +456,33 @@ void NeutralPlayerStrategy::issueOrder() {
 
 }
 /////////////////////////////////////// Cheater Player ////////////////////////////////////////////
+/**
+ * CheaterPlayerStrategy constructor to assign player
+ * 
+ * @param  {Player*} player : player to be assigned to the strategy
+ */
 CheaterPlayerStrategy::CheaterPlayerStrategy(Player* player) {
     this->player = player;
     this->strategyName = "cheater";
 }
+/**
+ * virtual method from base class toDefend
+ * @return {vector*}  : list of player's territories
+ */
 vector <Territory*> CheaterPlayerStrategy::toDefend() {
     return this->player->getTerritories();
 }
+/**
+ * virtual method from base class toAttack
+ * @return {vector*}  : list of territories that can be attacked
+ */
 vector <Territory*> CheaterPlayerStrategy::toAttack() {
     return this->player->getTerritories();
 }
+/**
+ * virtual method from base class issueOrder
+ * conquering all the adjacent territories
+ */
 void CheaterPlayerStrategy::issueOrder() {
     cout << "I am cheating !" << endl;
     cout << this->player->getName() << " is issuing orders ..." << endl;
