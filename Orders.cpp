@@ -184,6 +184,9 @@ bool AdvanceOrder::execute(){   // Triggers validate
     return false;
 }
 void AdvanceOrder::attack(){
+
+
+
     if (!this->player->canAttack(this->destination->getOwnerOfTerritory())){
         cout << "The player cannot attack the opponent as the negotiate card was used" << endl;
         this->effect = "The player cannot attack the opponent as the negotiate card was used";
@@ -194,6 +197,14 @@ void AdvanceOrder::attack(){
                 + to_string(this->destination->getNumberOfArmies());
     
     cout << log << endl;
+
+    if(this->destination->getOwnerOfTerritory()->getStrategy()->getName() == "neutral"){
+        delete this->destination->getOwnerOfTerritory()->getStrategy();
+        this->destination->getOwnerOfTerritory()->setStrategy(new AggressivePlayerStrategy(this->destination->getOwnerOfTerritory()));
+        cout << "A neutral player has been attacked and changed into an aggressive player!\n";
+    }
+
+
     int conquered = 0;
     for (int i = 0; i < this->armies; i++){
         int prob = (rand() % 10) +1 ;
