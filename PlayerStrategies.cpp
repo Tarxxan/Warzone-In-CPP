@@ -347,31 +347,33 @@ void BenevolentPlayerStrategy::issueOrder()
     cout << this->player->getName() << "'s turn to issue orders!" << endl;
     cout << this->player->getName() << " is issuing orders ..." << endl;
     cout << "**---- Deploy Phase ----**" << endl;
-    vector<Territory *> temp = this->toDefend();
-    // Deploys to weakest territories until the amount of available armies is exhausted
-    for (auto it = temp.begin(); it != std::prev(temp.end()); it++)
-    {
-        int armiesNeeded = it[1]->getNumberOfArmies() - it[0]->getNumberOfArmies();
-        int armies = this->player->getAvailableArmies();
-        cout << this->player->getName() << " has: " << armies << " armies available to use." << endl;
 
-        if (armies <= 0)
+    if(this->player->getTerritories().size() > 0){
+         vector<Territory *> temp = this->toDefend();
+    // Deploys to weakest territories until the amount of available armies is exhausted
+        for (auto it = temp.begin(); it != std::prev(temp.end()); it++)
         {
-            break;
+            int armiesNeeded = it[1]->getNumberOfArmies() - it[0]->getNumberOfArmies();
+            int armies = this->player->getAvailableArmies();
+            cout << this->player->getName() << " has: " << armies << " armies available to use." << endl;
+
+            if (armies <= 0)
+            {
+                break;
+            }
+            if (armies >= armiesNeeded)
+            {
+                this->player->addOrder(new DeployOrder(this->player, armiesNeeded, it[0]));
+                cout << this->player->getName() << " Deploying onto " << it[0]->getTerritoryName() << endl;
+                this->player->setAvailableArmies(armies - armiesNeeded);
+            }
+            else
+            {
+                this->player->addOrder(new DeployOrder(this->player, armies, it[0]));
+                cout << this->player->getName() << " Deploying onto " << it[0]->getTerritoryName() << endl;
+                this->player->setAvailableArmies(0);
+            }
         }
-        if (armies >= armiesNeeded)
-        {
-            this->player->addOrder(new DeployOrder(this->player, armiesNeeded, it[0]));
-            cout << this->player->getName() << " Deploying onto " << it[0]->getTerritoryName() << endl;
-            this->player->setAvailableArmies(armies - armiesNeeded);
-        }
-        else
-        {
-            this->player->addOrder(new DeployOrder(this->player, armies, it[0]));
-            cout << this->player->getName() << " Deploying onto " << it[0]->getTerritoryName() << endl;
-            this->player->setAvailableArmies(0);
-        }
-    }
 
     cout << "**---- Advance Phase ----**" << endl;
     temp = this->toAttack();
@@ -393,6 +395,11 @@ void BenevolentPlayerStrategy::issueOrder()
             }
         }
     }
+
+
+
+    }
+   
 
     // Hand* playerHand = this->player->getPlayerHand();
     // int playerHandSize = playerHand->getHand().size();
