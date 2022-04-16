@@ -341,7 +341,7 @@ bool CommandProcessor::validateTournament(Command *c)
     // Validate whether the commands are good in here in terms of number and type
     for (auto i : playersStrat)
     {
-        if (!validatePlayerStrat(i)|| playersStrat.size() >6)
+        if (!validatePlayerStrat(i)|| playersStrat.size() >6 || playersStrat.size()==1)
         {
             return false;
         }
