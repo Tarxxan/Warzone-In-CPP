@@ -163,6 +163,8 @@ DeployOrder& DeployOrder::operator=(const DeployOrder& dOrder){ // Assignment Op
  * @return {bool}  : 
  */
 bool DeployOrder::validate(){
+
+
     if (this->destination->getOwnerOfTerritory() == this->player){
         if (this->player->getAvailableArmies() >= this->armies){
             cout << "Deploy Order was validated.\n" << this->destination->getTerritoryName() <<
@@ -322,7 +324,7 @@ void AdvanceOrder::attack(){
     cout << log << endl;
 
     if(this->destination->getOwnerOfTerritory()->getStrategy()->getName() == "neutral"){
-        delete this->destination->getOwnerOfTerritory()->getStrategy();
+        // delete this->destination->getOwnerOfTerritory()->getStrategy();
         this->destination->getOwnerOfTerritory()->setStrategy(new AggressivePlayerStrategy(this->destination->getOwnerOfTerritory()));
         cout << "A neutral player has been attacked and changed into an aggressive player!\n";
     }

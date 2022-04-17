@@ -445,8 +445,7 @@ void Player::useCard() {
         negotiatePlayer(opponents[opponentIndex]);
         NegotiateOrder* n = new NegotiateOrder(this, opponents[opponentIndex]);
         orders->push(n);
-        // DO I call NegotiateOrder like what I did with every other order and push into orderlist?
-        // or you have something in mind with this negotiatePlayer function?
+      
     }
     // removing card from hand
     if (cardChoice != -1) {
@@ -466,36 +465,11 @@ void Player::useCard() {
 
 vector<Territory*> Player::toDefend() {
     return this->strategy->toDefend();
-    // cout << "The following territories are owned by the player and to be defended..." << endl;
-    // return territories;
+   
 }
 
 vector<Territory*> Player::toAttack() {
     return this->strategy->toAttack();
-    // cout << "The following territories are available to attack..." << endl;
-    // vector <Territory*> adjacentTerritoriesNonDup;
-    // // looping through all player's owned territories and get all their adjacent territories
-    // for (auto territory : territories) {
-    //     vector <Territory*> adjacentTerritories = territory->getAdjacentTerritory();
-    //     for (auto t : adjacentTerritories)
-    //         // looping through each adjacent territory, if it hasn't been added to the adjacentTerritories vector
-    //         // then add it, this way it prevents duplicates.
-    //         if (find(adjacentTerritoriesNonDup.begin(), adjacentTerritoriesNonDup.end(), t) != adjacentTerritoriesNonDup.end() == 0)
-    //         {
-    //             adjacentTerritoriesNonDup.push_back(t);
-    //         }
-    // }
-
-    // // remove all territories belonging to the player
-    // vector <Territory*> territoriesToAttack;
-    // for (auto territory : adjacentTerritoriesNonDup) {
-    //     if (find(territories.begin(), territories.end(), territory) != territories.end() == 0)
-    //     {
-    //         territoriesToAttack.push_back(territory);
-    //     }
-    // }
-
-    // return territoriesToAttack;
 }
 
 void Player::removeSolders(int amount) {

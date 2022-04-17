@@ -1,1 +1,1 @@
-tournament -M brasil.map -P Aggressive,Benevolent -G 2 -D 30
+tournament -M brasil.map,bigeurope.map -P Neutral,Aggressive,Benevolent -G 2 -D 10

@@ -307,6 +307,7 @@ BenevolentPlayerStrategy::BenevolentPlayerStrategy(Player *player)
 vector<Territory *> BenevolentPlayerStrategy::toDefend()
 {
     vector<Territory *> temp = this->player->getTerritories();
+
     std::sort(temp.begin(), temp.end(), [](Territory *a, Territory *b) -> bool
               { return (a->getNumberOfArmies() < b->getNumberOfArmies()); });
 
@@ -333,16 +334,26 @@ void BenevolentPlayerStrategy::issueOrder()
 
     cout << this->player->getName() << "'s turn to issue orders!" << endl;
     cout << this->player->getName() << " is issuing orders ..." << endl;
-    cout << "**---- Deploy Phase ----**" << endl;
 
     if(this->player->getTerritories().size() > 0){
-         vector<Territory *> temp = this->toDefend();
+        vector<Territory *> temp = this->toDefend();
+      
     // Deploys to weakest territories until the amount of available armies is exhausted
-        for (auto it = temp.begin(); it != std::prev(temp.end()); it++)
+        for (auto it = temp.begin(); it != std::prev(temp.end()); ++it)
         {
-            int armiesNeeded = it[1]->getNumberOfArmies() - it[0]->getNumberOfArmies();
+            // int armiesNeeded = it[1]->getNumberOfArmies() - it[0]->getNumberOfArmies();
+           
+           int armiesNeeded = 0;
+
             int armies = this->player->getAvailableArmies();
-            cout << this->player->getName() << " has: " << armies << " armies available to use." << endl;
+             if(armies > 5){
+                armiesNeeded = armies /5;
+            }else if(armies > 0 && armies < 5){
+                armiesNeeded = 1;
+            }else{
+                break;
+            }
+
 
             if (armies <= 0)
             {
@@ -362,14 +373,13 @@ void BenevolentPlayerStrategy::issueOrder()
             }
         }
 
-    cout << "**---- Advance Phase ----**" << endl;
     temp = this->toAttack();
     // Advance armies from stronger territories to weaker territories
     vector<Territory *> tempAdj;
-    for (auto it = temp.begin(); it != temp.end(); it++)
+    for (auto it = temp.begin(); it != temp.end(); ++it)
     {
         tempAdj = it[0]->getAdjacentTerritory();
-        for (auto i = tempAdj.begin(); i != tempAdj.end(); i++)
+        for (auto i = tempAdj.begin(); i != tempAdj.end(); ++i)
         {
             if (i[0]->getOwnerOfTerritory()->getName() == this->player->getName())
             {
@@ -387,57 +397,6 @@ void BenevolentPlayerStrategy::issueOrder()
 
     }
    
-
-    // Hand* playerHand = this->player->getPlayerHand();
-    // int playerHandSize = playerHand->getHand().size();
-
-    // if (playerHandSize > 0) {
-    // for (int i = 0; i < playerHandSize; i++) {
-    // string cardType = playerHand->getHand().at(i)->getType();
-
-    // if (cardType == "reinforcement") {
-
-    // playerHand->getHand().at(i)->play(this->player->getGameDeck(), -1, nullptr, nullptr, nullptr);
-    // break;
-    // }
-    // else if (cardType == "blockade") {
-
-    // playerHand->getHand().at(i)->play(this->player->getGameDeck(), -1, toDefend().at(0), nullptr, nullptr);
-    // break;
-    // }
-    // else if (cardType == "airlift") {
-    // if (toDefend().size() > 1) {
-    // playerHand->getHand().at(i)->play(this->player->getGameDeck(), toDefend().at(1)->getNumberOfArmies(), toDefend().at(0), toDefend().at(1), nullptr);
-    // break;
-    // }
-    // }
-    // else if (cardType == "diplomacy") {
-    // Player* opponent;
-    // for (auto it = this->toDefend().begin(); it != this->toDefend().end(); it++) {
-    // for (auto i = it[0]->getAdjacentTerritory().begin(); i != it[0]->getAdjacentTerritory().end(); i++) {
-    // if (i[0]->getOwnerOfTerritory() != this->player) {
-    // opponent = i[0]->getOwnerOfTerritory();
-    // break;
-    // }
-    // }
-
-    // if (opponent) {
-    // break;
-    // }
-    // }
-    // playerHand->getHand().at(i)->play(this->player->getGameDeck(), -1, nullptr, nullptr, opponent);
-    // break;
-    // }
-    // else {
-    // cout << "Benevolent Player will not use a Bomb Card!" << endl;
-    // break;
-    // }
-    // }
-
-    // }
-    // else {
-    // cout << this->player->getName() << " has no Cards to play!" << endl;
-    // }
     cout << this->player->getName() << " has issued their Orders!\n";
 }
 /////////////////////////////////////// Neutral Player ////////////////////////////////////////////
@@ -482,14 +441,7 @@ void NeutralPlayerStrategy::issueOrder()
 
     cout << this->player->getName() << "'s turn to issue orders!" << endl;
     cout << this->player->getName() << " is issuing orders ..." << endl;
-    cout << "**---- Deploy Phase ----**" << endl;
-    cout << this->player->getName() << " has: " << this->player->getAvailableArmies() << " available to use." << endl;
     cout << this->player->getName() << " will not deploy any armies" << endl;
-
-    cout << "**---- Advance Phase ----**" << endl;
-    cout << this->player->getName() << " will not advance any armies" << endl;
-    cout << "**---- Card Phase ----**" << endl;
-    cout << this->player->getName() << " will not use any cards" << endl;
     cout << "End of " << this->player->getName() << "'s turn!" << endl;
 }
 /////////////////////////////////////// Cheater Player ////////////////////////////////////////////

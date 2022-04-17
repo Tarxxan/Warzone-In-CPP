@@ -76,11 +76,6 @@ void Card::play(Deck* deck, int armies,Territory* dest,Territory* src,Player* op
 
 
 
-    // this->player->hand->remove(this);
-    // cout << this->type << " Card played!\n";
-    // Order *newOrder = new Order(this->type*);
-    // this->player->orders->push(newOrder);
-    // deck->push(this);
 }
 string Card::getType()
 {
@@ -142,14 +137,7 @@ vector<Card *> Hand::getHand()
 
 void Hand::chooseCard(string orderType, Deck *deck) //select card and play it by inputing the type
 {
-    // for (Card *card : hand)
-    // {
-    //     if (card->getType() == orderType)
-    //     {
-    //         card->play(deck);
-    //         return;
-    //     }
-    // }
+   
     cout << "ORDER TYPE NOT FOUND\n";
 }
 
@@ -168,9 +156,7 @@ vector<Card *> Deck::getDeck() //return vector of cards representing the entire 
 {
     return this->deck;
 }
-// Deck::Deck(const Deck& deckO){
-//     this->deck = deckO.getDeck();
-// }
+
 
 Deck::~Deck()
 { //deconstructor
