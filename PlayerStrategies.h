@@ -29,9 +29,9 @@ protected:
     string strategyName;
 };
 ///////////////////////////////////////////// HumanPlayerStrategy //////////////////////////////////////////////
+
+//Human strategy that extends PlayerStrategy but implements its own toDefend,toAttack and issueOrder methods
 class HumanPlayerStrategy: public PlayerStrategy{
-    // Guys I didnt put here copy/assignment/print/constructors as they are avaibale in base class
-    // let me know if you think I should include it 
     public:
         HumanPlayerStrategy(Player* player);
         vector <Territory*> toDefend();
@@ -39,6 +39,8 @@ class HumanPlayerStrategy: public PlayerStrategy{
         void issueOrder();
 };
 ///////////////////////////////////////////// AggressivePlayerStrategy //////////////////////////////////////////////
+
+//Aggressive strategy that extends PlayerStrategy but implements its own toDefend,toAttack and issueOrder methods
 class AggressivePlayerStrategy: public PlayerStrategy{
     public:
         AggressivePlayerStrategy(Player* player);
@@ -47,6 +49,8 @@ class AggressivePlayerStrategy: public PlayerStrategy{
         void issueOrder();
 };
 ///////////////////////////////////////////// BenevolentPlayerStrategy //////////////////////////////////////////////
+
+//Benevolent Strategy that extends PlayerStrategy but implements its own toDefend,toAttack and issueOrder methods
 class BenevolentPlayerStrategy: public PlayerStrategy{
     public:
         BenevolentPlayerStrategy(Player* player);
@@ -55,6 +59,8 @@ class BenevolentPlayerStrategy: public PlayerStrategy{
         void issueOrder();
 };
 ///////////////////////////////////////////// NeutralPlayerStrategy //////////////////////////////////////////////
+
+//Neutral Strategy that extends PlayerStrategy but implements its own toDefend,toAttack and issueOrder methods
 class NeutralPlayerStrategy: public PlayerStrategy{
     public:
         NeutralPlayerStrategy(Player* player);
@@ -63,6 +69,8 @@ class NeutralPlayerStrategy: public PlayerStrategy{
         void issueOrder();
 };
 ///////////////////////////////////////////// CheaterPlayerStrategy //////////////////////////////////////////////
+
+//Cheater Strategy that extends PlayerStrategy but implements its own toDefend,toAttack and issueOrder methods
 class CheaterPlayerStrategy: public PlayerStrategy{
     public:
         CheaterPlayerStrategy(Player* player);
