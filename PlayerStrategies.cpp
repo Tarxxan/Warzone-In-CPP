@@ -303,7 +303,7 @@ BenevolentPlayerStrategy::BenevolentPlayerStrategy(Player *player)
 }
 /**
  * virtual method from base class toDefend
- * @return {vector*}  : list of player's territories
+ * @return {vector*}  : list of player's territories sorted from least armies to most armies
  */
 vector<Territory *> BenevolentPlayerStrategy::toDefend()
 {
@@ -316,7 +316,7 @@ vector<Territory *> BenevolentPlayerStrategy::toDefend()
 }
 /**
  * virtual method from base class toAttack
- * @return {vector*}  : list of territories that can be attacked
+ * @return {vector*}  : list of territories that can be attacked sorted from most armies to least armies
  */
 vector<Territory *> BenevolentPlayerStrategy::toAttack()
 {
@@ -342,7 +342,7 @@ void BenevolentPlayerStrategy::issueOrder()
     // Deploys to weakest territories until the amount of available armies is exhausted
         for (auto it = temp.begin(); it != std::prev(temp.end()); ++it)
         {
-            // int armiesNeeded = it[1]->getNumberOfArmies() - it[0]->getNumberOfArmies();
+            
            
            int armiesNeeded = 0;
 
