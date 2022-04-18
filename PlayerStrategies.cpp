@@ -45,6 +45,7 @@ PlayerStrategy::PlayerStrategy(const PlayerStrategy &ps)
 PlayerStrategy &PlayerStrategy::operator=(const PlayerStrategy &playerStrategy)
 {
     this->player = playerStrategy.player;
+    this->strategyName = playerStrategy.strategyName;
     return *this;
 }
 /**
